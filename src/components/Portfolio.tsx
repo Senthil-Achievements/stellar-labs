@@ -302,7 +302,6 @@ export function CursorGlow() {
   const sx = useSpring(x, { stiffness: 80, damping: 15, mass: 0.5 });
   const sy = useSpring(y, { stiffness: 80, damping: 15, mass: 0.5 });
   useEffect(() => {
-    if (window.innerWidth < 768) return;
     let ticking = false;
     const h = (e: PointerEvent) => {
       if (ticking) return;
@@ -315,7 +314,7 @@ export function CursorGlow() {
   return (
     <motion.div
       style={{ x: sx, y: sy }}
-      className="pointer-events-none fixed left-0 top-0 z-0 hidden h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(245,199,106,0.10),transparent_70%)] blur-2xl md:block will-change-transform"
+      className="pointer-events-none fixed left-0 top-0 z-0 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(245,199,106,0.10),transparent_70%)] blur-2xl will-change-transform"
     />
   );
 }
@@ -524,7 +523,7 @@ export function Hero() {
             <SectionLabel>AI Startup Studio · Est. Tomorrow</SectionLabel>
           </FadeUp>
           <FadeUp delay={0.1}>
-            <h1 className="mt-6 font-display text-[36px] font-semibold leading-[1.05] tracking-tight sm:text-5xl lg:text-[76px]">
+            <h1 className="mt-6 font-display text-[44px] font-semibold leading-[1.02] tracking-tight sm:text-6xl lg:text-[76px]">
               We Build Businesses <br className="hidden sm:block" />
               That{" "}
               <span className="text-gradient-accent">Scale.</span>
@@ -623,7 +622,6 @@ function ServiceCard({ s }: { s: typeof SERVICES[number] }) {
     <div
       ref={ref}
       onMouseMove={(e) => {
-        if (window.innerWidth < 768) return;
         const r = ref.current!.getBoundingClientRect();
         setTilt({ x: (e.clientX - r.left) / r.width - 0.5, y: (e.clientY - r.top) / r.height - 0.5 });
       }}
@@ -695,7 +693,6 @@ function ProjectCard({ p, index }: { p: typeof PROJECTS[number]; index: number }
     <article
       ref={ref}
       onMouseMove={(e) => {
-        if (window.innerWidth < 768) return;
         const r = ref.current!.getBoundingClientRect();
         setTilt({ x: (e.clientX - r.left) / r.width - 0.5, y: (e.clientY - r.top) / r.height - 0.5 });
       }}
@@ -839,7 +836,7 @@ export function Work() {
         </div>
       </div>
 
-      <div ref={targetRef} className={`relative mt-10 sm:mt-16`} style={{ height: `${n * (isMobile ? 80 : 90)}vh` }}>
+      <div ref={targetRef} className="relative mt-10 sm:mt-16" style={{ height: `${n * 90}vh` }}>
         <div className="sticky top-0 flex h-screen items-center overflow-hidden">
           <motion.div style={{ x }} className="flex gap-4 sm:gap-6 md:gap-8 pr-[4vw] will-change-transform">
             {PROJECTS.map((p, i) => (
@@ -1186,25 +1183,10 @@ export function Footer() {
 export function SiteChrome({ children, showGlitter = true }: { children: React.ReactNode; showGlitter?: boolean }) {
   const { scrollYProgress } = useScroll();
   const progress = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
-  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     document.documentElement.classList.add("dark");
-    setIsMobile(window.innerWidth < 768);
   }, []);
-
-  useEffect(() => {
-    if (!isMobile) return;
-    let ticking = false;
-    const handleScroll = () => {
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(() => { ticking = false; });
-      }
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isMobile]);
 
   return (
     <div className="relative min-h-screen text-foreground">
@@ -1214,18 +1196,18 @@ export function SiteChrome({ children, showGlitter = true }: { children: React.R
       <CursorGlow />
       {showGlitter && (
         <GlitterWrap
-          particleCount={isMobile ? 80 : 250}
+          particleCount={250}
           color1="#8F5252"
           color2="#BCA044"
           color3="#BBC779"
-          speed={isMobile ? 4 : 7}
-          density={isMobile ? 30 : 59}
-          starSize={isMobile ? 5 : 10}
+          speed={7}
+          density={59}
+          starSize={10}
           focalDepth={23}
-          turbulence={isMobile ? 1 : 4}
-          brightness={isMobile ? 45 : 85}
-          glitterIntensity={isMobile ? 1 : 4}
-          trailAmount={isMobile ? 30 : 88}
+          turbulence={4}
+          brightness={85}
+          glitterIntensity={4}
+          trailAmount={88}
           className="!fixed inset-0 z-0 opacity-70"
         />
       )}
@@ -1242,7 +1224,6 @@ export function SiteChrome({ children, showGlitter = true }: { children: React.R
    ============================================================ */
 
 export function HomeStack() {
-  const isMobile = useIsMobile();
   const sections = [
     { key: "marquee", node: <Marquee /> },
     { key: "services", node: <Services /> },
@@ -1261,16 +1242,16 @@ export function HomeStack() {
     target: pinRef,
     offset: ["start start", "end start"],
   });
-  const heroScale = useTransform(scrollYProgress, [0, 1], [1, isMobile ? 0.95 : 0.9]);
+  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 0.9]);
   const heroOpacity = useTransform(scrollYProgress, [0, 1], [1, 0.5]);
-  const heroRadius = useTransform(scrollYProgress, [0, 0.4], ["0px", isMobile ? "20px" : "36px"]);
+  const heroRadius = useTransform(scrollYProgress, [0, 0.4], ["0px", "36px"]);
   const panelY = useTransform(scrollYProgress, [0, 1], ["100%", "0%"]);
-  const panelRadius = useTransform(scrollYProgress, [0, 0.85, 1], [isMobile ? 20 : 36, 12, 0]);
+  const panelRadius = useTransform(scrollYProgress, [0, 0.85, 1], [36, 20, 0]);
 
   return (
     <>
       {/* Sticky Hero stack: hero pins and scales down while a rounded panel rises up to cover it */}
-      <div ref={pinRef} className={`relative ${isMobile ? "h-[120vh]" : "h-[170vh]"}`}>
+      <div ref={pinRef} className="relative h-[170vh]">
         <div className="sticky top-0 h-screen w-full overflow-hidden">
           <motion.div
             style={{ scale: heroScale, opacity: heroOpacity, borderRadius: heroRadius }}

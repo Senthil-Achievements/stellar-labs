@@ -10,7 +10,6 @@ const ShaderGradient = lazy(() =>
 export default function ShaderBackground({ className = "" }: { className?: string }) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
-    if (window.innerWidth < 768) return;
     const raf = requestAnimationFrame(() => setMounted(true));
     return () => cancelAnimationFrame(raf);
   }, []);
@@ -21,7 +20,7 @@ export default function ShaderBackground({ className = "" }: { className?: strin
       <Suspense fallback={null}>
         <ShaderGradientCanvas
           style={{ width: "100%", height: "100%" }}
-          pixelDensity={0.5}
+          pixelDensity={1}
           fov={45}
         >
 

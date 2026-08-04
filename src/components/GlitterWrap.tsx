@@ -173,7 +173,7 @@ export default function GlitterWrap(userProps: Props) {
     ro.observe(container);
 
     const isMobile = window.innerWidth < 768;
-    const TARGET_FPS = isMobile ? 30 : 60;
+    const TARGET_FPS = 60;
     const FRAME_MS = 1000 / TARGET_FPS;
 
     const drawFrame = (deltaSec: number) => {

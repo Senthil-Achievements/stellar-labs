@@ -110,12 +110,6 @@
     background-attachment: fixed;
   }
 
-  @media (max-width: 767px) {
-    body {
-      background-attachment: scroll;
-    }
-  }
-
   ::selection {
     background: rgba(245, 199, 106, 0.35);
     color: #fff;
@@ -296,10 +290,6 @@ html.light .text-black { color: #ffffff !important; }
     box-shadow:
       0 0 0 1px rgba(245, 199, 106, 0.3),
       0 0 80px rgba(245, 199, 106, 0.08);
-  }
-
-  [style*="will-change-transform"] {
-    will-change: auto !important;
   }
 }
 
