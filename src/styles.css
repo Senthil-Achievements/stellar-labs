@@ -1,0 +1,330 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Ultra Premium Dark design system.
+ * Colors are stored as raw values so we can freely compose with color-mix/rgba.
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent-violet: var(--accent-violet);
+  --color-accent-blue: var(--accent-blue);
+  --color-accent-cyan: var(--accent-cyan);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+:root {
+  --radius: 0.9rem;
+
+  --background: #050505;
+  --foreground: #ffffff;
+  --surface: #0e0e0e;
+  --surface-2: #141414;
+  --card: rgba(255, 255, 255, 0.03);
+  --card-foreground: #ffffff;
+  --popover: #0a0a0a;
+  --popover-foreground: #ffffff;
+  --primary: #ffffff;
+  --primary-foreground: #050505;
+  --secondary: rgba(255, 255, 255, 0.06);
+  --secondary-foreground: #ffffff;
+  --muted: rgba(255, 255, 255, 0.04);
+  --muted-foreground: #a5a5a5;
+  --accent: rgba(245, 199, 106, 0.14);
+  --accent-foreground: #ffffff;
+  --accent-violet: #f5c76a;
+  --accent-blue: #d4a94a;
+  --accent-cyan: #f5c76a;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --success: #22c55e;
+  --border: rgba(255, 255, 255, 0.08);
+  --input: rgba(255, 255, 255, 0.08);
+  --ring: rgba(245, 199, 106, 0.5);
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    background: #050505;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    background-color: #050505;
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(245, 199, 106, 0.14), transparent 30%),
+      radial-gradient(circle at 85% 10%, rgba(255, 255, 255, 0.05), transparent 28%),
+      radial-gradient(circle at 70% 80%, rgba(245, 199, 106, 0.08), transparent 32%),
+      linear-gradient(180deg, #050505, #090909, #111111);
+    background-attachment: fixed;
+  }
+
+  @media (max-width: 767px) {
+    body {
+      background-attachment: scroll;
+    }
+  }
+
+  ::selection {
+    background: rgba(245, 199, 106, 0.35);
+    color: #fff;
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    color: #ECECEC;
+  }
+}
+
+/* ---------- Premium primitives ---------- */
+
+@utility glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px) saturate(140%);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.35),
+    0 1px 0 rgba(255, 255, 255, 0.05) inset;
+}
+
+@utility glow-gold {
+  box-shadow:
+    0 0 0 1px rgba(245, 199, 106, 0.3),
+    0 0 250px rgba(245, 199, 106, 0.12),
+    0 0 500px rgba(245, 199, 106, 0.05);
+}
+
+@utility grid-bg {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+@utility noise {
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+}
+
+@utility hairline {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.14),
+    transparent
+  );
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -18px, 0); }
+}
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.7; }
+}
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes ticker {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+/* ============================================================
+   LIGHT MODE — pragmatic override that repaints the dark
+   design in warm ivory tones without touching every component.
+   ============================================================ */
+
+:root.light {
+  --background: #f6f4ef;
+  --foreground: #0b0b0b;
+  --surface: #ffffff;
+  --surface-2: #f0ece4;
+  --card: rgba(0, 0, 0, 0.04);
+  --card-foreground: #0b0b0b;
+  --popover: #ffffff;
+  --popover-foreground: #0b0b0b;
+  --primary: #0b0b0b;
+  --primary-foreground: #ffffff;
+  --secondary: rgba(0, 0, 0, 0.05);
+  --secondary-foreground: #0b0b0b;
+  --muted: rgba(0, 0, 0, 0.04);
+  --muted-foreground: #5b5b5b;
+  --accent: rgba(180, 130, 40, 0.14);
+  --accent-foreground: #0b0b0b;
+  --border: rgba(0, 0, 0, 0.10);
+  --input: rgba(0, 0, 0, 0.10);
+  --ring: rgba(180, 130, 40, 0.5);
+  color-scheme: light;
+}
+
+html.light {
+  background: #f6f4ef;
+}
+
+html.light body {
+  color: #0b0b0b;
+  background-color: #f6f4ef;
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(245, 199, 106, 0.28), transparent 30%),
+    radial-gradient(circle at 85% 10%, rgba(0, 0, 0, 0.04), transparent 28%),
+    radial-gradient(circle at 70% 80%, rgba(245, 199, 106, 0.18), transparent 32%),
+    linear-gradient(180deg, #f6f4ef, #efece3, #e7e2d3);
+}
+
+html.light ::selection {
+  background: rgba(180, 130, 40, 0.35);
+  color: #0b0b0b;
+}
+
+html.light h1,
+html.light h2,
+html.light h3,
+html.light h4,
+html.light h5 {
+  color: #0b0b0b;
+}
+
+html.light .glass-card {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.08),
+    0 1px 0 rgba(255, 255, 255, 0.6) inset;
+}
+
+html.light .grid-bg {
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+}
+
+/* Broad-stroke overrides for hardcoded white/black Tailwind
+   arbitrary classes used across sections. */
+html.light [class*="text-white"] { color: #0b0b0b; }
+html.light [class*="text-white/90"] { color: rgba(11, 11, 11, 0.9); }
+html.light [class*="text-white/80"] { color: rgba(11, 11, 11, 0.8); }
+html.light [class*="text-white/70"] { color: rgba(11, 11, 11, 0.7); }
+html.light [class*="text-white/60"] { color: rgba(11, 11, 11, 0.6); }
+html.light [class*="text-white/50"] { color: rgba(11, 11, 11, 0.55); }
+html.light [class*="text-white/40"] { color: rgba(11, 11, 11, 0.45); }
+html.light [class*="text-white/30"] { color: rgba(11, 11, 11, 0.35); }
+
+html.light [class*="bg-white/"] { background-color: rgba(0, 0, 0, 0.04); }
+html.light [class*="bg-black/"] { background-color: rgba(255, 255, 255, 0.65); }
+html.light [class*="border-white/"] { border-color: rgba(0, 0, 0, 0.10); }
+
+html.light .bg-white { background-color: #0b0b0b !important; color: #ffffff !important; }
+html.light .text-black { color: #ffffff !important; }
+
+/* ============================================================
+   MOBILE PERFORMANCE & RESPONSIVENESS
+   ============================================================ */
+
+@media (max-width: 767px) {
+  .glass-card {
+    backdrop-filter: blur(12px) saturate(120%);
+    -webkit-backdrop-filter: blur(12px) saturate(120%);
+  }
+
+  .glow-gold {
+    box-shadow:
+      0 0 0 1px rgba(245, 199, 106, 0.3),
+      0 0 80px rgba(245, 199, 106, 0.08);
+  }
+
+  [style*="will-change-transform"] {
+    will-change: auto !important;
+  }
+}
+
+/* Touch-friendly tap targets */
+@media (pointer: coarse) {
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* GPU acceleration hints for canvas elements */
+canvas {
+  image-rendering: -webkit-optimize-contrast;
+}
