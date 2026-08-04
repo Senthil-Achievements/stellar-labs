@@ -396,7 +396,7 @@ export function Nav() {
 
 function HeroMockup() {
   return (
-    <div className="relative aspect-[5/6] w-full lg:aspect-[4/5]">
+    <div className="relative aspect-[5/6] w-full sm:aspect-[5/6] lg:aspect-[4/5]">
 
 
       {/* Main card */}
@@ -404,24 +404,24 @@ function HeroMockup() {
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
-        className="glass-card relative z-10 h-full rounded-3xl p-5"
+        className="glass-card relative z-10 h-full rounded-2xl sm:rounded-3xl p-4 sm:p-5"
       >
         {/* header */}
-        <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
-          <div className="flex items-center gap-2">
-            <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
-            <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
-            <span className="h-2.5 w-2.5 rounded-full bg-[#F5C76A]/70" />
+        <div className="flex items-center justify-between border-b border-white/[0.06] pb-2.5 sm:pb-3">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-white/20" />
+            <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-white/20" />
+            <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-[#F5C76A]/70" />
           </div>
-          <div className="font-mono text-[10px] tracking-widest text-white/40">theruins · console</div>
-          <div className="flex items-center gap-1.5 text-[10px] text-white/50">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#F5C76A] shadow-[0_0_8px_rgba(245,199,106,0.8)] animate-[ticker_1.6s_ease-in-out_infinite]" />
+          <div className="font-mono text-[8px] sm:text-[10px] tracking-widest text-white/40">theruins · console</div>
+          <div className="flex items-center gap-1 sm:gap-1.5 text-[8px] sm:text-[10px] text-white/50">
+            <span className="h-1 w-1 sm:h-1.5 sm:w-1.5 rounded-full bg-[#F5C76A] shadow-[0_0_8px_rgba(245,199,106,0.8)] animate-[ticker_1.6s_ease-in-out_infinite]" />
             LIVE
           </div>
         </div>
 
         {/* Focus row */}
-        <div className="mt-4 grid grid-cols-3 gap-2.5">
+        <div className="mt-3 sm:mt-4 grid grid-cols-3 gap-2 sm:gap-2.5">
           {[
             { l: "Focus", v: "AI-Native", d: "products & agents" },
             { l: "Stack", v: "Full-Stack", d: "web · mobile · infra" },
@@ -432,22 +432,22 @@ function HeroMockup() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 + i * 0.08 }}
-              className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3"
+              className="rounded-lg sm:rounded-xl border border-white/[0.06] bg-white/[0.02] p-2 sm:p-3"
             >
-              <div className="text-[9px] uppercase tracking-wider text-white/40">{k.l}</div>
-              <div className="mt-1 font-display text-base font-semibold">{k.v}</div>
-              <div className="mt-0.5 text-[9px] text-[#F5C76A]/80">{k.d}</div>
+              <div className="text-[7px] sm:text-[9px] uppercase tracking-wider text-white/40">{k.l}</div>
+              <div className="mt-0.5 sm:mt-1 font-display text-xs sm:text-base font-semibold">{k.v}</div>
+              <div className="mt-0.5 text-[7px] sm:text-[9px] text-[#F5C76A]/80">{k.d}</div>
             </motion.div>
           ))}
         </div>
 
         {/* Activity */}
-        <div className="relative mt-3 h-32 overflow-hidden rounded-xl border border-white/[0.06] bg-black/40 p-3">
+        <div className="relative mt-2.5 sm:mt-3 h-24 sm:h-32 overflow-hidden rounded-lg sm:rounded-xl border border-white/[0.06] bg-black/40 p-2.5 sm:p-3">
           <div className="flex items-center justify-between">
-            <div className="text-[10px] font-medium text-white/70">Build activity</div>
-            <div className="font-mono text-[10px] text-[#F5C76A]">shipping</div>
+            <div className="text-[8px] sm:text-[10px] font-medium text-white/70">Build activity</div>
+            <div className="font-mono text-[8px] sm:text-[10px] text-[#F5C76A]">shipping</div>
           </div>
-          <svg viewBox="0 0 300 80" className="mt-2 h-20 w-full">
+          <svg viewBox="0 0 300 80" className="mt-1.5 sm:mt-2 h-16 sm:h-20 w-full">
             <defs>
               <linearGradient id="gold-fill" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="rgba(245,199,106,0.4)" />
@@ -479,21 +479,21 @@ function HeroMockup() {
         </div>
 
         {/* Philosophy */}
-        <div className="mt-3 rounded-xl border border-white/[0.06] bg-white/[0.02] p-3">
-          <div className="flex items-center gap-2 text-[10px] font-medium text-white/70">
-            <Sparkles className="h-3 w-3 text-[#F5C76A]" />
+        <div className="mt-2.5 sm:mt-3 rounded-lg sm:rounded-xl border border-white/[0.06] bg-white/[0.02] p-2.5 sm:p-3">
+          <div className="flex items-center gap-1.5 sm:gap-2 text-[8px] sm:text-[10px] font-medium text-white/70">
+            <Sparkles className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-[#F5C76A]" />
             How we build
           </div>
-          <div className="mt-1.5 text-[11px] leading-relaxed text-white/80">
+          <div className="mt-1 sm:mt-1.5 text-[9px] sm:text-[11px] leading-relaxed text-white/80">
             Ship a real, working slice in weeks — not a deck. Then iterate against
             usage, not <span className="text-[#F5C76A]">assumptions</span>.
           </div>
         </div>
 
         {/* Terminal */}
-        <div className="mt-3 rounded-xl border border-white/[0.06] bg-black/60 p-3 font-mono text-[10px] leading-relaxed">
-          <div className="mb-1.5 flex items-center gap-2 text-white/40">
-            <Terminal className="h-3 w-3" />
+        <div className="mt-2.5 sm:mt-3 rounded-lg sm:rounded-xl border border-white/[0.06] bg-black/60 p-2.5 sm:p-3 font-mono text-[8px] sm:text-[10px] leading-relaxed">
+          <div className="mb-1 sm:mb-1.5 flex items-center gap-1.5 sm:gap-2 text-white/40">
+            <Terminal className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
             <span>status</span>
           </div>
           <div className="text-white/70">
@@ -833,38 +833,30 @@ export function Work() {
           <FadeUp delay={0.2}>
             <p className="max-w-md text-sm sm:text-base text-white/50">
               A selection of platforms, mobile apps, and AI systems shipped for
-              founders and teams across industries.{isMobile ? "" : " Scroll to explore."}
+              founders and teams across industries. Scroll to explore.
             </p>
           </FadeUp>
         </div>
       </div>
 
-      {isMobile ? (
-        <div className="mx-auto mt-8 sm:mt-12 grid max-w-6xl gap-5 sm:gap-6 px-5 sm:px-6">
-          {PROJECTS.map((p, i) => (
-            <ProjectCard key={p.id} p={p} index={i} />
-          ))}
-        </div>
-      ) : (
-        <div ref={targetRef} className="relative mt-16" style={{ height: `${n * 90}vh` }}>
-          <div className="sticky top-0 flex h-screen items-center overflow-hidden">
-            <motion.div style={{ x }} className="flex gap-6 sm:gap-8 pr-[4vw] will-change-transform">
-              {PROJECTS.map((p, i) => (
-                <div key={p.id} className="w-[min(900px,88vw)] sm:w-[min(1100px,92vw)] shrink-0">
-                  <ProjectCard p={p} index={i} />
-                </div>
-              ))}
-            </motion.div>
+      <div ref={targetRef} className={`relative mt-10 sm:mt-16`} style={{ height: `${n * (isMobile ? 80 : 90)}vh` }}>
+        <div className="sticky top-0 flex h-screen items-center overflow-hidden">
+          <motion.div style={{ x }} className="flex gap-4 sm:gap-6 md:gap-8 pr-[4vw] will-change-transform">
+            {PROJECTS.map((p, i) => (
+              <div key={p.id} className={`shrink-0 ${isMobile ? "w-[85vw]" : "w-[min(900px,88vw)] sm:w-[min(1100px,92vw)]"}`}>
+                <ProjectCard p={p} index={i} />
+              </div>
+            ))}
+          </motion.div>
 
-            <div className="pointer-events-none absolute bottom-8 left-1/2 h-[3px] w-40 sm:w-56 -translate-x-1/2 overflow-hidden rounded-full bg-white/10">
-              <motion.div
-                style={{ scaleX: scrollYProgress, transformOrigin: "left" }}
-                className="h-full w-full bg-gradient-to-r from-white via-[#F5C76A] to-[#d4a94a]"
-              />
-            </div>
+          <div className="pointer-events-none absolute bottom-6 sm:bottom-8 left-1/2 h-[3px] w-40 sm:w-56 -translate-x-1/2 overflow-hidden rounded-full bg-white/10">
+            <motion.div
+              style={{ scaleX: scrollYProgress, transformOrigin: "left" }}
+              className="h-full w-full bg-gradient-to-r from-white via-[#F5C76A] to-[#d4a94a]"
+            />
           </div>
         </div>
-      )}
+      </div>
     </section>
   );
 }
@@ -1222,18 +1214,18 @@ export function SiteChrome({ children, showGlitter = true }: { children: React.R
       <CursorGlow />
       {showGlitter && (
         <GlitterWrap
-          particleCount={isMobile ? 120 : 250}
+          particleCount={isMobile ? 80 : 250}
           color1="#8F5252"
           color2="#BCA044"
           color3="#BBC779"
-          speed={7}
-          density={59}
-          starSize={isMobile ? 6 : 10}
+          speed={isMobile ? 4 : 7}
+          density={isMobile ? 30 : 59}
+          starSize={isMobile ? 5 : 10}
           focalDepth={23}
-          turbulence={isMobile ? 2 : 4}
-          brightness={isMobile ? 60 : 85}
-          glitterIntensity={isMobile ? 2 : 4}
-          trailAmount={isMobile ? 50 : 88}
+          turbulence={isMobile ? 1 : 4}
+          brightness={isMobile ? 45 : 85}
+          glitterIntensity={isMobile ? 1 : 4}
+          trailAmount={isMobile ? 30 : 88}
           className="!fixed inset-0 z-0 opacity-70"
         />
       )}
@@ -1269,31 +1261,16 @@ export function HomeStack() {
     target: pinRef,
     offset: ["start start", "end start"],
   });
-  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 0.9]);
+  const heroScale = useTransform(scrollYProgress, [0, 1], [1, isMobile ? 0.95 : 0.9]);
   const heroOpacity = useTransform(scrollYProgress, [0, 1], [1, 0.5]);
-  const heroRadius = useTransform(scrollYProgress, [0, 0.4], ["0px", "36px"]);
+  const heroRadius = useTransform(scrollYProgress, [0, 0.4], ["0px", isMobile ? "20px" : "36px"]);
   const panelY = useTransform(scrollYProgress, [0, 1], ["100%", "0%"]);
-  const panelRadius = useTransform(scrollYProgress, [0, 0.85, 1], [36, 20, 0]);
-
-  if (isMobile) {
-    return (
-      <>
-        <Hero />
-        <div className="relative z-20">
-          {sections.map((s) => (
-            <section key={s.key} className="relative w-full">
-              {s.node}
-            </section>
-          ))}
-        </div>
-      </>
-    );
-  }
+  const panelRadius = useTransform(scrollYProgress, [0, 0.85, 1], [isMobile ? 20 : 36, 12, 0]);
 
   return (
     <>
       {/* Sticky Hero stack: hero pins and scales down while a rounded panel rises up to cover it */}
-      <div ref={pinRef} className="relative h-[170vh]">
+      <div ref={pinRef} className={`relative ${isMobile ? "h-[120vh]" : "h-[170vh]"}`}>
         <div className="sticky top-0 h-screen w-full overflow-hidden">
           <motion.div
             style={{ scale: heroScale, opacity: heroOpacity, borderRadius: heroRadius }}
