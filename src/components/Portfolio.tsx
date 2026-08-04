@@ -314,7 +314,7 @@ export function CursorGlow() {
   return (
     <motion.div
       style={{ x: sx, y: sy }}
-      className="pointer-events-none fixed left-0 top-0 z-0 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(245,199,106,0.10),transparent_70%)] blur-2xl will-change-transform"
+      className="pointer-events-none fixed left-0 top-0 z-0 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(245,199,106,0.18),transparent_70%)] blur-2xl will-change-transform"
     />
   );
 }
