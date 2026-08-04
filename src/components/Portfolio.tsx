@@ -1205,10 +1205,10 @@ export function SiteChrome({ children, showGlitter = true }: { children: React.R
           starSize={isMobile ? 7 : 10}
           focalDepth={23}
           turbulence={isMobile ? 2 : 4}
-          brightness={isMobile ? 65 : 85}
-          glitterIntensity={isMobile ? 2 : 4}
+          brightness={isMobile ? 100 : 140}
+          glitterIntensity={isMobile ? 4 : 6}
           trailAmount={isMobile ? 60 : 88}
-          className="!fixed inset-0 z-0 opacity-70"
+          className="!fixed inset-0 z-0 opacity-80"
         />
       )}
       <motion.div style={{ width: progress }} className="fixed left-0 top-0 z-[60] h-0.5 bg-gradient-to-r from-white via-[#F5C76A] to-[#d4a94a]" />

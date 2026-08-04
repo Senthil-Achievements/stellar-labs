@@ -45,8 +45,8 @@ const COMPONENT_DEFAULTS = {
   starSize: 20,
   focalDepth: 14,
   turbulence: 0,
-  brightness: 100,
-  glitterIntensity: 3,
+  brightness: 120,
+  glitterIntensity: 4,
   trailAmount: 1,
   reverse: false,
 };
@@ -109,7 +109,7 @@ export default function GlitterWrap(userProps: Props) {
         starScale: p.starSize * 0.15,
         turbulence: p.turbulence * 0.2,
         glitter: p.glitterIntensity * 0.1,
-        brightness: Math.min(1, p.brightness / 100),
+        brightness: p.brightness / 100,
         trail: p.trailAmount / 100,
       };
     };
