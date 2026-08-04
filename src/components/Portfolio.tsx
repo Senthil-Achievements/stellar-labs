@@ -837,7 +837,7 @@ export function Work() {
       </div>
 
       <div ref={targetRef} className="relative mt-10 sm:mt-16" style={{ height: `${n * 90}vh` }}>
-        <div className="sticky top-0 flex h-screen items-center overflow-hidden">
+        <div className="sticky top-0 flex h-[100dvh] items-center overflow-hidden">
           <motion.div style={{ x }} className="flex gap-4 sm:gap-6 md:gap-8 pr-[4vw] will-change-transform">
             {PROJECTS.map((p, i) => (
               <div key={p.id} className={`shrink-0 ${isMobile ? "w-[85vw]" : "w-[min(900px,88vw)] sm:w-[min(1100px,92vw)]"}`}>
@@ -1252,7 +1252,7 @@ export function HomeStack() {
     <>
       {/* Sticky Hero stack: hero pins and scales down while a rounded panel rises up to cover it */}
       <div ref={pinRef} className="relative h-[170vh]">
-        <div className="sticky top-0 h-screen w-full overflow-hidden">
+        <div className="sticky top-0 h-[100dvh] w-full overflow-hidden">
           <motion.div
             style={{ scale: heroScale, opacity: heroOpacity, borderRadius: heroRadius }}
             className="absolute inset-0 origin-center overflow-hidden will-change-transform"
