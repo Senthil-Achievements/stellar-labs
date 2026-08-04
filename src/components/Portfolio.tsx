@@ -1196,18 +1196,18 @@ export function SiteChrome({ children, showGlitter = true }: { children: React.R
       <CursorGlow />
       {showGlitter && (
         <GlitterWrap
-          particleCount={250}
+          particleCount={isMobile ? 120 : 250}
           color1="#8F5252"
           color2="#BCA044"
           color3="#BBC779"
-          speed={7}
-          density={59}
-          starSize={10}
+          speed={isMobile ? 5 : 7}
+          density={isMobile ? 40 : 59}
+          starSize={isMobile ? 7 : 10}
           focalDepth={23}
-          turbulence={4}
-          brightness={85}
-          glitterIntensity={4}
-          trailAmount={88}
+          turbulence={isMobile ? 2 : 4}
+          brightness={isMobile ? 65 : 85}
+          glitterIntensity={isMobile ? 2 : 4}
+          trailAmount={isMobile ? 60 : 88}
           className="!fixed inset-0 z-0 opacity-70"
         />
       )}

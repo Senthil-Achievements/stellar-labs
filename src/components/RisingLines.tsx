@@ -279,7 +279,7 @@ export default function RisingLines(userProps: Props) {
     };
 
     const isMobile = window.innerWidth < 768;
-    const TARGET_FPS = 60;
+    const TARGET_FPS = isMobile ? 30 : 60;
     const FRAME_MS = 1000 / TARGET_FPS;
 
     let lastT = performance.now();
