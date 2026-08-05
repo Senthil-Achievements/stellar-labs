@@ -35,7 +35,7 @@ function NotFoundComponent() {
 }
 
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
-  console.error("[THERUINS ERROR]", error);
+  console.error(error);
   const router = useRouter();
   useEffect(() => {
     reportLovableError(error, { boundary: "tanstack_root_error_component" });
@@ -43,21 +43,13 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-lg text-center">
+      <div className="max-w-md text-center">
         <h1 className="text-xl font-semibold tracking-tight text-foreground">
           This page didn't load
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Something went wrong on our end. You can try refreshing or head back home.
         </p>
-        <div className="mt-4 rounded-lg border border-red-500/20 bg-red-500/5 p-4 text-left">
-          <div className="text-xs font-medium uppercase tracking-wider text-red-400 mb-2">Error Details</div>
-          <pre className="whitespace-pre-wrap break-words text-xs text-red-300/90 font-mono leading-relaxed">
-            {error?.message || "Unknown error"}
-            {"\n\n"}
-            {error?.stack || ""}
-          </pre>
-        </div>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
             onClick={() => {

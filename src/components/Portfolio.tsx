@@ -1183,6 +1183,7 @@ export function Footer() {
 export function SiteChrome({ children, showGlitter = true }: { children: React.ReactNode; showGlitter?: boolean }) {
   const { scrollYProgress } = useScroll();
   const progress = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     document.documentElement.classList.add("dark");
