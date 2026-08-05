@@ -15,7 +15,7 @@ import GlitterWrap from "./GlitterWrap";
 import SmoothScroll from "./SmoothScroll";
 import WelcomeLoader from "./WelcomeLoader";
 import ThemeToggle from "./ThemeToggle";
-import HoverImageReveal, { getServiceVisual } from "./HoverImageReveal";
+import HoverImageReveal, { getServiceVisual, GlowReveal } from "./HoverImageReveal";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 
@@ -666,21 +666,27 @@ export function Process() {
           <div className="flex min-w-max gap-3 sm:gap-4">
             {PROCESS.map((step, i) => (
               <FadeUp key={step.title} delay={i * 0.06}>
-                <div className="glass-card group relative w-[240px] sm:w-[280px] rounded-2xl p-5 sm:p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="grid h-10 w-10 sm:h-11 sm:w-11 place-items-center rounded-xl border border-white/10 bg-white/[0.03]">
-                      <step.icon className="h-4 w-4 sm:h-5 sm:w-5 text-[#F5C76A]" />
+                <HoverImageReveal
+                  className="h-full"
+                  revealClassName="rounded-2xl"
+                  revealContent={<GlowReveal intensity={0.9} />}
+                >
+                  <div className="glass-card group relative w-[240px] sm:w-[280px] rounded-2xl p-5 sm:p-6">
+                    <div className="flex items-center justify-between">
+                      <div className="grid h-10 w-10 sm:h-11 sm:w-11 place-items-center rounded-xl border border-white/10 bg-white/[0.03]">
+                        <step.icon className="h-4 w-4 sm:h-5 sm:w-5 text-[#F5C76A]" />
+                      </div>
+                      <div className="font-mono text-[10px] uppercase tracking-wider text-white/40">0{i + 1}</div>
                     </div>
-                    <div className="font-mono text-[10px] uppercase tracking-wider text-white/40">0{i + 1}</div>
+                    <div className="mt-4 sm:mt-5 font-display text-base sm:text-lg font-semibold">{step.title}</div>
+                    <p className="mt-2 text-xs sm:text-sm text-white/60">{step.desc}</p>
+                    {i < PROCESS.length - 1 && (
+                      <div className="pointer-events-none absolute right-[-14px] top-1/2 hidden -translate-y-1/2 lg:block">
+                        <div className="h-px w-3 bg-[#F5C76A]/40" />
+                      </div>
+                    )}
                   </div>
-                  <div className="mt-4 sm:mt-5 font-display text-base sm:text-lg font-semibold">{step.title}</div>
-                  <p className="mt-2 text-xs sm:text-sm text-white/60">{step.desc}</p>
-                  {i < PROCESS.length - 1 && (
-                    <div className="pointer-events-none absolute right-[-14px] top-1/2 hidden -translate-y-1/2 lg:block">
-                      <div className="h-px w-3 bg-[#F5C76A]/40" />
-                    </div>
-                  )}
-                </div>
+                </HoverImageReveal>
               </FadeUp>
             ))}
           </div>
@@ -698,16 +704,21 @@ function ProjectCard({ p, index }: { p: typeof PROJECTS[number]; index: number }
   const ref = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   return (
-    <article
-      ref={ref}
-      onMouseMove={(e) => {
-        const r = ref.current!.getBoundingClientRect();
-        setTilt({ x: (e.clientX - r.left) / r.width - 0.5, y: (e.clientY - r.top) / r.height - 0.5 });
-      }}
-      onMouseLeave={() => setTilt({ x: 0, y: 0 })}
-      style={{ transform: `perspective(1200px) rotateX(${-tilt.y * 2.5}deg) rotateY(${tilt.x * 2.5}deg)` }}
-      className="glass-card group relative overflow-hidden rounded-2xl sm:rounded-3xl p-6 sm:p-8 transition-transform duration-300 md:p-10"
+    <HoverImageReveal
+      className="h-full"
+      revealClassName="rounded-2xl sm:rounded-3xl"
+      revealContent={<GlowReveal intensity={1.2} />}
     >
+      <article
+        ref={ref}
+        onMouseMove={(e) => {
+          const r = ref.current!.getBoundingClientRect();
+          setTilt({ x: (e.clientX - r.left) / r.width - 0.5, y: (e.clientY - r.top) / r.height - 0.5 });
+        }}
+        onMouseLeave={() => setTilt({ x: 0, y: 0 })}
+        style={{ transform: `perspective(1200px) rotateX(${-tilt.y * 2.5}deg) rotateY(${tilt.x * 2.5}deg)` }}
+        className="glass-card group relative overflow-hidden rounded-2xl sm:rounded-3xl p-6 sm:p-8 transition-transform duration-300 md:p-10"
+      >
       <div
         className="pointer-events-none absolute -inset-40 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
         style={{ background: `radial-gradient(500px circle at ${(tilt.x + 0.5) * 100}% ${(tilt.y + 0.5) * 100}%, rgba(245,199,106,0.15), transparent 60%)` }}
@@ -813,6 +824,7 @@ function ProjectCard({ p, index }: { p: typeof PROJECTS[number]; index: number }
         </div>
       </div>
     </article>
+    </HoverImageReveal>
   );
 }
 
@@ -883,13 +895,19 @@ export function WhyUs() {
         <div className="mt-10 sm:mt-16 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {OUTCOMES.map((o, i) => (
             <FadeUp key={o.title} delay={i * 0.05}>
-              <div className="glass-card group relative h-full overflow-hidden rounded-2xl p-6 sm:p-7 transition-all hover:-translate-y-1">
-                <div className="grid h-10 w-10 sm:h-11 sm:w-11 place-items-center rounded-xl border border-[#F5C76A]/25 bg-[#F5C76A]/[0.06]">
-                  <o.icon className="h-4 w-4 sm:h-5 sm:w-5 text-[#F5C76A]" />
+              <HoverImageReveal
+                className="h-full"
+                revealClassName="rounded-2xl"
+                revealContent={<GlowReveal intensity={0.8} />}
+              >
+                <div className="glass-card group relative h-full overflow-hidden rounded-2xl p-6 sm:p-7 transition-all hover:-translate-y-1">
+                  <div className="grid h-10 w-10 sm:h-11 sm:w-11 place-items-center rounded-xl border border-[#F5C76A]/25 bg-[#F5C76A]/[0.06]">
+                    <o.icon className="h-4 w-4 sm:h-5 sm:w-5 text-[#F5C76A]" />
+                  </div>
+                  <div className="mt-4 sm:mt-5 font-display text-lg sm:text-xl font-semibold leading-tight">{o.title}</div>
+                  <div className="mt-2 text-sm leading-relaxed text-white/60">{o.desc}</div>
                 </div>
-                <div className="mt-4 sm:mt-5 font-display text-lg sm:text-xl font-semibold leading-tight">{o.title}</div>
-                <div className="mt-2 text-sm leading-relaxed text-white/60">{o.desc}</div>
-              </div>
+              </HoverImageReveal>
             </FadeUp>
           ))}
         </div>
@@ -915,10 +933,16 @@ export function TechStack() {
         <div className="mt-10 sm:mt-16 grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-6">
           {STACK.map((s, i) => (
             <FadeUp key={s.name} delay={i * 0.03}>
-              <div className="glass-card group flex aspect-square flex-col items-center justify-center rounded-xl sm:rounded-2xl p-3 sm:p-4 transition-all hover:-translate-y-1 hover:border-[#F5C76A]/30">
-                <s.icon className="h-5 w-5 sm:h-6 sm:w-6 text-white/70 transition-all group-hover:text-[#F5C76A] group-hover:scale-110" />
-                <div className="mt-2 sm:mt-3 text-center text-[10px] sm:text-xs font-medium text-white/80">{s.name}</div>
-              </div>
+              <HoverImageReveal
+                className="h-full"
+                revealClassName="rounded-xl sm:rounded-2xl"
+                revealContent={<GlowReveal intensity={0.6} />}
+              >
+                <div className="glass-card group flex aspect-square flex-col items-center justify-center rounded-xl sm:rounded-2xl p-3 sm:p-4 transition-all hover:-translate-y-1 hover:border-[#F5C76A]/30">
+                  <s.icon className="h-5 w-5 sm:h-6 sm:w-6 text-white/70 transition-all group-hover:text-[#F5C76A] group-hover:scale-110" />
+                  <div className="mt-2 sm:mt-3 text-center text-[10px] sm:text-xs font-medium text-white/80">{s.name}</div>
+                </div>
+              </HoverImageReveal>
             </FadeUp>
           ))}
         </div>
@@ -944,10 +968,16 @@ export function Industries() {
         <div className="mt-10 sm:mt-16 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           {INDUSTRIES.map((it, i) => (
             <FadeUp key={it.name} delay={i * 0.03}>
-              <div className="glass-card group relative flex flex-col items-center justify-center gap-2 sm:gap-3 rounded-xl sm:rounded-2xl p-4 sm:p-6 transition-all hover:-translate-y-1 hover:border-[#F5C76A]/30">
-                <it.icon className="h-5 w-5 sm:h-6 sm:w-6 text-white/70 transition-all group-hover:text-[#F5C76A] group-hover:scale-110" />
-                <div className="text-xs sm:text-sm font-medium text-white/85">{it.name}</div>
-              </div>
+              <HoverImageReveal
+                className="h-full"
+                revealClassName="rounded-xl sm:rounded-2xl"
+                revealContent={<GlowReveal intensity={0.7} />}
+              >
+                <div className="glass-card group relative flex flex-col items-center justify-center gap-2 sm:gap-3 rounded-xl sm:rounded-2xl p-4 sm:p-6 transition-all hover:-translate-y-1 hover:border-[#F5C76A]/30">
+                  <it.icon className="h-5 w-5 sm:h-6 sm:w-6 text-white/70 transition-all group-hover:text-[#F5C76A] group-hover:scale-110" />
+                  <div className="text-xs sm:text-sm font-medium text-white/85">{it.name}</div>
+                </div>
+              </HoverImageReveal>
             </FadeUp>
           ))}
         </div>
@@ -1021,30 +1051,36 @@ export function FaqSection() {
             const isOpen = open === i;
             return (
               <FadeUp key={f.q} delay={i * 0.04}>
-                <div className="glass-card overflow-hidden rounded-xl sm:rounded-2xl">
-                  <button
-                    onClick={() => setOpen(isOpen ? null : i)}
-                    className="flex w-full items-center justify-between gap-3 sm:gap-4 p-4 sm:p-6 text-left transition-colors hover:bg-white/[0.02]"
-                  >
-                    <span className="font-display text-sm sm:text-base font-medium text-white md:text-lg">{f.q}</span>
-                    <span className="grid h-7 w-7 sm:h-8 sm:w-8 shrink-0 place-items-center rounded-full border border-white/10 bg-white/[0.03] transition-colors">
-                      {isOpen ? <Minus className="h-3 w-3 sm:h-4 sm:w-4 text-[#F5C76A]" /> : <Plus className="h-3 w-3 sm:h-4 sm:w-4 text-white/70" />}
-                    </span>
-                  </button>
-                  <AnimatePresence initial={false}>
-                    {isOpen && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                        className="overflow-hidden"
-                      >
-                        <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-xs sm:text-sm leading-relaxed text-white/65">{f.a}</div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
+                <HoverImageReveal
+                  className="h-full"
+                  revealClassName="rounded-xl sm:rounded-2xl"
+                  revealContent={<GlowReveal intensity={0.5} />}
+                >
+                  <div className="glass-card overflow-hidden rounded-xl sm:rounded-2xl">
+                    <button
+                      onClick={() => setOpen(isOpen ? null : i)}
+                      className="flex w-full items-center justify-between gap-3 sm:gap-4 p-4 sm:p-6 text-left transition-colors hover:bg-white/[0.02]"
+                    >
+                      <span className="font-display text-sm sm:text-base font-medium text-white md:text-lg">{f.q}</span>
+                      <span className="grid h-7 w-7 sm:h-8 sm:w-8 shrink-0 place-items-center rounded-full border border-white/10 bg-white/[0.03] transition-colors">
+                        {isOpen ? <Minus className="h-3 w-3 sm:h-4 sm:w-4 text-[#F5C76A]" /> : <Plus className="h-3 w-3 sm:h-4 sm:w-4 text-white/70" />}
+                      </span>
+                    </button>
+                    <AnimatePresence initial={false}>
+                      {isOpen && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                          className="overflow-hidden"
+                        >
+                          <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-xs sm:text-sm leading-relaxed text-white/65">{f.a}</div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </HoverImageReveal>
               </FadeUp>
             );
           })}

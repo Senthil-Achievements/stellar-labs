@@ -41,9 +41,9 @@ export default function HoverImageReveal({
       <AnimatePresence>
         {hovered && (
           <motion.div
-            initial={{ clipPath: "circle(0% at 50% 50%)" }}
-            animate={{ clipPath: "circle(150% at 50% 50%)" }}
-            exit={{ clipPath: "circle(0% at 50% 50%)" }}
+            initial={{ clipPath: "inset(100% 100% 100% 100% at 50% 50%)" }}
+            animate={{ clipPath: "inset(-20% -20% -20% -20% at 50% 50%)" }}
+            exit={{ clipPath: "inset(100% 100% 100% 100% at 50% 50%)" }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             className={`absolute inset-0 z-10 ${revealClassName}`}
             style={{
@@ -274,4 +274,28 @@ app.mount("#root");`}
 
 export function getServiceVisual(serviceTitle: string): React.ReactNode {
   return SERVICE_VISUALS[serviceTitle] || null;
+}
+
+/* ============================================================
+   UNIVERSAL GLOW REVEAL — works on any card
+   ============================================================ */
+
+export function GlowReveal({ intensity = 1 }: { intensity?: number }) {
+  return (
+    <div className="pointer-events-none absolute inset-0 z-10">
+      <div
+        className="absolute inset-0"
+        style={{
+          background: `radial-gradient(ellipse at 50% 50%, rgba(245,199,106,${0.12 * intensity}), transparent 70%)`,
+        }}
+      />
+      <div
+        className="absolute inset-0 opacity-60"
+        style={{
+          background: `linear-gradient(135deg, transparent 30%, rgba(245,199,106,${0.06 * intensity}) 50%, transparent 70%)`,
+        }}
+      />
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#F5C76A]/30 to-transparent" />
+    </div>
+  );
 }
