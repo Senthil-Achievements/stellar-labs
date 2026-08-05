@@ -15,6 +15,7 @@ import GlitterWrap from "./GlitterWrap";
 import SmoothScroll from "./SmoothScroll";
 import WelcomeLoader from "./WelcomeLoader";
 import ThemeToggle from "./ThemeToggle";
+import HoverImageReveal, { getServiceVisual } from "./HoverImageReveal";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 
@@ -618,24 +619,31 @@ export function Services() {
 function ServiceCard({ s }: { s: typeof SERVICES[number] }) {
   const ref = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const visual = getServiceVisual(s.title);
   return (
-    <div
-      ref={ref}
-      onMouseMove={(e) => {
-        const r = ref.current!.getBoundingClientRect();
-        setTilt({ x: (e.clientX - r.left) / r.width - 0.5, y: (e.clientY - r.top) / r.height - 0.5 });
-      }}
-      onMouseLeave={() => setTilt({ x: 0, y: 0 })}
-      style={{ transform: `perspective(1000px) rotateX(${-tilt.y * 4}deg) rotateY(${tilt.x * 4}deg)` }}
-      className="glass-card group relative flex h-full flex-col overflow-hidden rounded-xl sm:rounded-2xl p-5 sm:p-6 transition-transform duration-300 hover:-translate-y-1"
+    <HoverImageReveal
+      className="h-full"
+      revealClassName="rounded-xl sm:rounded-2xl"
+      revealContent={visual || <div className="h-full w-full bg-gradient-to-br from-[#F5C76A]/10 to-transparent" />}
     >
-      <div className="grid h-10 w-10 sm:h-11 sm:w-11 place-items-center rounded-xl border border-white/10 bg-white/[0.03] transition-colors group-hover:border-[#F5C76A]/40">
-        <s.icon className="h-4 w-4 sm:h-5 sm:w-5 text-white transition-transform group-hover:scale-110 group-hover:text-[#F5C76A]" />
+      <div
+        ref={ref}
+        onMouseMove={(e) => {
+          const r = ref.current!.getBoundingClientRect();
+          setTilt({ x: (e.clientX - r.left) / r.width - 0.5, y: (e.clientY - r.top) / r.height - 0.5 });
+        }}
+        onMouseLeave={() => setTilt({ x: 0, y: 0 })}
+        style={{ transform: `perspective(1000px) rotateX(${-tilt.y * 4}deg) rotateY(${tilt.x * 4}deg)` }}
+        className="glass-card group relative flex h-full flex-col overflow-hidden rounded-xl sm:rounded-2xl p-5 sm:p-6 transition-transform duration-300 hover:-translate-y-1"
+      >
+        <div className="grid h-10 w-10 sm:h-11 sm:w-11 place-items-center rounded-xl border border-white/10 bg-white/[0.03] transition-colors group-hover:border-[#F5C76A]/40">
+          <s.icon className="h-4 w-4 sm:h-5 sm:w-5 text-white transition-transform group-hover:scale-110 group-hover:text-[#F5C76A]" />
+        </div>
+        <div className="mt-4 sm:mt-5 font-display text-base sm:text-lg font-semibold">{s.title}</div>
+        <div className="mt-2 text-xs sm:text-sm leading-relaxed text-white/60">{s.desc}</div>
+        <div className="pointer-events-none absolute -bottom-16 -right-16 h-40 w-40 rounded-full bg-[#F5C76A]/10 opacity-0 blur-3xl transition-opacity group-hover:opacity-100" />
       </div>
-      <div className="mt-4 sm:mt-5 font-display text-base sm:text-lg font-semibold">{s.title}</div>
-      <div className="mt-2 text-xs sm:text-sm leading-relaxed text-white/60">{s.desc}</div>
-      <div className="pointer-events-none absolute -bottom-16 -right-16 h-40 w-40 rounded-full bg-[#F5C76A]/10 opacity-0 blur-3xl transition-opacity group-hover:opacity-100" />
-    </div>
+    </HoverImageReveal>
   );
 }
 
