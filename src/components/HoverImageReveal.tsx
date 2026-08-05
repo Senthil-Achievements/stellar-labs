@@ -41,11 +41,11 @@ export default function HoverImageReveal({
       <AnimatePresence>
         {hovered && (
           <motion.div
-            initial={{ clipPath: "inset(100% 100% 100% 100% at 50% 50%)" }}
-            animate={{ clipPath: "inset(-20% -20% -20% -20% at 50% 50%)" }}
-            exit={{ clipPath: "inset(100% 100% 100% 100% at 50% 50%)" }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className={`absolute inset-0 z-10 ${revealClassName}`}
+            initial={{ opacity: 0, scale: 1.4 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            className={`absolute inset-0 z-10 will-change-transform ${revealClassName}`}
             style={{
               transformOrigin: `${pos.x * 100}% ${pos.y * 100}%`,
             }}
