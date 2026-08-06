@@ -15,7 +15,7 @@ import GlitterWrap from "./GlitterWrap";
 import SmoothScroll from "./SmoothScroll";
 import WelcomeLoader from "./WelcomeLoader";
 import ThemeToggle from "./ThemeToggle";
-import CardPeel from "./CardPeel";
+import CoverflowCarousel from "./CoverflowCarousel";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 
@@ -595,6 +595,7 @@ export function Marquee() {
    ============================================================ */
 
 export function Services() {
+  const isMobile = useIsMobile();
   return (
     <section id="services" className="relative py-20 sm:py-32">
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
@@ -604,14 +605,39 @@ export function Services() {
             Products, platforms, and <span className="text-gradient-accent">agents</span> — engineered end-to-end.
           </h2>
         </FadeUp>
-        <div className="mt-10 sm:mt-16 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {SERVICES.map((s, i) => (
-            <FadeUp key={s.title} delay={i * 0.04}>
-              <CardPeel peelDirection="bottom-right">
-                <ServiceCard s={s} />
-              </CardPeel>
-            </FadeUp>
-          ))}
+        <div className="mt-10 sm:mt-16" style={{ height: isMobile ? 340 : 420 }}>
+          <CoverflowCarousel
+            images={SERVICES.map(s => ({ alt: s.title }))}
+            activeWidth={isMobile ? 300 : 520}
+            activeHeight={isMobile ? 280 : 360}
+            restWidth={isMobile ? 60 : 120}
+            restHeight={isMobile ? 100 : 180}
+            gap={isMobile ? 8 : 20}
+            radius={8}
+            showArrows={!isMobile}
+            arrowColor="#F5C76A"
+            arrowBackground="rgba(255,255,255,0.1)"
+            arrowSize={44}
+            arrowPosition={100}
+            autoplay
+            autoplayDirection="rightToLeft"
+            transition={{ type: "tween", duration: 0.4, delay: 2, ease: [0, 0, 1, 1] }}
+            renderItem={(item, i) => {
+              const s = SERVICES[i];
+              if (!s) return null;
+              return (
+                <div className="flex h-full flex-col justify-between p-5 sm:p-7">
+                  <div className="grid h-10 w-10 sm:h-11 sm:w-11 place-items-center rounded-xl border border-white/10 bg-white/[0.04]">
+                    <s.icon className="h-4 w-4 sm:h-5 sm:w-5 text-[#F5C76A]" />
+                  </div>
+                  <div>
+                    <div className="font-display text-base sm:text-xl font-semibold">{s.title}</div>
+                    <div className="mt-2 text-xs sm:text-sm leading-relaxed text-white/60">{s.desc}</div>
+                  </div>
+                </div>
+              );
+            }}
+          />
         </div>
       </div>
     </section>
@@ -647,6 +673,7 @@ function ServiceCard({ s }: { s: typeof SERVICES[number] }) {
    ============================================================ */
 
 export function Process() {
+  const isMobile = useIsMobile();
   return (
     <section id="process" className="relative py-20 sm:py-32">
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
@@ -656,31 +683,42 @@ export function Process() {
             A calm, deliberate <span className="text-gradient-accent">six-stage</span> engagement.
           </h2>
         </FadeUp>
-
-        <div className="relative mt-10 sm:mt-16 overflow-x-auto pb-4 -mx-5 sm:mx-0 px-5 sm:px-0">
-          <div className="flex min-w-max gap-3 sm:gap-4">
-            {PROCESS.map((step, i) => (
-              <FadeUp key={step.title} delay={i * 0.06}>
-                <CardPeel peelDirection="bottom-left">
-                  <div className="glass-card group relative w-[240px] sm:w-[280px] rounded-2xl p-5 sm:p-6">
-                    <div className="flex items-center justify-between">
-                      <div className="grid h-10 w-10 sm:h-11 sm:w-11 place-items-center rounded-xl border border-white/10 bg-white/[0.03]">
-                        <step.icon className="h-4 w-4 sm:h-5 sm:w-5 text-[#F5C76A]" />
-                      </div>
-                      <div className="font-mono text-[10px] uppercase tracking-wider text-white/40">0{i + 1}</div>
+        <div className="mt-10 sm:mt-16" style={{ height: isMobile ? 320 : 400 }}>
+          <CoverflowCarousel
+            images={PROCESS.map(s => ({ alt: s.title }))}
+            activeWidth={isMobile ? 280 : 480}
+            activeHeight={isMobile ? 260 : 340}
+            restWidth={isMobile ? 50 : 100}
+            restHeight={isMobile ? 90 : 160}
+            gap={isMobile ? 8 : 18}
+            radius={8}
+            showArrows={!isMobile}
+            arrowColor="#F5C76A"
+            arrowBackground="rgba(255,255,255,0.1)"
+            arrowSize={44}
+            arrowPosition={100}
+            autoplay
+            autoplayDirection="leftToRight"
+            transition={{ type: "tween", duration: 0.4, delay: 2.5, ease: [0, 0, 1, 1] }}
+            renderItem={(item, i) => {
+              const step = PROCESS[i];
+              if (!step) return null;
+              return (
+                <div className="flex h-full flex-col justify-between p-5 sm:p-7">
+                  <div className="flex items-center justify-between">
+                    <div className="grid h-10 w-10 sm:h-11 sm:w-11 place-items-center rounded-xl border border-white/10 bg-white/[0.04]">
+                      <step.icon className="h-4 w-4 sm:h-5 sm:w-5 text-[#F5C76A]" />
                     </div>
-                    <div className="mt-4 sm:mt-5 font-display text-base sm:text-lg font-semibold">{step.title}</div>
-                    <p className="mt-2 text-xs sm:text-sm text-white/60">{step.desc}</p>
-                    {i < PROCESS.length - 1 && (
-                      <div className="pointer-events-none absolute right-[-14px] top-1/2 hidden -translate-y-1/2 lg:block">
-                        <div className="h-px w-3 bg-[#F5C76A]/40" />
-                      </div>
-                    )}
+                    <div className="font-mono text-[10px] uppercase tracking-wider text-white/40">0{i + 1}</div>
                   </div>
-                </CardPeel>
-              </FadeUp>
-            ))}
-          </div>
+                  <div>
+                    <div className="font-display text-base sm:text-xl font-semibold">{step.title}</div>
+                    <p className="mt-2 text-xs sm:text-sm text-white/60">{step.desc}</p>
+                  </div>
+                </div>
+              );
+            }}
+          />
         </div>
       </div>
     </section>
@@ -868,6 +906,7 @@ export function Work() {
    ============================================================ */
 
 export function WhyUs() {
+  const isMobile = useIsMobile();
   return (
     <section className="relative py-20 sm:py-32">
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
@@ -877,20 +916,39 @@ export function WhyUs() {
             We measure success in <span className="text-gradient-accent">business outcomes</span>.
           </h2>
         </FadeUp>
-        <div className="mt-10 sm:mt-16 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {OUTCOMES.map((o, i) => (
-            <FadeUp key={o.title} delay={i * 0.05}>
-              <CardPeel peelDirection="bottom-right">
-                <div className="glass-card group relative h-full overflow-hidden rounded-2xl p-6 sm:p-7 transition-all hover:-translate-y-1">
+        <div className="mt-10 sm:mt-16" style={{ height: isMobile ? 320 : 400 }}>
+          <CoverflowCarousel
+            images={OUTCOMES.map(o => ({ alt: o.title }))}
+            activeWidth={isMobile ? 280 : 500}
+            activeHeight={isMobile ? 260 : 340}
+            restWidth={isMobile ? 50 : 110}
+            restHeight={isMobile ? 90 : 170}
+            gap={isMobile ? 8 : 18}
+            radius={8}
+            showArrows={!isMobile}
+            arrowColor="#F5C76A"
+            arrowBackground="rgba(255,255,255,0.1)"
+            arrowSize={44}
+            arrowPosition={100}
+            autoplay
+            autoplayDirection="rightToLeft"
+            transition={{ type: "tween", duration: 0.4, delay: 2, ease: [0, 0, 1, 1] }}
+            renderItem={(item, i) => {
+              const o = OUTCOMES[i];
+              if (!o) return null;
+              return (
+                <div className="flex h-full flex-col justify-between p-5 sm:p-7">
                   <div className="grid h-10 w-10 sm:h-11 sm:w-11 place-items-center rounded-xl border border-[#F5C76A]/25 bg-[#F5C76A]/[0.06]">
                     <o.icon className="h-4 w-4 sm:h-5 sm:w-5 text-[#F5C76A]" />
                   </div>
-                  <div className="mt-4 sm:mt-5 font-display text-lg sm:text-xl font-semibold leading-tight">{o.title}</div>
-                  <div className="mt-2 text-sm leading-relaxed text-white/60">{o.desc}</div>
+                  <div>
+                    <div className="font-display text-base sm:text-xl font-semibold leading-tight">{o.title}</div>
+                    <div className="mt-2 text-xs sm:text-sm leading-relaxed text-white/60">{o.desc}</div>
+                  </div>
                 </div>
-              </CardPeel>
-            </FadeUp>
-          ))}
+              );
+            }}
+          />
         </div>
       </div>
     </section>
@@ -902,6 +960,7 @@ export function WhyUs() {
    ============================================================ */
 
 export function TechStack() {
+  const isMobile = useIsMobile();
   return (
     <section className="relative py-20 sm:py-32">
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
@@ -911,17 +970,34 @@ export function TechStack() {
             A modern, <span className="text-gradient-accent">production-ready</span> toolchain.
           </h2>
         </FadeUp>
-        <div className="mt-10 sm:mt-16 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-          {STACK.map((s, i) => (
-            <FadeUp key={s.name} delay={i * 0.03}>
-              <CardPeel peelDirection="top-left">
-                <div className="glass-card group flex aspect-square flex-col items-center justify-center rounded-xl sm:rounded-2xl p-3 sm:p-4 transition-all hover:-translate-y-1 hover:border-[#F5C76A]/30">
-                  <s.icon className="h-5 w-5 sm:h-6 sm:w-6 text-white/70 transition-all group-hover:text-[#F5C76A] group-hover:scale-110" />
-                  <div className="mt-2 sm:mt-3 text-center text-[10px] sm:text-xs font-medium text-white/80">{s.name}</div>
+        <div className="mt-10 sm:mt-16" style={{ height: isMobile ? 300 : 380 }}>
+          <CoverflowCarousel
+            images={STACK.map(s => ({ alt: s.name }))}
+            activeWidth={isMobile ? 200 : 340}
+            activeHeight={isMobile ? 240 : 320}
+            restWidth={isMobile ? 50 : 90}
+            restHeight={isMobile ? 80 : 150}
+            gap={isMobile ? 6 : 14}
+            radius={8}
+            showArrows={!isMobile}
+            arrowColor="#F5C76A"
+            arrowBackground="rgba(255,255,255,0.1)"
+            arrowSize={44}
+            arrowPosition={100}
+            autoplay
+            autoplayDirection="leftToRight"
+            transition={{ type: "tween", duration: 0.35, delay: 1.8, ease: [0, 0, 1, 1] }}
+            renderItem={(item, i) => {
+              const s = STACK[i];
+              if (!s) return null;
+              return (
+                <div className="flex h-full flex-col items-center justify-center gap-3 p-4">
+                  <s.icon className="h-8 w-8 sm:h-10 sm:w-10 text-[#F5C76A]" />
+                  <div className="text-sm sm:text-lg font-medium text-white/90">{s.name}</div>
                 </div>
-              </CardPeel>
-            </FadeUp>
-          ))}
+              );
+            }}
+          />
         </div>
       </div>
     </section>
@@ -933,6 +1009,7 @@ export function TechStack() {
    ============================================================ */
 
 export function Industries() {
+  const isMobile = useIsMobile();
   return (
     <section id="industries" className="relative py-20 sm:py-32">
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
@@ -942,17 +1019,34 @@ export function Industries() {
             We speak the language of <span className="text-gradient-accent">your industry</span>.
           </h2>
         </FadeUp>
-        <div className="mt-10 sm:mt-16 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-          {INDUSTRIES.map((it, i) => (
-            <FadeUp key={it.name} delay={i * 0.03}>
-              <CardPeel peelDirection="bottom-left">
-                <div className="glass-card group relative flex flex-col items-center justify-center gap-2 rounded-xl sm:rounded-2xl p-4 sm:p-6 transition-all hover:-translate-y-1 hover:border-[#F5C76A]/30">
-                  <it.icon className="h-5 w-5 sm:h-6 sm:w-6 text-white/70 transition-all group-hover:text-[#F5C76A] group-hover:scale-110" />
-                  <div className="text-[11px] sm:text-sm font-medium text-white/85">{it.name}</div>
+        <div className="mt-10 sm:mt-16" style={{ height: isMobile ? 280 : 360 }}>
+          <CoverflowCarousel
+            images={INDUSTRIES.map(it => ({ alt: it.name }))}
+            activeWidth={isMobile ? 200 : 320}
+            activeHeight={isMobile ? 220 : 300}
+            restWidth={isMobile ? 45 : 80}
+            restHeight={isMobile ? 75 : 140}
+            gap={isMobile ? 6 : 12}
+            radius={8}
+            showArrows={!isMobile}
+            arrowColor="#F5C76A"
+            arrowBackground="rgba(255,255,255,0.1)"
+            arrowSize={44}
+            arrowPosition={100}
+            autoplay
+            autoplayDirection="rightToLeft"
+            transition={{ type: "tween", duration: 0.35, delay: 2, ease: [0, 0, 1, 1] }}
+            renderItem={(item, i) => {
+              const it = INDUSTRIES[i];
+              if (!it) return null;
+              return (
+                <div className="flex h-full flex-col items-center justify-center gap-3 p-4">
+                  <it.icon className="h-7 w-7 sm:h-9 sm:w-9 text-[#F5C76A]" />
+                  <div className="text-sm sm:text-base font-medium text-white/90">{it.name}</div>
                 </div>
-              </CardPeel>
-            </FadeUp>
-          ))}
+              );
+            }}
+          />
         </div>
       </div>
     </section>
