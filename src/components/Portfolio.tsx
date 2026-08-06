@@ -15,6 +15,7 @@ import GlitterWrap from "./GlitterWrap";
 import SmoothScroll from "./SmoothScroll";
 import WelcomeLoader from "./WelcomeLoader";
 import ThemeToggle from "./ThemeToggle";
+import CardPeel from "./CardPeel";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 
@@ -606,7 +607,9 @@ export function Services() {
         <div className="mt-10 sm:mt-16 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {SERVICES.map((s, i) => (
             <FadeUp key={s.title} delay={i * 0.04}>
-              <ServiceCard s={s} />
+              <CardPeel peelDirection="bottom-right">
+                <ServiceCard s={s} />
+              </CardPeel>
             </FadeUp>
           ))}
         </div>
@@ -658,21 +661,23 @@ export function Process() {
           <div className="flex min-w-max gap-3 sm:gap-4">
             {PROCESS.map((step, i) => (
               <FadeUp key={step.title} delay={i * 0.06}>
-                <div className="glass-card group relative w-[240px] sm:w-[280px] rounded-2xl p-5 sm:p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="grid h-10 w-10 sm:h-11 sm:w-11 place-items-center rounded-xl border border-white/10 bg-white/[0.03]">
-                      <step.icon className="h-4 w-4 sm:h-5 sm:w-5 text-[#F5C76A]" />
+                <CardPeel peelDirection="bottom-left">
+                  <div className="glass-card group relative w-[240px] sm:w-[280px] rounded-2xl p-5 sm:p-6">
+                    <div className="flex items-center justify-between">
+                      <div className="grid h-10 w-10 sm:h-11 sm:w-11 place-items-center rounded-xl border border-white/10 bg-white/[0.03]">
+                        <step.icon className="h-4 w-4 sm:h-5 sm:w-5 text-[#F5C76A]" />
+                      </div>
+                      <div className="font-mono text-[10px] uppercase tracking-wider text-white/40">0{i + 1}</div>
                     </div>
-                    <div className="font-mono text-[10px] uppercase tracking-wider text-white/40">0{i + 1}</div>
+                    <div className="mt-4 sm:mt-5 font-display text-base sm:text-lg font-semibold">{step.title}</div>
+                    <p className="mt-2 text-xs sm:text-sm text-white/60">{step.desc}</p>
+                    {i < PROCESS.length - 1 && (
+                      <div className="pointer-events-none absolute right-[-14px] top-1/2 hidden -translate-y-1/2 lg:block">
+                        <div className="h-px w-3 bg-[#F5C76A]/40" />
+                      </div>
+                    )}
                   </div>
-                  <div className="mt-4 sm:mt-5 font-display text-base sm:text-lg font-semibold">{step.title}</div>
-                  <p className="mt-2 text-xs sm:text-sm text-white/60">{step.desc}</p>
-                  {i < PROCESS.length - 1 && (
-                    <div className="pointer-events-none absolute right-[-14px] top-1/2 hidden -translate-y-1/2 lg:block">
-                      <div className="h-px w-3 bg-[#F5C76A]/40" />
-                    </div>
-                  )}
-                </div>
+                </CardPeel>
               </FadeUp>
             ))}
           </div>
@@ -875,13 +880,15 @@ export function WhyUs() {
         <div className="mt-10 sm:mt-16 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {OUTCOMES.map((o, i) => (
             <FadeUp key={o.title} delay={i * 0.05}>
-              <div className="glass-card group relative h-full overflow-hidden rounded-2xl p-6 sm:p-7 transition-all hover:-translate-y-1">
-                <div className="grid h-10 w-10 sm:h-11 sm:w-11 place-items-center rounded-xl border border-[#F5C76A]/25 bg-[#F5C76A]/[0.06]">
-                  <o.icon className="h-4 w-4 sm:h-5 sm:w-5 text-[#F5C76A]" />
+              <CardPeel peelDirection="bottom-right">
+                <div className="glass-card group relative h-full overflow-hidden rounded-2xl p-6 sm:p-7 transition-all hover:-translate-y-1">
+                  <div className="grid h-10 w-10 sm:h-11 sm:w-11 place-items-center rounded-xl border border-[#F5C76A]/25 bg-[#F5C76A]/[0.06]">
+                    <o.icon className="h-4 w-4 sm:h-5 sm:w-5 text-[#F5C76A]" />
+                  </div>
+                  <div className="mt-4 sm:mt-5 font-display text-lg sm:text-xl font-semibold leading-tight">{o.title}</div>
+                  <div className="mt-2 text-sm leading-relaxed text-white/60">{o.desc}</div>
                 </div>
-                <div className="mt-4 sm:mt-5 font-display text-lg sm:text-xl font-semibold leading-tight">{o.title}</div>
-                <div className="mt-2 text-sm leading-relaxed text-white/60">{o.desc}</div>
-              </div>
+              </CardPeel>
             </FadeUp>
           ))}
         </div>
@@ -907,10 +914,12 @@ export function TechStack() {
         <div className="mt-10 sm:mt-16 grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-6">
           {STACK.map((s, i) => (
             <FadeUp key={s.name} delay={i * 0.03}>
-              <div className="glass-card group flex aspect-square flex-col items-center justify-center rounded-xl sm:rounded-2xl p-3 sm:p-4 transition-all hover:-translate-y-1 hover:border-[#F5C76A]/30">
-                <s.icon className="h-5 w-5 sm:h-6 sm:w-6 text-white/70 transition-all group-hover:text-[#F5C76A] group-hover:scale-110" />
-                <div className="mt-2 sm:mt-3 text-center text-[10px] sm:text-xs font-medium text-white/80">{s.name}</div>
-              </div>
+              <CardPeel peelDirection="top-left">
+                <div className="glass-card group flex aspect-square flex-col items-center justify-center rounded-xl sm:rounded-2xl p-3 sm:p-4 transition-all hover:-translate-y-1 hover:border-[#F5C76A]/30">
+                  <s.icon className="h-5 w-5 sm:h-6 sm:w-6 text-white/70 transition-all group-hover:text-[#F5C76A] group-hover:scale-110" />
+                  <div className="mt-2 sm:mt-3 text-center text-[10px] sm:text-xs font-medium text-white/80">{s.name}</div>
+                </div>
+              </CardPeel>
             </FadeUp>
           ))}
         </div>
@@ -936,10 +945,12 @@ export function Industries() {
         <div className="mt-10 sm:mt-16 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           {INDUSTRIES.map((it, i) => (
             <FadeUp key={it.name} delay={i * 0.03}>
-              <div className="glass-card group relative flex flex-col items-center justify-center gap-2 sm:gap-3 rounded-xl sm:rounded-2xl p-4 sm:p-6 transition-all hover:-translate-y-1 hover:border-[#F5C76A]/30">
-                <it.icon className="h-5 w-5 sm:h-6 sm:w-6 text-white/70 transition-all group-hover:text-[#F5C76A] group-hover:scale-110" />
-                <div className="text-xs sm:text-sm font-medium text-white/85">{it.name}</div>
-              </div>
+              <CardPeel peelDirection="bottom-left">
+                <div className="glass-card group relative flex flex-col items-center justify-center gap-2 sm:gap-3 rounded-xl sm:rounded-2xl p-4 sm:p-6 transition-all hover:-translate-y-1 hover:border-[#F5C76A]/30">
+                  <it.icon className="h-5 w-5 sm:h-6 sm:w-6 text-white/70 transition-all group-hover:text-[#F5C76A] group-hover:scale-110" />
+                  <div className="text-xs sm:text-sm font-medium text-white/85">{it.name}</div>
+                </div>
+              </CardPeel>
             </FadeUp>
           ))}
         </div>
