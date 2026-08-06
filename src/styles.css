@@ -291,6 +291,36 @@ html.light .text-black { color: #ffffff !important; }
       0 0 0 1px rgba(245, 199, 106, 0.3),
       0 0 80px rgba(245, 199, 106, 0.08);
   }
+
+  /* Disable heavy animations on mobile */
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  /* Reduce will-change usage */
+  [style*="will-change"] {
+    will-change: auto !important;
+  }
+
+  /* Optimize touch scrolling */
+  html {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: none;
+  }
+
+  /* Reduce backdrop-filter on mobile for performance */
+  .backdrop-blur-xl {
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+  }
+
+  /* Simplify shadows on mobile */
+  .glass-card {
+    box-shadow:
+      0 10px 30px rgba(0, 0, 0, 0.3),
+      0 1px 0 rgba(255, 255, 255, 0.05) inset;
+  }
 }
 
 /* Touch-friendly tap targets */

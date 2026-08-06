@@ -214,6 +214,20 @@ const FAQ = [
 function FadeUp({ children, delay = 0, y = 24, className = "" }: any) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
+  if (isMobile) {
+    return (
+      <div
+        ref={ref}
+        className={`transition-all duration-500 ease-out ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"} ${className}`}
+        style={{ transitionDelay: `${delay * 1000}ms` }}
+      >
+        {children}
+      </div>
+    );
+  }
+
   return (
     <motion.div
       ref={ref}
@@ -298,11 +312,13 @@ export function AmbientBackground() {
 }
 
 export function CursorGlow() {
+  const isMobile = useIsMobile();
   const x = useMotionValue(-500);
   const y = useMotionValue(-500);
   const sx = useSpring(x, { stiffness: 80, damping: 15, mass: 0.5 });
   const sy = useSpring(y, { stiffness: 80, damping: 15, mass: 0.5 });
   useEffect(() => {
+    if (isMobile) return;
     let ticking = false;
     const h = (e: PointerEvent) => {
       if (ticking) return;
@@ -311,7 +327,10 @@ export function CursorGlow() {
     };
     window.addEventListener("pointermove", h, { passive: true });
     return () => window.removeEventListener("pointermove", h);
-  }, [x, y]);
+  }, [x, y, isMobile]);
+
+  if (isMobile) return null;
+
   return (
     <motion.div
       style={{ x: sx, y: sy }}
@@ -513,9 +532,10 @@ function HeroMockup() {
 }
 
 export function Hero() {
+  const isMobile = useIsMobile();
   return (
     <section id="top" className="relative flex min-h-screen items-center overflow-hidden pt-28 sm:pt-32">
-      <RisingLines particles={180} color="#5E4017" riseSpeed={10} scale={8} horizonColor="#F5C76A" className="opacity-90" />
+      {!isMobile && <RisingLines particles={180} color="#5E4017" riseSpeed={10} scale={8} horizonColor="#F5C76A" className="opacity-90" />}
       <ShaderBackground className="opacity-30 [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_75%)]" />
       <div className="relative mx-auto grid w-full max-w-6xl grid-cols-1 gap-8 px-5 sm:px-6 lg:grid-cols-[1.1fr_1fr] lg:gap-10">
 
@@ -574,10 +594,11 @@ export function Hero() {
    ============================================================ */
 
 export function Marquee() {
+  const isMobile = useIsMobile();
   const items = [...MARQUEE_WORDS, ...MARQUEE_WORDS];
   return (
     <div className="relative overflow-hidden border-y border-white/[0.06] py-5 sm:py-6">
-      <div className="flex whitespace-nowrap animate-[marquee_35s_linear_infinite]">
+      <div className={`flex whitespace-nowrap ${isMobile ? "" : "animate-[marquee_35s_linear_infinite]"}`}>
         {items.map((w, i) => (
           <span key={i} className="mx-5 sm:mx-8 inline-flex items-center gap-5 sm:gap-8 font-display text-lg sm:text-2xl font-medium text-white/25">
             {w}
@@ -1300,20 +1321,20 @@ export function SiteChrome({ children, showGlitter = true }: { children: React.R
       <SmoothScroll />
       <AmbientBackground />
       <CursorGlow />
-      {showGlitter && (
+      {showGlitter && !isMobile && (
         <GlitterWrap
-          particleCount={isMobile ? 120 : 250}
+          particleCount={250}
           color1="#8F5252"
           color2="#BCA044"
           color3="#BBC779"
-          speed={isMobile ? 5 : 7}
-          density={isMobile ? 40 : 59}
-          starSize={isMobile ? 7 : 10}
+          speed={7}
+          density={59}
+          starSize={10}
           focalDepth={23}
-          turbulence={isMobile ? 2 : 4}
-          brightness={isMobile ? 100 : 140}
-          glitterIntensity={isMobile ? 4 : 6}
-          trailAmount={isMobile ? 60 : 88}
+          turbulence={4}
+          brightness={140}
+          glitterIntensity={6}
+          trailAmount={88}
           className="!fixed inset-0 z-0 opacity-80"
         />
       )}
@@ -1330,6 +1351,7 @@ export function SiteChrome({ children, showGlitter = true }: { children: React.R
    ============================================================ */
 
 export function HomeStack() {
+  const isMobile = useIsMobile();
   const sections = [
     { key: "marquee", node: <Marquee /> },
     { key: "services", node: <Services /> },
@@ -1354,9 +1376,23 @@ export function HomeStack() {
   const panelY = useTransform(scrollYProgress, [0, 1], ["100%", "0%"]);
   const panelRadius = useTransform(scrollYProgress, [0, 0.85, 1], [36, 20, 0]);
 
+  if (isMobile) {
+    return (
+      <>
+        <Hero />
+        <div className="relative z-20">
+          {sections.map((s) => (
+            <section key={s.key} className="relative w-full">
+              {s.node}
+            </section>
+          ))}
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
-      {/* Sticky Hero stack: hero pins and scales down while a rounded panel rises up to cover it */}
       <div ref={pinRef} className="relative h-[170vh]">
         <div className="sticky top-0 h-[100dvh] w-full overflow-hidden">
           <motion.div
