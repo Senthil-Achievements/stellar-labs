@@ -367,14 +367,14 @@ export function Nav() {
         </div>
         <div className="flex items-center gap-2 md:hidden">
           <ThemeToggle />
-          <button onClick={() => setOpen(!open)} className="rounded-full border border-white/10 bg-black/60 p-2.5 backdrop-blur" aria-label={open ? "Close menu" : "Open menu"}>
+          <button onClick={() => setOpen(!open)} className="rounded-full border border-white/15 bg-black/50 p-2.5 backdrop-blur-xl shadow-[0_4px_24px_rgba(0,0,0,0.3)]" aria-label={open ? "Close menu" : "Open menu"}>
             {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
         </div>
       </div>
       {open && (
         <div className="mx-auto mt-2 max-w-6xl px-4 sm:px-6 md:hidden">
-          <div className="glass-panel rounded-2xl p-3">
+          <div className="rounded-2xl border border-white/10 bg-black/70 p-3 backdrop-blur-2xl shadow-[0_8px_40px_rgba(0,0,0,0.5)]">
             {links.map(([l, h]) => (
               <RouterLink key={h} to={h} onClick={() => setOpen(false)} className="block rounded-xl px-4 py-3.5 text-sm text-white/80 hover:bg-white/5">
                 {l}
@@ -911,7 +911,7 @@ export function TechStack() {
             A modern, <span className="text-gradient-accent">production-ready</span> toolchain.
           </h2>
         </FadeUp>
-        <div className="mt-10 sm:mt-16 grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-6">
+        <div className="mt-10 sm:mt-16 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
           {STACK.map((s, i) => (
             <FadeUp key={s.name} delay={i * 0.03}>
               <CardPeel peelDirection="top-left">
@@ -946,9 +946,9 @@ export function Industries() {
           {INDUSTRIES.map((it, i) => (
             <FadeUp key={it.name} delay={i * 0.03}>
               <CardPeel peelDirection="bottom-left">
-                <div className="glass-card group relative flex flex-col items-center justify-center gap-2 sm:gap-3 rounded-xl sm:rounded-2xl p-4 sm:p-6 transition-all hover:-translate-y-1 hover:border-[#F5C76A]/30">
+                <div className="glass-card group relative flex flex-col items-center justify-center gap-2 rounded-xl sm:rounded-2xl p-4 sm:p-6 transition-all hover:-translate-y-1 hover:border-[#F5C76A]/30">
                   <it.icon className="h-5 w-5 sm:h-6 sm:w-6 text-white/70 transition-all group-hover:text-[#F5C76A] group-hover:scale-110" />
-                  <div className="text-xs sm:text-sm font-medium text-white/85">{it.name}</div>
+                  <div className="text-[11px] sm:text-sm font-medium text-white/85">{it.name}</div>
                 </div>
               </CardPeel>
             </FadeUp>

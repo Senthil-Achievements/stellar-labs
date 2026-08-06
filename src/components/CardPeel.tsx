@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useRef, useState, useEffect } from "react"
 import { motion } from "framer-motion"
 
 type CardPeelProps = {
@@ -26,9 +26,18 @@ export default function CardPeel({
   const ref = useRef<HTMLDivElement>(null)
   const [hovered, setHovered] = useState(false)
   const [pressed, setPressed] = useState(false)
+  const [isTouch, setIsTouch] = useState(false)
+
+  useEffect(() => {
+    setIsTouch("ontouchstart" in window || navigator.maxTouchPoints > 0)
+  }, [])
 
   const amount = pressed ? peelAmount * 1.6 : hovered ? peelAmount : 0
   const origin = ORIGIN_MAP[peelDirection]
+
+  if (isTouch) {
+    return <div className={className}>{children}</div>
+  }
 
   return (
     <div
@@ -61,7 +70,6 @@ export default function CardPeel({
       >
         {children}
 
-        {/* Peel shadow — appears under the lifted corner */}
         <motion.div
           animate={{ opacity: hovered || pressed ? 1 : 0 }}
           transition={{ duration: 0.3 }}
