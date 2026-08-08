@@ -25,6 +25,8 @@ export default function WelcomeLoader() {
     };
   }, []);
 
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
   return (
     <AnimatePresence>
       {show && (
@@ -33,7 +35,9 @@ export default function WelcomeLoader() {
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed inset-0 z-[200] flex items-center justify-center bg-[#050505]"
+          className="fixed inset-0 z-[200] flex items-center justify-center bg-[#050505] safe-area-top safe-area-bottom"
+          role="dialog"
+          aria-label="Welcome"
         >
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,199,106,0.10),transparent_60%)]" />
           <div className="relative h-32 w-full max-w-4xl px-4 sm:h-40 sm:max-w-5xl sm:px-6">
@@ -42,7 +46,7 @@ export default function WelcomeLoader() {
               font={{
                 fontFamily: "'Space Grotesk', 'Inter', sans-serif",
                 fontWeight: 600,
-                fontSize: 56,
+                fontSize: isMobile ? 28 : 56,
               }}
               color="rgb(245,199,106)"
               spread={10}

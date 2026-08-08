@@ -107,7 +107,12 @@
       radial-gradient(circle at 85% 10%, rgba(255, 255, 255, 0.05), transparent 28%),
       radial-gradient(circle at 70% 80%, rgba(245, 199, 106, 0.08), transparent 32%),
       linear-gradient(180deg, #050505, #090909, #111111);
-    background-attachment: fixed;
+  }
+
+  @media (min-width: 768px) {
+    body {
+      background-attachment: fixed;
+    }
   }
 
   ::selection {
@@ -190,8 +195,7 @@
 }
 
 /* ============================================================
-   LIGHT MODE — pragmatic override that repaints the dark
-   design in warm ivory tones without touching every component.
+   LIGHT MODE
    ============================================================ */
 
 :root.light {
@@ -258,32 +262,14 @@ html.light .grid-bg {
     linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
 }
 
-/* Broad-stroke overrides for hardcoded white/black Tailwind
-   arbitrary classes used across sections. */
-html.light [class*="text-white"] { color: #0b0b0b; }
-html.light [class*="text-white/90"] { color: rgba(11, 11, 11, 0.9); }
-html.light [class*="text-white/80"] { color: rgba(11, 11, 11, 0.8); }
-html.light [class*="text-white/70"] { color: rgba(11, 11, 11, 0.7); }
-html.light [class*="text-white/60"] { color: rgba(11, 11, 11, 0.6); }
-html.light [class*="text-white/50"] { color: rgba(11, 11, 11, 0.55); }
-html.light [class*="text-white/40"] { color: rgba(11, 11, 11, 0.45); }
-html.light [class*="text-white/30"] { color: rgba(11, 11, 11, 0.35); }
-
-html.light [class*="bg-white/"] { background-color: rgba(0, 0, 0, 0.04); }
-html.light [class*="bg-black/"] { background-color: rgba(255, 255, 255, 0.65); }
-html.light [class*="border-white/"] { border-color: rgba(0, 0, 0, 0.10); }
-
-html.light .bg-white { background-color: #0b0b0b !important; color: #ffffff !important; }
-html.light .text-black { color: #ffffff !important; }
-
 /* ============================================================
    MOBILE PERFORMANCE & RESPONSIVENESS
    ============================================================ */
 
 @media (max-width: 767px) {
   .glass-card {
-    backdrop-filter: blur(12px) saturate(120%);
-    -webkit-backdrop-filter: blur(12px) saturate(120%);
+    backdrop-filter: blur(10px) saturate(120%);
+    -webkit-backdrop-filter: blur(10px) saturate(120%);
   }
 
   .glow-gold {
@@ -292,34 +278,24 @@ html.light .text-black { color: #ffffff !important; }
       0 0 80px rgba(245, 199, 106, 0.08);
   }
 
-  /* Disable heavy animations on mobile */
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-  }
-
-  /* Reduce will-change usage */
-  [style*="will-change"] {
-    will-change: auto !important;
-  }
-
-  /* Optimize touch scrolling */
   html {
-    -webkit-overflow-scrolling: touch;
     overscroll-behavior: none;
   }
 
-  /* Reduce backdrop-filter on mobile for performance */
   .backdrop-blur-xl {
-    backdrop-filter: blur(16px) !important;
-    -webkit-backdrop-filter: blur(16px) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
   }
 
-  /* Simplify shadows on mobile */
   .glass-card {
     box-shadow:
       0 10px 30px rgba(0, 0, 0, 0.3),
       0 1px 0 rgba(255, 255, 255, 0.05) inset;
+  }
+
+  /* Prevent iOS zoom on form inputs */
+  input, textarea, select {
+    font-size: 16px !important;
   }
 }
 
@@ -347,4 +323,27 @@ html.light .text-black { color: #ffffff !important; }
 /* GPU acceleration hints for canvas elements */
 canvas {
   image-rendering: -webkit-optimize-contrast;
+}
+
+/* Safe area support for notched phones */
+@supports (padding: env(safe-area-inset-top)) {
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .safe-area-left {
+    padding-left: env(safe-area-inset-left);
+  }
+  .safe-area-right {
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* Body scroll lock for modals/menus */
+body.menu-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
 }

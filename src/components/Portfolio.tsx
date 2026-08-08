@@ -211,10 +211,10 @@ const FAQ = [
    PRIMITIVES
    ============================================================ */
 
-function FadeUp({ children, delay = 0, y = 24, className = "" }: any) {
+function FadeUp({ children, delay = 0, y = 24, className = "" }: { children: React.ReactNode; delay?: number; y?: number; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  const isMobile = useIsMobile();
 
   if (isMobile) {
     return (
@@ -257,7 +257,9 @@ function MagneticButton({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState({ x: 0, y: 0 });
+  const isMobile = useIsMobile();
   const handleMove = (e: React.MouseEvent) => {
+    if (isMobile) return;
     const el = ref.current;
     if (!el) return;
     const r = el.getBoundingClientRect();
@@ -279,11 +281,13 @@ function MagneticButton({
       animate={{ x: pos.x, y: pos.y }}
       transition={{ type: "spring", stiffness: 200, damping: 15 }}
       className={cls + " " + className}
+      role={href ? undefined : "button"}
+      tabIndex={href ? undefined : 0}
     >
       {children}
-      <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+      <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
       {primary && (
-        <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#F5C76A]/60 to-transparent opacity-0 transition-opacity group-hover:animate-[shimmer_1s_ease] group-hover:opacity-100" />
+        <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#F5C76A]/60 to-transparent opacity-0 transition-opacity group-hover:animate-[shimmer_1s_ease] group-hover:opacity-100" aria-hidden="true" />
       )}
     </motion.div>
   );
@@ -346,12 +350,51 @@ export function CursorGlow() {
 export function Nav() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 20);
     h();
-    window.addEventListener("scroll", h);
+    window.addEventListener("scroll", h, { passive: true });
     return () => window.removeEventListener("scroll", h);
   }, []);
+
+  // Lock body scroll when menu is open
+  useEffect(() => {
+    if (open) {
+      document.body.classList.add("menu-open");
+    } else {
+      document.body.classList.remove("menu-open");
+    }
+    return () => document.body.classList.remove("menu-open");
+  }, [open]);
+
+  // Close on Escape
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+        buttonRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
+  // Close on outside click
+  useEffect(() => {
+    if (!open) return;
+    const onClick = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    window.addEventListener("mousedown", onClick);
+    return () => window.removeEventListener("mousedown", onClick);
+  }, [open]);
+
   const links: Array<[string, string]> = [
     ["About", "/about"],
     ["Services", "/services"],
@@ -359,15 +402,16 @@ export function Nav() {
     ["Process", "/process"],
     ["Contact", "/contact"],
   ];
+
   return (
-    <header className={`fixed inset-x-0 top-0 z-50 transition-all ${scrolled ? "py-3" : "py-4 sm:py-5"}`}>
+    <header className={`fixed inset-x-0 top-0 z-50 safe-area-top transition-all ${scrolled ? "py-3" : "py-4 sm:py-5"}`}>
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 sm:px-6">
         <div className={`flex items-center gap-4 sm:gap-6 rounded-full border border-white/[0.06] px-4 sm:px-5 py-2 sm:py-2.5 transition-all ${scrolled ? "bg-black/60 backdrop-blur-xl" : "bg-transparent"}`}>
           <RouterLink to="/" className="flex items-center gap-2.5 text-sm font-semibold tracking-[0.14em]">
             <span className="grid h-6 w-6 place-items-center rounded-md bg-[#F5C76A] text-[10px] font-bold text-black">T</span>
             <span className="font-display">{BRAND}</span>
           </RouterLink>
-          <nav className="hidden items-center gap-1 md:flex">
+          <nav className="hidden items-center gap-1 md:flex" aria-label="Main navigation">
             {links.map(([l, h]) => (
               <RouterLink
                 key={h}
@@ -386,25 +430,36 @@ export function Nav() {
         </div>
         <div className="flex items-center gap-2 md:hidden">
           <ThemeToggle />
-          <button onClick={() => setOpen(!open)} className="rounded-full border border-white/15 bg-black/50 p-2.5 backdrop-blur-xl shadow-[0_4px_24px_rgba(0,0,0,0.3)]" aria-label={open ? "Close menu" : "Open menu"}>
+          <button
+            ref={buttonRef}
+            onClick={() => setOpen(!open)}
+            className="rounded-full border border-white/15 bg-black/50 p-2.5 backdrop-blur-xl shadow-[0_4px_24px_rgba(0,0,0,0.3)]"
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            aria-controls="mobile-menu"
+          >
             {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
         </div>
       </div>
-      {open && (
-        <div className="mx-auto mt-2 max-w-6xl px-4 sm:px-6 md:hidden">
-          <div className="rounded-2xl border border-white/10 bg-black/70 p-3 backdrop-blur-2xl shadow-[0_8px_40px_rgba(0,0,0,0.5)]">
-            {links.map(([l, h]) => (
-              <RouterLink key={h} to={h} onClick={() => setOpen(false)} className="block rounded-xl px-4 py-3.5 text-sm text-white/80 hover:bg-white/5">
-                {l}
-              </RouterLink>
-            ))}
-            <RouterLink to="/contact" onClick={() => setOpen(false)} className="mt-1 block rounded-xl bg-white px-4 py-3.5 text-sm font-medium text-black">
-              Book a Strategy Call
+      <div
+        ref={menuRef}
+        id="mobile-menu"
+        role="dialog"
+        aria-label="Mobile navigation"
+        className={`mx-auto mt-2 max-w-6xl px-4 sm:px-6 md:hidden transition-all duration-200 ${open ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none"}`}
+      >
+        <div className="rounded-2xl border border-white/10 bg-black/70 p-3 backdrop-blur-2xl shadow-[0_8px_40px_rgba(0,0,0,0.5)]">
+          {links.map(([l, h]) => (
+            <RouterLink key={h} to={h} onClick={() => setOpen(false)} className="block rounded-xl px-4 py-3.5 text-sm text-white/80 hover:bg-white/5">
+              {l}
             </RouterLink>
-          </div>
+          ))}
+          <RouterLink to="/contact" onClick={() => setOpen(false)} className="mt-1 block rounded-xl bg-white px-4 py-3.5 text-sm font-medium text-black">
+            Book a Strategy Call
+          </RouterLink>
         </div>
-      )}
+      </div>
     </header>
   );
 }
@@ -1107,6 +1162,8 @@ export function Testimonials() {
                 <button
                   key={idx}
                   onClick={() => setI(idx)}
+                  aria-label={`Go to testimonial ${idx + 1}`}
+                  aria-pressed={idx === i}
                   className={`h-1.5 rounded-full transition-all ${idx === i ? "w-8 bg-[#F5C76A]" : "w-1.5 bg-white/20"}`}
                 />
               ))}
@@ -1134,24 +1191,32 @@ export function FaqSection() {
           </h2>
         </FadeUp>
 
-        <div className="mt-10 sm:mt-14 space-y-3">
+        <div className="mt-10 sm:mt-14 space-y-3" role="list">
           {FAQ.map((f, i) => {
             const isOpen = open === i;
+            const panelId = `faq-panel-${i}`;
+            const buttonId = `faq-button-${i}`;
             return (
               <FadeUp key={f.q} delay={i * 0.04}>
-                <div className="glass-card overflow-hidden rounded-xl sm:rounded-2xl">
+                <div className="glass-card overflow-hidden rounded-xl sm:rounded-2xl" role="listitem">
                   <button
+                    id={buttonId}
                     onClick={() => setOpen(isOpen ? null : i)}
+                    aria-expanded={isOpen}
+                    aria-controls={panelId}
                     className="flex w-full items-center justify-between gap-3 sm:gap-4 p-4 sm:p-6 text-left transition-colors hover:bg-white/[0.02]"
                   >
                     <span className="font-display text-sm sm:text-base font-medium text-white md:text-lg">{f.q}</span>
-                    <span className="grid h-7 w-7 sm:h-8 sm:w-8 shrink-0 place-items-center rounded-full border border-white/10 bg-white/[0.03] transition-colors">
+                    <span className="grid h-7 w-7 sm:h-8 sm:w-8 shrink-0 place-items-center rounded-full border border-white/10 bg-white/[0.03] transition-colors" aria-hidden="true">
                       {isOpen ? <Minus className="h-3 w-3 sm:h-4 sm:w-4 text-[#F5C76A]" /> : <Plus className="h-3 w-3 sm:h-4 sm:w-4 text-white/70" />}
                     </span>
                   </button>
                   <AnimatePresence initial={false}>
                     {isOpen && (
                       <motion.div
+                        id={panelId}
+                        role="region"
+                        aria-labelledby={buttonId}
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: "auto", opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
@@ -1340,7 +1405,7 @@ export function SiteChrome({ children, showGlitter = true }: { children: React.R
       )}
       <motion.div style={{ width: progress }} className="fixed left-0 top-0 z-[60] h-0.5 bg-gradient-to-r from-white via-[#F5C76A] to-[#d4a94a]" />
       <Nav />
-      <main className="relative z-10">{children}</main>
+      <main id="main-content" className="relative z-10">{children}</main>
       <Footer />
     </div>
   );

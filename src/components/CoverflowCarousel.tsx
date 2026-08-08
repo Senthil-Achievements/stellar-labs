@@ -441,7 +441,6 @@ export default function CoverflowCarousel(props: Props) {
         position: "relative",
         width: "100%",
         height: "100%",
-        minWidth: 320,
         minHeight: 240,
         overflow: "hidden",
         userSelect: "none",
@@ -491,6 +490,9 @@ export default function CoverflowCarousel(props: Props) {
     return (
         <div
             tabIndex={0}
+            role="region"
+            aria-roledescription="carousel"
+            aria-label="Content carousel"
             onMouseEnter={() => {
                 isHoveredRef.current = true
             }}
