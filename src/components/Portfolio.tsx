@@ -258,8 +258,8 @@ function FadeUp({ children, delay = 0, y = 24, className = "" }: { children: Rea
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.22em] text-white/60 backdrop-blur" aria-hidden="true">
-      <span className="h-1.5 w-1.5 rounded-full bg-[#F5C76A] shadow-[0_0_10px_rgba(245,199,106,0.8)]" />
+    <div className="section-label" aria-hidden="true">
+      <span className="label-dot" />
       {children}
     </div>
   );
@@ -285,8 +285,8 @@ function MagneticButton({
   const reset = () => setPos({ x: 0, y: 0 });
 
   const cls = primary
-    ? "group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-white px-7 py-3.5 text-sm font-medium text-black transition-shadow hover:shadow-[0_0_50px_rgba(245,199,106,0.4)]"
-    : "group relative inline-flex items-center gap-2 overflow-hidden rounded-full border border-white/15 bg-white/[0.03] px-7 py-3.5 text-sm font-medium text-white backdrop-blur transition-colors hover:bg-white/[0.08] hover:border-white/25";
+    ? "btn-primary-magnetic"
+    : "btn-secondary-magnetic";
 
   const inner = (
     <motion.div
@@ -295,7 +295,7 @@ function MagneticButton({
       onMouseLeave={reset}
       animate={{ x: pos.x, y: pos.y }}
       transition={{ type: "spring", stiffness: 200, damping: 15 }}
-      className={cls + " " + className}
+      className={`${cls} ${className}`}
       role={href ? undefined : "button"}
       tabIndex={href ? undefined : 0}
     >
@@ -375,7 +375,6 @@ export function Nav() {
     return () => window.removeEventListener("scroll", h);
   }, []);
 
-  // Lock body scroll when menu is open
   useEffect(() => {
     if (open) {
       document.body.classList.add("menu-open");
@@ -385,7 +384,6 @@ export function Nav() {
     return () => document.body.classList.remove("menu-open");
   }, [open]);
 
-  // Close on Escape
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -398,7 +396,6 @@ export function Nav() {
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
-  // Close on outside click
   useEffect(() => {
     if (!open) return;
     const onClick = (e: MouseEvent) => {
@@ -421,18 +418,18 @@ export function Nav() {
   return (
     <header className={`fixed inset-x-0 top-0 z-50 safe-area-top transition-all ${scrolled ? "py-3" : "py-4 sm:py-5"}`}>
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 sm:px-6">
-        <div className={`flex items-center gap-4 sm:gap-6 rounded-full border border-white/[0.06] px-4 sm:px-5 py-2 sm:py-2.5 transition-all ${scrolled ? "bg-black/60 backdrop-blur-xl" : "bg-transparent"}`}>
+        <div className={`nav-container ${scrolled ? "scrolled" : ""}`}>
           <RouterLink to="/" className="flex items-center gap-2.5 text-sm font-semibold tracking-[0.14em]">
             <span className="grid h-6 w-6 place-items-center rounded-md bg-[#F5C76A] text-[10px] font-bold text-black">T</span>
-            <span className="font-display">{BRAND}</span>
+            <span className="font-display" style={{ color: "var(--text-primary)" }}>{BRAND}</span>
           </RouterLink>
           <nav className="hidden items-center gap-1 md:flex" aria-label="Main navigation">
             {links.map(([l, h]) => (
               <RouterLink
                 key={h}
                 to={h}
-                className="rounded-full px-3 py-1.5 text-xs font-medium text-white/60 transition-colors hover:text-white"
-                activeProps={{ className: "rounded-full px-3 py-1.5 text-xs font-medium text-white bg-white/[0.06]" }}
+                className="nav-link"
+                activeProps={{ className: "nav-link nav-link-active" }}
               >
                 {l}
               </RouterLink>
@@ -448,7 +445,7 @@ export function Nav() {
           <button
             ref={buttonRef}
             onClick={() => setOpen(!open)}
-            className="rounded-full border border-white/15 bg-black/50 p-2.5 backdrop-blur-xl shadow-[0_4px_24px_rgba(0,0,0,0.3)]"
+            className="nav-hamburger"
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             aria-controls="mobile-menu"
@@ -464,13 +461,13 @@ export function Nav() {
         aria-label="Mobile navigation"
         className={`mx-auto mt-2 max-w-6xl px-4 sm:px-6 md:hidden transition-all duration-200 ${open ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none"}`}
       >
-        <div className="rounded-2xl border border-white/10 bg-black/70 p-3 backdrop-blur-2xl shadow-[0_8px_40px_rgba(0,0,0,0.5)]">
+        <div className="mobile-menu-panel">
           {links.map(([l, h]) => (
-            <RouterLink key={h} to={h} onClick={() => setOpen(false)} className="block rounded-xl px-4 py-3.5 text-sm text-white/80 hover:bg-white/5">
+            <RouterLink key={h} to={h} onClick={() => setOpen(false)} className="mobile-menu-link">
               {l}
             </RouterLink>
           ))}
-          <RouterLink to="/contact" onClick={() => setOpen(false)} className="mt-1 block rounded-xl bg-white px-4 py-3.5 text-sm font-medium text-black">
+          <RouterLink to="/contact" onClick={() => setOpen(false)} className="mobile-menu-cta">
             Book a Strategy Call
           </RouterLink>
         </div>
@@ -487,7 +484,6 @@ function HeroMockup() {
   return (
     <div className="relative aspect-[5/6] w-full sm:aspect-[5/6] lg:aspect-[4/5]">
 
-
       {/* Main card */}
       <motion.div
         initial={{ opacity: 0, y: 40 }}
@@ -496,14 +492,14 @@ function HeroMockup() {
         className="glass-card relative z-10 h-full rounded-2xl sm:rounded-3xl p-4 sm:p-5"
       >
         {/* header */}
-        <div className="flex items-center justify-between border-b border-white/[0.06] pb-2.5 sm:pb-3">
+        <div className="hero-mockup-header">
           <div className="flex items-center gap-1.5 sm:gap-2">
-            <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-white/20" />
-            <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-white/20" />
-            <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-[#F5C76A]/70" />
+            <span className="hero-mockup-dot" style={{ background: "var(--border)" }} />
+            <span className="hero-mockup-dot" style={{ background: "var(--border)" }} />
+            <span className="hero-mockup-dot bg-[#F5C76A]/70" />
           </div>
-          <div className="font-mono text-[8px] sm:text-[10px] tracking-widest text-white/40">theruins · console</div>
-          <div className="flex items-center gap-1 sm:gap-1.5 text-[8px] sm:text-[10px] text-white/50">
+          <div className="hero-mockup-console">theruins · console</div>
+          <div className="hero-mockup-live">
             <span className="h-1 w-1 sm:h-1.5 sm:w-1.5 rounded-full bg-[#F5C76A] shadow-[0_0_8px_rgba(245,199,106,0.8)] animate-[ticker_1.6s_ease-in-out_infinite]" />
             LIVE
           </div>
@@ -521,19 +517,19 @@ function HeroMockup() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 + i * 0.08 }}
-              className="rounded-lg sm:rounded-xl border border-white/[0.06] bg-white/[0.02] p-2 sm:p-3"
+              className="hero-mockup-section"
             >
-              <div className="text-[7px] sm:text-[9px] uppercase tracking-wider text-white/40">{k.l}</div>
-              <div className="mt-0.5 sm:mt-1 font-display text-xs sm:text-base font-semibold">{k.v}</div>
-              <div className="mt-0.5 text-[7px] sm:text-[9px] text-[#F5C76A]/80">{k.d}</div>
+              <div className="hero-stat-label">{k.l}</div>
+              <div className="mt-0.5 sm:mt-1 hero-stat-value text-xs sm:text-base">{k.v}</div>
+              <div className="mt-0.5 hero-stat-desc">{k.d}</div>
             </motion.div>
           ))}
         </div>
 
         {/* Activity */}
-        <div className="relative mt-2.5 sm:mt-3 h-24 sm:h-32 overflow-hidden rounded-lg sm:rounded-xl border border-white/[0.06] bg-black/40 p-2.5 sm:p-3">
+        <div className="relative mt-2.5 sm:mt-3 h-24 sm:h-32 overflow-hidden rounded-lg sm:rounded-xl border border-[var(--border-subtle)] hero-activity-bg p-2.5 sm:p-3">
           <div className="flex items-center justify-between">
-            <div className="text-[8px] sm:text-[10px] font-medium text-white/70">Build activity</div>
+            <div className="hero-mockup-label">Build activity</div>
             <div className="font-mono text-[8px] sm:text-[10px] text-[#F5C76A]">shipping</div>
           </div>
           <svg viewBox="0 0 300 80" className="mt-1.5 sm:mt-2 h-16 sm:h-20 w-full">
@@ -543,7 +539,7 @@ function HeroMockup() {
                 <stop offset="100%" stopColor="rgba(245,199,106,0)" />
               </linearGradient>
               <linearGradient id="gold-line" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#ffffff" />
+                <stop offset="0%" stopColor="var(--text-faint)" />
                 <stop offset="100%" stopColor="#F5C76A" />
               </linearGradient>
             </defs>
@@ -568,30 +564,30 @@ function HeroMockup() {
         </div>
 
         {/* Philosophy */}
-        <div className="mt-2.5 sm:mt-3 rounded-lg sm:rounded-xl border border-white/[0.06] bg-white/[0.02] p-2.5 sm:p-3">
-          <div className="flex items-center gap-1.5 sm:gap-2 text-[8px] sm:text-[10px] font-medium text-white/70">
+        <div className="mt-2.5 sm:mt-3 hero-mockup-section">
+          <div className="flex items-center gap-1.5 sm:gap-2 text-[8px] sm:text-[10px] font-medium" style={{ color: "var(--text-muted)" }}>
             <Sparkles className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-[#F5C76A]" />
             How we build
           </div>
-          <div className="mt-1 sm:mt-1.5 text-[9px] sm:text-[11px] leading-relaxed text-white/80">
+          <div className="mt-1 sm:mt-1.5 text-[9px] sm:text-[11px] leading-relaxed hero-mockup-body">
             Ship a real, working slice in weeks — not a deck. Then iterate against
             usage, not <span className="text-[#F5C76A]">assumptions</span>.
           </div>
         </div>
 
         {/* Terminal */}
-        <div className="mt-2.5 sm:mt-3 rounded-lg sm:rounded-xl border border-white/[0.06] bg-black/60 p-2.5 sm:p-3 font-mono text-[8px] sm:text-[10px] leading-relaxed">
-          <div className="mb-1 sm:mb-1.5 flex items-center gap-1.5 sm:gap-2 text-white/40">
+        <div className="mt-2.5 sm:mt-3 hero-terminal">
+          <div className="hero-terminal-header">
             <Terminal className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
             <span>status</span>
           </div>
-          <div className="text-white/70">
+          <div className="hero-terminal-line">
             <span className="text-[#F5C76A]">▸</span> currently building · client work
           </div>
-          <div className="text-white/70">
+          <div className="hero-terminal-line">
             <span className="text-[#F5C76A]">▸</span> stack · react · next · flutter · python
           </div>
-          <div className="text-white/70">
+          <div className="hero-terminal-line">
             <span className="text-[#F5C76A]">▸</span> open to · new engagements
           </div>
         </div>
@@ -621,7 +617,7 @@ export function Hero() {
             </h1>
           </FadeUp>
           <FadeUp delay={0.2}>
-            <p className="mt-7 max-w-xl text-base leading-relaxed text-white/60 sm:text-lg">
+            <p className="mt-7 max-w-xl text-base leading-relaxed sm:text-lg" style={{ color: "var(--text-secondary)" }}>
               From AI websites and mobile apps to intelligent automations and AI
               agents, THERUINS builds complete digital infrastructure that helps
               businesses grow faster, operate smarter, and scale globally.
@@ -634,12 +630,12 @@ export function Hero() {
             </div>
           </FadeUp>
           <FadeUp delay={0.4}>
-            <div className="mt-14 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-white/[0.06] pt-6 text-[11px] uppercase tracking-wider text-white/40">
+            <div className="mt-14 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-[var(--border-subtle)] pt-6 text-[11px] uppercase tracking-wider" style={{ color: "var(--text-faint)" }}>
               <span className="inline-flex items-center gap-2">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#F5C76A]" />
                 Currently open to select engagements
               </span>
-              <span className="hidden h-1 w-1 rounded-full bg-white/20 sm:inline-block" />
+              <span className="hidden h-1 w-1 rounded-full sm:inline-block" style={{ background: "var(--border)" }} />
               <span>Remote · Worldwide</span>
             </div>
           </FadeUp>
@@ -651,9 +647,9 @@ export function Hero() {
         </div>
       </div>
 
-      <div className="absolute bottom-6 sm:bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-white/30 md:flex">
+      <div className="absolute bottom-6 sm:bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-[10px] uppercase tracking-[0.3em] md:flex" style={{ color: "var(--text-faint)" }}>
         Scroll
-        <span className="h-8 w-px bg-gradient-to-b from-white/40 to-transparent" />
+        <span className="h-8 w-px bg-gradient-to-b from-current to-transparent" />
       </div>
     </section>
   );
@@ -667,12 +663,12 @@ export function Marquee() {
   const isMobile = useIsMobile();
   const items = [...MARQUEE_WORDS, ...MARQUEE_WORDS];
   return (
-    <div className="relative overflow-hidden border-y border-white/[0.06] py-5 sm:py-6">
+    <div className="relative overflow-hidden border-y border-[var(--border-subtle)] py-5 sm:py-6">
       <div className={`flex whitespace-nowrap ${isMobile ? "" : "animate-[marquee_35s_linear_infinite]"}`}>
         {items.map((w, i) => (
-          <span key={i} className="mx-5 sm:mx-8 inline-flex items-center gap-5 sm:gap-8 font-display text-lg sm:text-2xl font-medium text-white/25">
+          <span key={i} className="mx-5 sm:mx-8 inline-flex items-center gap-5 sm:gap-8 font-display text-lg sm:text-2xl font-medium marquee-word">
             {w}
-            <span className="h-1 w-1 rounded-full bg-[#F5C76A]/40" />
+            <span className="marquee-divider" />
           </span>
         ))}
       </div>
@@ -707,7 +703,7 @@ export function Services() {
             radius={8}
             showArrows={!isMobile}
             arrowColor="#F5C76A"
-            arrowBackground="rgba(255,255,255,0.1)"
+            arrowBackground="var(--btn-secondary-bg)"
             arrowSize={44}
             arrowPosition={100}
             autoplay
@@ -718,12 +714,12 @@ export function Services() {
               if (!s) return null;
               return (
                 <div className="flex h-full flex-col justify-between p-5 sm:p-7">
-                  <div className="grid h-10 w-10 sm:h-11 sm:w-11 place-items-center rounded-xl border border-white/10 bg-white/[0.04]">
+                  <div className="carousel-card-icon h-10 w-10 sm:h-11 sm:w-11">
                     <s.icon className="h-4 w-4 sm:h-5 sm:w-5 text-[#F5C76A]" />
                   </div>
                   <div>
-                    <div className="font-display text-base sm:text-xl font-semibold">{s.title}</div>
-                    <div className="mt-2 text-xs sm:text-sm leading-relaxed text-white/60">{s.desc}</div>
+                    <div className="carousel-card-title text-base sm:text-xl">{s.title}</div>
+                    <div className="mt-2 text-xs sm:text-sm leading-relaxed carousel-card-desc">{s.desc}</div>
                   </div>
                 </div>
               );
@@ -749,11 +745,11 @@ function ServiceCard({ s }: { s: typeof SERVICES[number] }) {
       style={{ transform: `perspective(1000px) rotateX(${-tilt.y * 4}deg) rotateY(${tilt.x * 4}deg)` }}
       className="glass-card group relative flex h-full flex-col overflow-hidden rounded-xl sm:rounded-2xl p-5 sm:p-6 transition-transform duration-300 hover:-translate-y-1"
     >
-      <div className="grid h-10 w-10 sm:h-11 sm:w-11 place-items-center rounded-xl border border-white/10 bg-white/[0.03] transition-colors group-hover:border-[#F5C76A]/40">
-        <s.icon className="h-4 w-4 sm:h-5 sm:w-5 text-white transition-transform group-hover:scale-110 group-hover:text-[#F5C76A]" />
+      <div className="carousel-card-icon h-10 w-10 sm:h-11 sm:w-11 group-hover:border-[#F5C76A]/40 transition-colors">
+        <s.icon className="h-4 w-4 sm:h-5 sm:w-5 transition-transform group-hover:scale-110 group-hover:text-[#F5C76A]" style={{ color: "var(--text-primary)" }} />
       </div>
-      <div className="mt-4 sm:mt-5 font-display text-base sm:text-lg font-semibold">{s.title}</div>
-      <div className="mt-2 text-xs sm:text-sm leading-relaxed text-white/60">{s.desc}</div>
+      <div className="mt-4 sm:mt-5 font-display text-base sm:text-lg font-semibold carousel-card-title">{s.title}</div>
+      <div className="mt-2 text-xs sm:text-sm leading-relaxed carousel-card-desc">{s.desc}</div>
       <div className="pointer-events-none absolute -bottom-16 -right-16 h-40 w-40 rounded-full bg-[#F5C76A]/10 opacity-0 blur-3xl transition-opacity group-hover:opacity-100" />
     </div>
   );
@@ -785,7 +781,7 @@ export function Process() {
             radius={8}
             showArrows={!isMobile}
             arrowColor="#F5C76A"
-            arrowBackground="rgba(255,255,255,0.1)"
+            arrowBackground="var(--btn-secondary-bg)"
             arrowSize={44}
             arrowPosition={100}
             autoplay
@@ -797,14 +793,14 @@ export function Process() {
               return (
                 <div className="flex h-full flex-col justify-between p-5 sm:p-7">
                   <div className="flex items-center justify-between">
-                    <div className="grid h-10 w-10 sm:h-11 sm:w-11 place-items-center rounded-xl border border-white/10 bg-white/[0.04]">
+                    <div className="carousel-card-icon h-10 w-10 sm:h-11 sm:w-11">
                       <step.icon className="h-4 w-4 sm:h-5 sm:w-5 text-[#F5C76A]" />
                     </div>
-                    <div className="font-mono text-[10px] uppercase tracking-wider text-white/40">0{i + 1}</div>
+                    <div className="carousel-card-number">0{i + 1}</div>
                   </div>
                   <div>
-                    <div className="font-display text-base sm:text-xl font-semibold">{step.title}</div>
-                    <p className="mt-2 text-xs sm:text-sm text-white/60">{step.desc}</p>
+                    <div className="carousel-card-title text-base sm:text-xl">{step.title}</div>
+                    <p className="mt-2 text-xs sm:text-sm carousel-card-desc">{step.desc}</p>
                   </div>
                 </div>
               );
@@ -832,41 +828,41 @@ function ProjectCard({ p, index }: { p: typeof PROJECTS[number]; index: number }
       }}
       onMouseLeave={() => setTilt({ x: 0, y: 0 })}
       style={{ transform: `perspective(1200px) rotateX(${-tilt.y * 2.5}deg) rotateY(${tilt.x * 2.5}deg)` }}
-      className="glass-card group relative overflow-hidden rounded-2xl sm:rounded-3xl p-6 sm:p-8 transition-transform duration-300 md:p-10"
+      className="case-card group relative overflow-hidden rounded-2xl sm:rounded-3xl p-6 sm:p-8 transition-transform duration-300 md:p-10"
     >
       <div
         className="pointer-events-none absolute -inset-40 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-        style={{ background: `radial-gradient(500px circle at ${(tilt.x + 0.5) * 100}% ${(tilt.y + 0.5) * 100}%, rgba(245,199,106,0.15), transparent 60%)` }}
+        style={{ background: `radial-gradient(500px circle at ${(tilt.x + 0.5) * 100}% ${(tilt.y + 0.5) * 100}%, rgba(245,199,106,0.12), transparent 60%)` }}
       />
       <div className="relative grid grid-cols-1 gap-10 lg:grid-cols-[1.3fr_1fr]">
         <div>
-          <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.22em] text-white/40">
+          <div className="flex items-center gap-3 case-label">
             <span className="h-2 w-2 rounded-full bg-[#F5C76A] shadow-[0_0_10px_rgba(245,199,106,0.8)]" />
             Case study · 0{index + 1} · {p.tag}
           </div>
-          <h3 className="mt-4 font-display text-3xl font-semibold leading-tight sm:text-4xl">{p.name}</h3>
-          <p className="mt-2 text-base text-white/60">{p.tagline}</p>
+          <h3 className="mt-4 font-display text-3xl font-semibold leading-tight sm:text-4xl case-title">{p.name}</h3>
+          <p className="mt-2 text-base case-tagline">{p.tagline}</p>
 
           <div className="mt-8 space-y-6 text-sm">
             <div>
-              <div className="text-[11px] uppercase tracking-wider text-white/40">Overview</div>
-              <p className="mt-1.5 text-white/75">{p.overview}</p>
+              <div className="case-section-label">Overview</div>
+              <p className="mt-1.5 case-body">{p.overview}</p>
             </div>
             <div className="grid gap-6 sm:grid-cols-2">
               <div>
-                <div className="text-[11px] uppercase tracking-wider text-white/40">Problem</div>
-                <p className="mt-1.5 text-white/70">{p.problem}</p>
+                <div className="case-section-label">Problem</div>
+                <p className="mt-1.5 case-body">{p.problem}</p>
               </div>
               <div>
-                <div className="text-[11px] uppercase tracking-wider text-white/40">Solution</div>
-                <p className="mt-1.5 text-white/70">{p.solution}</p>
+                <div className="case-section-label">Solution</div>
+                <p className="mt-1.5 case-body">{p.solution}</p>
               </div>
             </div>
             <div>
-              <div className="text-[11px] uppercase tracking-wider text-white/40">Key features</div>
+              <div className="case-section-label">Key features</div>
               <ul className="mt-2 grid gap-1.5 sm:grid-cols-2">
                 {p.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-white/70">
+                  <li key={f} className="flex items-start gap-2 case-feature">
                     <span className="mt-1.5 h-1 w-1 rounded-full bg-[#F5C76A]" />
                     {f}
                   </li>
@@ -885,7 +881,7 @@ function ProjectCard({ p, index }: { p: typeof PROJECTS[number]; index: number }
                     href={p.repo}
                     target="_blank"
                     rel="noreferrer"
-                    className="group/btn inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-xs font-medium text-black transition-shadow hover:shadow-[0_0_30px_rgba(245,199,106,0.35)]"
+                    className="group/btn btn-card-primary"
                   >
                     {isGithub ? <Github className="h-3.5 w-3.5" /> : <ArrowUpRight className="h-3.5 w-3.5" />}
                     {isGithub ? "View on GitHub" : "Visit live site"}
@@ -896,7 +892,7 @@ function ProjectCard({ p, index }: { p: typeof PROJECTS[number]; index: number }
                       href={demo}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs font-medium text-white/85 transition hover:border-[#F5C76A]/50 hover:text-white"
+                      className="btn-card-secondary"
                     >
                       Live demo
                       <ArrowUpRight className="h-3.5 w-3.5" />
@@ -912,25 +908,25 @@ function ProjectCard({ p, index }: { p: typeof PROJECTS[number]; index: number }
         </div>
 
         <div className="flex flex-col gap-4">
-          <div className="glass-panel relative overflow-hidden rounded-2xl p-5">
-            <div className="flex items-center justify-between text-[10px] uppercase tracking-wider text-white/40">
+          <div className="case-panel relative overflow-hidden">
+            <div className="flex items-center justify-between case-panel-label">
               <span>Outcomes</span>
               <span className="font-mono">/ what shipped</span>
             </div>
             <div className="mt-4 space-y-3">
               {p.outcomes.map((o) => (
-                <div key={o} className="flex items-start gap-2 border-b border-white/[0.06] pb-3 last:border-0 last:pb-0">
+                <div key={o} className="flex items-start gap-2 border-b case-outcome-divider pb-3 last:border-0 last:pb-0">
                   <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#F5C76A]" />
-                  <div className="text-xs leading-relaxed text-white/75">{o}</div>
+                  <div className="text-xs leading-relaxed case-panel-body">{o}</div>
                 </div>
               ))}
             </div>
           </div>
-          <div className="glass-panel rounded-2xl p-5">
-            <div className="text-[10px] uppercase tracking-wider text-white/40">Tech stack</div>
+          <div className="case-panel">
+            <div className="case-panel-label">Tech stack</div>
             <div className="mt-3 flex flex-wrap gap-1.5">
               {p.stack.map((s) => (
-                <span key={s} className="rounded-md border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[11px] font-medium text-white/70">
+                <span key={s} className="case-tech-badge">
                   {s}
                 </span>
               ))}
@@ -962,7 +958,7 @@ export function Work() {
             </FadeUp>
           </div>
           <FadeUp delay={0.2}>
-            <p className="max-w-md text-sm sm:text-base text-white/50">
+            <p className="max-w-md text-sm sm:text-base" style={{ color: "var(--text-muted)" }}>
               A selection of platforms, mobile apps, and AI systems shipped for
               founders and teams across industries. Scroll to explore.
             </p>
@@ -980,10 +976,10 @@ export function Work() {
             ))}
           </motion.div>
 
-          <div className="pointer-events-none absolute bottom-6 sm:bottom-8 left-1/2 h-[3px] w-40 sm:w-56 -translate-x-1/2 overflow-hidden rounded-full bg-white/10">
+          <div className="pointer-events-none absolute bottom-6 sm:bottom-8 left-1/2 h-[3px] w-40 sm:w-56 -translate-x-1/2 overflow-hidden rounded-full scroll-progress-bg">
             <motion.div
               style={{ scaleX: scrollYProgress, transformOrigin: "left" }}
-              className="h-full w-full bg-gradient-to-r from-white via-[#F5C76A] to-[#d4a94a]"
+              className="h-full w-full bg-gradient-to-r from-current via-[#F5C76A] to-[#d4a94a]"
             />
           </div>
         </div>
@@ -1018,7 +1014,7 @@ export function WhyUs() {
             radius={8}
             showArrows={!isMobile}
             arrowColor="#F5C76A"
-            arrowBackground="rgba(255,255,255,0.1)"
+            arrowBackground="var(--btn-secondary-bg)"
             arrowSize={44}
             arrowPosition={100}
             autoplay
@@ -1029,12 +1025,12 @@ export function WhyUs() {
               if (!o) return null;
               return (
                 <div className="flex h-full flex-col justify-between p-5 sm:p-7">
-                  <div className="grid h-10 w-10 sm:h-11 sm:w-11 place-items-center rounded-xl border border-[#F5C76A]/25 bg-[#F5C76A]/[0.06]">
+                  <div className="carousel-card-icon h-10 w-10 sm:h-11 sm:w-11 border-[#F5C76A]/25 bg-[#F5C76A]/[0.06]">
                     <o.icon className="h-4 w-4 sm:h-5 sm:w-5 text-[#F5C76A]" />
                   </div>
                   <div>
-                    <div className="font-display text-base sm:text-xl font-semibold leading-tight">{o.title}</div>
-                    <div className="mt-2 text-xs sm:text-sm leading-relaxed text-white/60">{o.desc}</div>
+                    <div className="carousel-card-title text-base sm:text-xl leading-tight">{o.title}</div>
+                    <div className="mt-2 text-xs sm:text-sm leading-relaxed carousel-card-desc">{o.desc}</div>
                   </div>
                 </div>
               );
@@ -1072,7 +1068,7 @@ export function TechStack() {
             radius={8}
             showArrows={!isMobile}
             arrowColor="#F5C76A"
-            arrowBackground="rgba(255,255,255,0.1)"
+            arrowBackground="var(--btn-secondary-bg)"
             arrowSize={44}
             arrowPosition={100}
             autoplay
@@ -1084,7 +1080,7 @@ export function TechStack() {
               return (
                 <div className="flex h-full flex-col items-center justify-center gap-3 p-4">
                   <s.icon className="h-8 w-8 sm:h-10 sm:w-10 text-[#F5C76A]" />
-                  <div className="text-sm sm:text-lg font-medium text-white/90">{s.name}</div>
+                  <div className="text-sm sm:text-lg font-medium carousel-card-title">{s.name}</div>
                 </div>
               );
             }}
@@ -1121,7 +1117,7 @@ export function Industries() {
             radius={8}
             showArrows={!isMobile}
             arrowColor="#F5C76A"
-            arrowBackground="rgba(255,255,255,0.1)"
+            arrowBackground="var(--btn-secondary-bg)"
             arrowSize={44}
             arrowPosition={100}
             autoplay
@@ -1133,7 +1129,7 @@ export function Industries() {
               return (
                 <div className="flex h-full flex-col items-center justify-center gap-3 p-4">
                   <it.icon className="h-7 w-7 sm:h-9 sm:w-9 text-[#F5C76A]" />
-                  <div className="text-sm sm:text-base font-medium text-white/90">{it.name}</div>
+                  <div className="text-sm sm:text-base font-medium carousel-card-title">{it.name}</div>
                 </div>
               );
             }}
@@ -1167,11 +1163,11 @@ export function Testimonials() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7 }}
-              className="mt-5 sm:mt-6 font-display text-lg sm:text-2xl leading-relaxed text-white/90 sm:text-3xl"
+              className="mt-5 sm:mt-6 font-display text-lg sm:text-2xl leading-relaxed sm:text-3xl testimonial-quote"
             >
               "{cur.q}"
             </motion.blockquote>
-            <div className="mt-6 sm:mt-8 text-xs sm:text-sm text-white/50">— {cur.a}</div>
+            <div className="mt-6 sm:mt-8 text-xs sm:text-sm testimonial-author">— {cur.a}</div>
             <div className="mt-6 sm:mt-8 flex justify-center gap-1.5">
               {TESTIMONIALS.map((_, idx) => (
                 <button
@@ -1179,7 +1175,7 @@ export function Testimonials() {
                   onClick={() => setI(idx)}
                   aria-label={`Go to testimonial ${idx + 1}`}
                   aria-pressed={idx === i}
-                  className={`h-1.5 rounded-full transition-all ${idx === i ? "w-8 bg-[#F5C76A]" : "w-1.5 bg-white/20"}`}
+                  className={`testimonial-dot ${idx === i ? "testimonial-dot-active" : "testimonial-dot-inactive"}`}
                 />
               ))}
             </div>
@@ -1219,11 +1215,11 @@ export function FaqSection() {
                     onClick={() => setOpen(isOpen ? null : i)}
                     aria-expanded={isOpen}
                     aria-controls={panelId}
-                    className="flex w-full items-center justify-between gap-3 sm:gap-4 p-4 sm:p-6 text-left transition-colors hover:bg-white/[0.02]"
+                    className="flex w-full items-center justify-between gap-3 sm:gap-4 p-4 sm:p-6 text-left transition-colors hover:bg-[var(--secondary)]"
                   >
-                    <span className="font-display text-sm sm:text-base font-medium text-white md:text-lg">{f.q}</span>
-                    <span className="grid h-7 w-7 sm:h-8 sm:w-8 shrink-0 place-items-center rounded-full border border-white/10 bg-white/[0.03] transition-colors" aria-hidden="true">
-                      {isOpen ? <Minus className="h-3 w-3 sm:h-4 sm:w-4 text-[#F5C76A]" /> : <Plus className="h-3 w-3 sm:h-4 sm:w-4 text-white/70" />}
+                    <span className="font-display text-sm sm:text-base font-medium md:text-lg faq-question">{f.q}</span>
+                    <span className="faq-toggle h-7 w-7 sm:h-8 sm:w-8 shrink-0" aria-hidden="true">
+                      {isOpen ? <Minus className="h-3 w-3 sm:h-4 sm:w-4 text-[#F5C76A]" /> : <Plus className="h-3 w-3 sm:h-4 sm:w-4" style={{ color: "var(--text-muted)" }} />}
                     </span>
                   </button>
                   <AnimatePresence initial={false}>
@@ -1238,7 +1234,7 @@ export function FaqSection() {
                         transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                         className="overflow-hidden"
                       >
-                        <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-xs sm:text-sm leading-relaxed text-white/65">{f.a}</div>
+                        <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-xs sm:text-sm leading-relaxed faq-answer">{f.a}</div>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -1273,7 +1269,7 @@ export function FinalCta() {
               </h2>
             </FadeUp>
             <FadeUp delay={0.2}>
-              <p className="mx-auto mt-7 max-w-2xl text-base leading-relaxed text-white/60 sm:text-lg">
+              <p className="mx-auto mt-7 max-w-2xl text-base leading-relaxed sm:text-lg cta-description">
                 Whether you're launching a startup, modernizing your business, or
                 automating your operations, THERUINS is ready to build your next
                 competitive advantage.
@@ -1286,7 +1282,7 @@ export function FinalCta() {
               </div>
             </FadeUp>
             <FadeUp delay={0.4}>
-              <div className="mt-10 inline-flex items-center gap-2 text-xs text-white/40">
+              <div className="mt-10 inline-flex items-center gap-2 text-xs cta-email">
                 <Mail className="h-3.5 w-3.5" />
                 {CONTACT_EMAIL}
               </div>
@@ -1304,16 +1300,16 @@ export function FinalCta() {
 
 export function Footer() {
   return (
-    <footer className="relative border-t border-white/[0.06] pt-12 sm:pt-16 pb-8 sm:pb-10">
+    <footer className="relative border-t border-[var(--border-subtle)] pt-12 sm:pt-16 pb-8 sm:pb-10">
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
         <FadeUp>
-          <div className="flex flex-col items-start justify-between gap-8 sm:gap-10 border-b border-white/[0.06] pb-8 sm:pb-10 lg:flex-row lg:items-end">
+          <div className="flex flex-col items-start justify-between gap-8 sm:gap-10 border-b border-[var(--border-subtle)] pb-8 sm:pb-10 lg:flex-row lg:items-end">
             <div>
               <div className="flex items-center gap-3">
                 <span className="grid h-9 w-9 sm:h-10 sm:w-10 place-items-center rounded-lg bg-[#F5C76A] font-display text-base sm:text-lg font-bold text-black">T</span>
-                <span className="font-display text-2xl sm:text-3xl font-semibold tracking-[0.12em]">{BRAND}</span>
+                <span className="font-display text-2xl sm:text-3xl font-semibold tracking-[0.12em]" style={{ color: "var(--text-primary)" }}>{BRAND}</span>
               </div>
-              <div className="mt-3 max-w-md text-xs sm:text-sm text-white/50">{TAGLINE}</div>
+              <div className="mt-3 max-w-md text-xs sm:text-sm footer-link">{TAGLINE}</div>
             </div>
             <div className="flex items-center gap-3">
               <MagneticButton href={`mailto:${CONTACT_EMAIL}`} primary>Book a Strategy Call</MagneticButton>
@@ -1323,39 +1319,39 @@ export function Footer() {
 
         <div className="mt-8 grid grid-cols-2 gap-6 sm:gap-8 sm:grid-cols-4">
           <div>
-            <div className="text-[10px] uppercase tracking-widest text-white/40">Company</div>
+            <div className="footer-section-label">Company</div>
             <ul className="mt-3 sm:mt-4 space-y-1.5 sm:space-y-2 text-xs sm:text-sm">
-              <li><a href="#services" className="text-white/70 hover:text-white">Services</a></li>
-              <li><a href="#work" className="text-white/70 hover:text-white">Work</a></li>
-              <li><a href="#process" className="text-white/70 hover:text-white">Process</a></li>
-              <li><a href="#industries" className="text-white/70 hover:text-white">Industries</a></li>
+              <li><a href="#services" className="footer-link">Services</a></li>
+              <li><a href="#work" className="footer-link">Work</a></li>
+              <li><a href="#process" className="footer-link">Process</a></li>
+              <li><a href="#industries" className="footer-link">Industries</a></li>
             </ul>
           </div>
           <div>
-            <div className="text-[10px] uppercase tracking-widest text-white/40">Build</div>
+            <div className="footer-section-label">Build</div>
             <ul className="mt-3 sm:mt-4 space-y-1.5 sm:space-y-2 text-xs sm:text-sm">
-              <li className="text-white/70">AI Websites</li>
-              <li className="text-white/70">Mobile Apps</li>
-              <li className="text-white/70">AI Agents</li>
-              <li className="text-white/70">Automation</li>
+              <li className="footer-item">AI Websites</li>
+              <li className="footer-item">Mobile Apps</li>
+              <li className="footer-item">AI Agents</li>
+              <li className="footer-item">Automation</li>
             </ul>
           </div>
           <div>
-            <div className="text-[10px] uppercase tracking-widest text-white/40">Regions</div>
+            <div className="footer-section-label">Regions</div>
             <ul className="mt-3 sm:mt-4 space-y-1.5 sm:space-y-2 text-xs sm:text-sm">
-              <li className="text-white/70">United States · Canada</li>
-              <li className="text-white/70">United Kingdom · EU</li>
-              <li className="text-white/70">UAE · Singapore</li>
-              <li className="text-white/70">Australia</li>
+              <li className="footer-item">United States · Canada</li>
+              <li className="footer-item">United Kingdom · EU</li>
+              <li className="footer-item">UAE · Singapore</li>
+              <li className="footer-item">Australia</li>
             </ul>
           </div>
           <div>
-            <div className="text-[10px] uppercase tracking-widest text-white/40">Contact</div>
+            <div className="footer-section-label">Contact</div>
             <ul className="mt-3 sm:mt-4 space-y-1.5 sm:space-y-2 text-xs sm:text-sm">
-              <li><a href={`mailto:${CONTACT_EMAIL}`} className="text-white/70 hover:text-white">{CONTACT_EMAIL}</a></li>
-              <li><a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white">GitHub</a></li>
-              <li><a href="#" className="text-white/70 hover:text-white">LinkedIn</a></li>
-              <li><a href="#" className="text-white/70 hover:text-white">X · Twitter</a></li>
+              <li><a href={`mailto:${CONTACT_EMAIL}`} className="footer-link">{CONTACT_EMAIL}</a></li>
+              <li><a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="footer-link">GitHub</a></li>
+              <li><a href="#" className="footer-link">LinkedIn</a></li>
+              <li><a href="#" className="footer-link">X · Twitter</a></li>
             </ul>
           </div>
         </div>
@@ -1369,7 +1365,7 @@ export function Footer() {
           className="mt-10 sm:mt-12 h-px w-full bg-gradient-to-r from-transparent via-[#F5C76A]/60 to-transparent"
         />
 
-        <div className="mt-6 sm:mt-8 flex flex-col items-center justify-between gap-3 text-[10px] sm:text-xs text-white/40 sm:flex-row">
+        <div className="mt-6 sm:mt-8 flex flex-col items-center justify-between gap-3 text-[10px] sm:text-xs footer-copyright sm:flex-row">
           <div>© {new Date().getFullYear()} {BRAND}. All rights reserved.</div>
           <div className="flex items-center gap-2">
             <span className="h-1.5 w-1.5 rounded-full bg-[#F5C76A] animate-[ticker_1.6s_ease-in-out_infinite]" />
@@ -1488,7 +1484,7 @@ export function HomeStack() {
               borderTopRightRadius: panelRadius,
             }}
             aria-hidden
-            className="absolute inset-x-0 bottom-0 top-auto h-[18vh] z-10 overflow-hidden border-t border-white/[0.08] bg-transparent shadow-[0_-40px_110px_-30px_rgba(0,0,0,0.95)] will-change-transform"
+            className="absolute inset-x-0 bottom-0 top-auto h-[18vh] z-10 overflow-hidden border-t border-[var(--border-subtle)] bg-transparent shadow-[0_-40px_110px_-30px_rgba(0,0,0,0.95)] will-change-transform"
           />
         </div>
       </div>
@@ -1502,9 +1498,6 @@ export function HomeStack() {
     </>
   );
 }
-
-
-
 
 
 

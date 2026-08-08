@@ -40,14 +40,14 @@ type Props = {
 }
 
 const GRADIENT_FALLBACKS = [
-    "linear-gradient(160deg, rgba(245,199,106,0.15), rgba(245,199,106,0.03))",
-    "linear-gradient(160deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02))",
-    "linear-gradient(160deg, rgba(245,199,106,0.12), rgba(212,169,74,0.04))",
-    "linear-gradient(160deg, rgba(255,255,255,0.06), rgba(245,199,106,0.05))",
-    "linear-gradient(160deg, rgba(245,199,106,0.1), rgba(255,255,255,0.03))",
-    "linear-gradient(160deg, rgba(212,169,74,0.12), rgba(245,199,106,0.04))",
-    "linear-gradient(160deg, rgba(255,255,255,0.07), rgba(245,199,106,0.06))",
-    "linear-gradient(160deg, rgba(245,199,106,0.09), rgba(255,255,255,0.02))",
+    "linear-gradient(160deg, rgba(245,199,106,0.12), rgba(245,199,106,0.03))",
+    "linear-gradient(160deg, var(--glass-bg), var(--glass-bg))",
+    "linear-gradient(160deg, rgba(245,199,106,0.10), rgba(212,169,74,0.04))",
+    "linear-gradient(160deg, var(--glass-bg), rgba(245,199,106,0.05))",
+    "linear-gradient(160deg, rgba(245,199,106,0.08), var(--glass-bg))",
+    "linear-gradient(160deg, rgba(212,169,74,0.10), rgba(245,199,106,0.04))",
+    "linear-gradient(160deg, var(--glass-bg), rgba(245,199,106,0.06))",
+    "linear-gradient(160deg, rgba(245,199,106,0.08), var(--glass-bg))",
 ]
 
 const RENDER_RANGE = 6
@@ -138,8 +138,8 @@ function Card({
     })
     const boxShadow = useTransform(pos, (p: number) =>
         Math.abs(relOf(index, p, count)) < 0.5
-            ? "0 24px 70px rgba(0,0,0,0.55), inset 0 0 0 1px rgba(255,255,255,0.06)"
-            : "0 14px 40px rgba(0,0,0,0.45), inset 0 0 0 1px rgba(255,255,255,0.05)"
+            ? "var(--shadow-lg), inset 0 0 0 1px var(--glass-border)"
+            : "var(--shadow-md), inset 0 0 0 1px var(--border-subtle)"
     )
 
     return (
@@ -224,8 +224,8 @@ function ArrowButton({
                 width: size,
                 height: size,
                 borderRadius: "50%",
-                border: "none",
-                background,
+                border: "1px solid var(--btn-secondary-border)",
+                background: "var(--btn-secondary-bg)",
                 color,
                 display: "flex",
                 alignItems: "center",
@@ -233,7 +233,7 @@ function ArrowButton({
                 cursor: "pointer",
                 padding: 0,
                 zIndex: 2000,
-                boxShadow: "0 6px 18px rgba(0,0,0,0.35)",
+                boxShadow: "var(--shadow-sm)",
                 WebkitTapHighlightColor: "transparent",
             }}
         >
