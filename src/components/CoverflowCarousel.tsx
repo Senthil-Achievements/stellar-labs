@@ -9,7 +9,7 @@ import {
 } from "framer-motion"
 
 type CoverflowImage = {
-    src?: any
+    src?: { src?: string; srcSet?: string }
     srcUrl?: string
     alt?: string
 }
@@ -29,7 +29,12 @@ type Props = {
     arrowPosition: number
     autoplay: boolean
     autoplayDirection: "leftToRight" | "rightToLeft"
-    transition: any
+    transition: {
+        type?: string
+        duration?: number
+        delay?: number
+        ease?: number[] | string
+    }
     style?: React.CSSProperties
     renderItem?: (item: CoverflowImage, index: number) => React.ReactNode
 }
@@ -52,8 +57,7 @@ function resolveItemSrc(item: CoverflowImage | undefined): string {
     if (override) return override
     if (!item?.src) return ""
     if (typeof item.src === "string") return item.src
-    if (typeof item.src === "object" && item.src.src) return item.src.src
-    return ""
+    return item.src.src ?? ""
 }
 
 type Sizing = {

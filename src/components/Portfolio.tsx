@@ -58,7 +58,22 @@ const PROCESS = [
   { icon: TrendingUp, title: "Scale", desc: "Iterate on real usage data, expand features, and grow the infrastructure as demand rises." },
 ];
 
-const PROJECTS = [
+type Project = {
+  id: string;
+  name: string;
+  tagline: string;
+  overview: string;
+  problem: string;
+  solution: string;
+  features: string[];
+  stack: string[];
+  outcomes: string[];
+  tag: string;
+  repo: string;
+  demo?: string;
+};
+
+const PROJECTS: Project[] = [
   {
     id: "bloodlink",
     name: "BloodLink",
@@ -243,7 +258,7 @@ function FadeUp({ children, delay = 0, y = 24, className = "" }: { children: Rea
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.22em] text-white/60 backdrop-blur">
+    <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.22em] text-white/60 backdrop-blur" aria-hidden="true">
       <span className="h-1.5 w-1.5 rounded-full bg-[#F5C76A] shadow-[0_0_10px_rgba(245,199,106,0.8)]" />
       {children}
     </div>
@@ -862,7 +877,7 @@ function ProjectCard({ p, index }: { p: typeof PROJECTS[number]; index: number }
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
             {(() => {
-              const demo = (p as { demo?: string }).demo;
+              const demo = p.demo;
               const isGithub = p.repo.includes("github.com");
               return (
                 <>
@@ -956,7 +971,7 @@ export function Work() {
       </div>
 
       <div ref={targetRef} className="relative mt-10 sm:mt-16" style={{ height: `${n * 90}vh` }}>
-        <div className="sticky top-0 flex h-[100dvh] items-center overflow-hidden">
+        <div className="sticky top-0 flex h-[100dvh] h-[100svh] items-center overflow-hidden">
           <motion.div style={{ x }} className="flex gap-4 sm:gap-6 md:gap-8 pr-[4vw] will-change-transform">
             {PROJECTS.map((p, i) => (
               <div key={p.id} className={`shrink-0 ${isMobile ? "w-[85vw]" : "w-[min(900px,88vw)] sm:w-[min(1100px,92vw)]"}`}>
@@ -1459,7 +1474,7 @@ export function HomeStack() {
   return (
     <>
       <div ref={pinRef} className="relative h-[170vh]">
-        <div className="sticky top-0 h-[100dvh] w-full overflow-hidden">
+        <div className="sticky top-0 h-[100dvh] h-[100svh] w-full overflow-hidden">
           <motion.div
             style={{ scale: heroScale, opacity: heroOpacity, borderRadius: heroRadius }}
             className="absolute inset-0 origin-center overflow-hidden will-change-transform"
