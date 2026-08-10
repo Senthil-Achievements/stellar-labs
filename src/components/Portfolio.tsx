@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { motion, useInView, useMotionValue, useSpring, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { Link as RouterLink } from "@tanstack/react-router";
 import {
@@ -25,7 +25,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 const BRAND = "THERUINS";
 const TAGLINE = "The Birthplace of Tomorrow.";
-const CONTACT_EMAIL = "hello@theruins.co";
+const CONTACT_EMAIL = "summapa605@gmail.com";
 const GITHUB_URL = "https://github.com/Senthil-Achievements";
 
 /* ============================================================
@@ -228,31 +228,16 @@ const FAQ = [
 
 function FadeUp({ children, delay = 0, y = 24, className = "" }: { children: React.ReactNode; delay?: number; y?: number; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
-  const isMobile = useIsMobile();
-
-  if (isMobile) {
-    return (
-      <div
-        ref={ref}
-        className={`transition-all duration-500 ease-out ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"} ${className}`}
-        style={{ transitionDelay: `${delay * 1000}ms` }}
-      >
-        {children}
-      </div>
-    );
-  }
+  const inView = useInView(ref, { once: true, margin: "-60px" });
 
   return (
-    <motion.div
+    <div
       ref={ref}
-      initial={{ opacity: 0, y }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] }}
-      className={className}
+      className={`transition-all duration-600 ease-out ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"} ${className}`}
+      style={{ transitionDelay: `${delay * 1000}ms` }}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }
 
@@ -438,7 +423,7 @@ export function Nav() {
         </div>
         <div className="hidden items-center gap-2 md:flex">
           <ThemeToggle />
-          <MagneticButton href="/contact" primary>Book a Strategy Call</MagneticButton>
+          <MagneticButton href="tel:+919003863723" primary>Book a Strategy Call</MagneticButton>
         </div>
         <div className="flex items-center gap-2 md:hidden">
           <ThemeToggle />
@@ -467,9 +452,9 @@ export function Nav() {
               {l}
             </RouterLink>
           ))}
-          <RouterLink to="/contact" onClick={() => setOpen(false)} className="mobile-menu-cta">
+          <a href="tel:+919003863723" onClick={() => setOpen(false)} className="mobile-menu-cta">
             Book a Strategy Call
-          </RouterLink>
+          </a>
         </div>
       </div>
     </header>
@@ -600,7 +585,7 @@ function HeroMockup() {
 export function Hero() {
   const isMobile = useIsMobile();
   return (
-    <section id="top" className="relative flex min-h-screen items-center overflow-hidden pt-28 sm:pt-32">
+    <section id="top" className="relative flex min-h-screen items-center overflow-hidden pt-20 sm:pt-28 md:pt-32">
       {!isMobile && <RisingLines particles={180} color="#5E4017" riseSpeed={10} scale={8} horizonColor="#F5C76A" className="opacity-90" />}
       <ShaderBackground className="opacity-30 [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_75%)]" />
       <div className="relative mx-auto grid w-full max-w-6xl grid-cols-1 gap-8 px-5 sm:px-6 lg:grid-cols-[1.1fr_1fr] lg:gap-10">
@@ -617,26 +602,15 @@ export function Hero() {
             </h1>
           </FadeUp>
           <FadeUp delay={0.2}>
-            <p className="mt-7 max-w-xl text-base leading-relaxed sm:text-lg" style={{ color: "var(--text-secondary)" }}>
-              From AI websites and mobile apps to intelligent automations and AI
-              agents, THERUINS builds complete digital infrastructure that helps
-              businesses grow faster, operate smarter, and scale globally.
+            <p className="mt-5 sm:mt-7 max-w-xl text-sm sm:text-base leading-relaxed md:text-lg" style={{ color: "var(--text-secondary)" }}>
+              From AI websites and mobile apps to intelligent automations, THERUINS
+              builds digital infrastructure that helps businesses grow faster and scale globally.
             </p>
           </FadeUp>
           <FadeUp delay={0.3}>
-            <div className="mt-9 flex flex-wrap items-center gap-3">
+            <div className="mt-6 sm:mt-9 flex flex-wrap items-center gap-3">
               <MagneticButton href="#contact" primary>Book a Strategy Call</MagneticButton>
               <MagneticButton href="#work">View Our Work</MagneticButton>
-            </div>
-          </FadeUp>
-          <FadeUp delay={0.4}>
-            <div className="mt-14 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-[var(--border-subtle)] pt-6 text-[11px] uppercase tracking-wider" style={{ color: "var(--text-faint)" }}>
-              <span className="inline-flex items-center gap-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#F5C76A]" />
-                Currently open to select engagements
-              </span>
-              <span className="hidden h-1 w-1 rounded-full sm:inline-block" style={{ background: "var(--border)" }} />
-              <span>Remote · Worldwide</span>
             </div>
           </FadeUp>
 
@@ -647,7 +621,7 @@ export function Hero() {
         </div>
       </div>
 
-      <div className="absolute bottom-6 sm:bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-[10px] uppercase tracking-[0.3em] md:flex" style={{ color: "var(--text-faint)" }}>
+      <div className="scroll-hint absolute bottom-6 sm:bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-[10px] uppercase tracking-[0.3em] md:flex" style={{ color: "var(--text-faint)" }}>
         Scroll
         <span className="h-8 w-px bg-gradient-to-b from-current to-transparent" />
       </div>
@@ -663,7 +637,7 @@ export function Marquee() {
   const isMobile = useIsMobile();
   const items = [...MARQUEE_WORDS, ...MARQUEE_WORDS];
   return (
-    <div className="relative overflow-hidden border-y border-[var(--border-subtle)] py-5 sm:py-6">
+    <div className="relative overflow-hidden border-y border-[var(--border-subtle)] py-3.5 sm:py-6">
       <div className={`flex whitespace-nowrap ${isMobile ? "" : "animate-[marquee_35s_linear_infinite]"}`}>
         {items.map((w, i) => (
           <span key={i} className="mx-5 sm:mx-8 inline-flex items-center gap-5 sm:gap-8 font-display text-lg sm:text-2xl font-medium marquee-word">
@@ -684,28 +658,28 @@ export function Marquee() {
 export function Services() {
   const isMobile = useIsMobile();
   return (
-    <section id="services" className="relative py-20 sm:py-32">
+    <section id="services" className="relative py-12 sm:py-16 md:py-24">
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
         <FadeUp><SectionLabel>What We Build</SectionLabel></FadeUp>
         <FadeUp delay={0.1}>
-          <h2 className="mt-6 max-w-3xl font-display text-3xl sm:text-5xl font-semibold leading-[1.05] sm:text-6xl">
+          <h2 className="mt-4 sm:mt-5 max-w-3xl font-display text-2xl sm:text-4xl md:text-5xl font-semibold leading-[1.1] sm:leading-[1.05]">
             Products, platforms, and <span className="text-gradient-accent">agents</span> — engineered end-to-end.
           </h2>
         </FadeUp>
-        <div className="mt-10 sm:mt-16" style={{ height: isMobile ? 340 : 420 }}>
+        <div className="mt-6 sm:mt-8 md:mt-12" style={{ minHeight: isMobile ? "auto" : 360 }}>
           <CoverflowCarousel
             images={SERVICES.map(s => ({ alt: s.title }))}
-            activeWidth={isMobile ? 300 : 520}
-            activeHeight={isMobile ? 280 : 360}
-            restWidth={isMobile ? 60 : 120}
-            restHeight={isMobile ? 100 : 180}
-            gap={isMobile ? 8 : 20}
+            activeWidth={460}
+            activeHeight={310}
+            restWidth={220}
+            restHeight={260}
+            gap={24}
             radius={8}
-            showArrows={!isMobile}
+            showArrows
             arrowColor="#F5C76A"
             arrowBackground="var(--btn-secondary-bg)"
             arrowSize={44}
-            arrowPosition={100}
+            arrowPosition={96}
             autoplay
             autoplayDirection="rightToLeft"
             transition={{ type: "tween", duration: 0.4, delay: 2, ease: [0, 0, 1, 1] }}
@@ -713,13 +687,13 @@ export function Services() {
               const s = SERVICES[i];
               if (!s) return null;
               return (
-                <div className="flex h-full flex-col justify-between p-5 sm:p-7">
-                  <div className="carousel-card-icon h-10 w-10 sm:h-11 sm:w-11">
-                    <s.icon className="h-4 w-4 sm:h-5 sm:w-5 text-[#F5C76A]" />
+                <div className="flex h-full flex-col justify-start gap-4 p-5 md:p-7">
+                  <div className="carousel-card-icon h-10 w-10 md:h-11 md:w-11 shrink-0">
+                    <s.icon className="h-5 w-5 md:h-5 md:w-5 text-[#F5C76A]" />
                   </div>
-                  <div>
-                    <div className="carousel-card-title text-base sm:text-xl">{s.title}</div>
-                    <div className="mt-2 text-xs sm:text-sm leading-relaxed carousel-card-desc">{s.desc}</div>
+                  <div className="flex flex-col gap-2 min-h-0 overflow-hidden">
+                    <div className="carousel-card-title text-base md:text-xl font-semibold">{s.title}</div>
+                    <div className="text-xs md:text-sm leading-relaxed carousel-card-desc">{s.desc}</div>
                   </div>
                 </div>
               );
@@ -762,24 +736,24 @@ function ServiceCard({ s }: { s: typeof SERVICES[number] }) {
 export function Process() {
   const isMobile = useIsMobile();
   return (
-    <section id="process" className="relative py-20 sm:py-32">
+    <section id="process" className="relative py-12 sm:py-16 md:py-24">
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
         <FadeUp><SectionLabel>How We Work</SectionLabel></FadeUp>
         <FadeUp delay={0.1}>
-          <h2 className="mt-6 max-w-3xl font-display text-3xl sm:text-5xl font-semibold leading-[1.05] sm:text-6xl">
+          <h2 className="mt-4 sm:mt-5 max-w-3xl font-display text-2xl sm:text-4xl md:text-5xl font-semibold leading-[1.1] sm:leading-[1.05]">
             A calm, deliberate <span className="text-gradient-accent">six-stage</span> engagement.
           </h2>
         </FadeUp>
-        <div className="mt-10 sm:mt-16" style={{ height: isMobile ? 320 : 400 }}>
+        <div className="mt-6 sm:mt-8 md:mt-12" style={{ minHeight: isMobile ? "auto" : 330 }}>
           <CoverflowCarousel
             images={PROCESS.map(s => ({ alt: s.title }))}
-            activeWidth={isMobile ? 280 : 480}
-            activeHeight={isMobile ? 260 : 340}
-            restWidth={isMobile ? 50 : 100}
-            restHeight={isMobile ? 90 : 160}
-            gap={isMobile ? 8 : 18}
+            activeWidth={440}
+            activeHeight={280}
+            restWidth={100}
+            restHeight={160}
+            gap={20}
             radius={8}
-            showArrows={!isMobile}
+            showArrows
             arrowColor="#F5C76A"
             arrowBackground="var(--btn-secondary-bg)"
             arrowSize={44}
@@ -791,16 +765,16 @@ export function Process() {
               const step = PROCESS[i];
               if (!step) return null;
               return (
-                <div className="flex h-full flex-col justify-between p-5 sm:p-7">
-                  <div className="flex items-center justify-between">
-                    <div className="carousel-card-icon h-10 w-10 sm:h-11 sm:w-11">
-                      <step.icon className="h-4 w-4 sm:h-5 sm:w-5 text-[#F5C76A]" />
+                <div className="flex h-full flex-col justify-start gap-4 p-5 md:p-7">
+                  <div className="flex items-center justify-between shrink-0">
+                    <div className="carousel-card-icon h-10 w-10 md:h-11 md:w-11">
+                      <step.icon className="h-5 w-5 text-[#F5C76A]" />
                     </div>
-                    <div className="carousel-card-number">0{i + 1}</div>
+                    <div className="carousel-card-number font-mono text-xs font-bold text-[#F5C76A]/80">0{i + 1}</div>
                   </div>
-                  <div>
-                    <div className="carousel-card-title text-base sm:text-xl">{step.title}</div>
-                    <p className="mt-2 text-xs sm:text-sm carousel-card-desc">{step.desc}</p>
+                  <div className="flex flex-col gap-1.5 min-h-0 overflow-hidden">
+                    <div className="carousel-card-title text-base md:text-xl font-semibold">{step.title}</div>
+                    <p className="text-xs md:text-sm leading-relaxed carousel-card-desc">{step.desc}</p>
                   </div>
                 </div>
               );
@@ -939,11 +913,46 @@ function ProjectCard({ p, index }: { p: typeof PROJECTS[number]; index: number }
 }
 
 export function Work() {
+  const isMobile = useIsMobile();
   const targetRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: targetRef });
   const n = PROJECTS.length;
   const x = useTransform(scrollYProgress, [0, 1], ["2vw", `-${(n - 1) * (100 / n) + 2}%`]);
-  const isMobile = useIsMobile();
+
+  if (isMobile) {
+    return (
+      <section id="work" className="relative py-12 sm:py-20">
+        <div className="mx-auto max-w-6xl px-5 sm:px-6">
+          <FadeUp><SectionLabel>Featured Work</SectionLabel></FadeUp>
+          <FadeUp delay={0.1}>
+            <h2 className="mt-4 sm:mt-6 max-w-3xl font-display text-2xl sm:text-4xl font-semibold leading-[1.1]">
+              Products we're <span className="text-gradient-accent">proud</span> to have built.
+            </h2>
+          </FadeUp>
+          <FadeUp delay={0.15}>
+            <p className="mt-3 max-w-md text-sm" style={{ color: "var(--text-muted)" }}>
+              A selection of platforms, mobile apps, and AI systems shipped for
+              founders and teams across industries. Swipe to explore.
+            </p>
+          </FadeUp>
+        </div>
+        <div className="mt-6 sm:mt-8 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 -mx-5 px-5 sm:-mx-6 sm:px-6" style={{ WebkitOverflowScrolling: "touch" }}>
+          <div className="flex gap-4 sm:gap-6" style={{ width: "max-content" }}>
+            {PROJECTS.map((p, i) => (
+              <div key={p.id} className="shrink-0 w-[85vw] max-w-[360px] snap-center">
+                <ProjectCard p={p} index={i} />
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="mx-auto mt-4 flex justify-center gap-1.5 px-5 sm:px-6">
+          {PROJECTS.map((_, idx) => (
+            <span key={idx} className="h-1.5 w-1.5 rounded-full" style={{ background: "var(--border)" }} />
+          ))}
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="work" className="relative py-16 sm:py-24 md:py-32">
@@ -966,11 +975,11 @@ export function Work() {
         </div>
       </div>
 
-      <div ref={targetRef} className="relative mt-10 sm:mt-16" style={{ height: `${n * 90}vh` }}>
+      <div ref={targetRef} className="relative mt-10 sm:mt-16" style={{ height: `${Math.max(3, n) * 80}vh` }}>
         <div className="sticky top-0 flex h-[100dvh] h-[100svh] items-center overflow-hidden">
           <motion.div style={{ x }} className="flex gap-4 sm:gap-6 md:gap-8 pr-[4vw] will-change-transform">
             {PROJECTS.map((p, i) => (
-              <div key={p.id} className={`shrink-0 ${isMobile ? "w-[85vw]" : "w-[min(900px,88vw)] sm:w-[min(1100px,92vw)]"}`}>
+              <div key={p.id} className="shrink-0 w-[min(900px,88vw)] sm:w-[min(1100px,92vw)]">
                 <ProjectCard p={p} index={i} />
               </div>
             ))}
@@ -992,27 +1001,31 @@ export function Work() {
    WHY THERUINS
    ============================================================ */
 
+/* ============================================================
+   WHY THERUINS
+   ============================================================ */
+
 export function WhyUs() {
   const isMobile = useIsMobile();
   return (
-    <section className="relative py-20 sm:py-32">
+    <section className="relative py-12 sm:py-16 md:py-24">
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
         <FadeUp><SectionLabel>Why THERUINS</SectionLabel></FadeUp>
         <FadeUp delay={0.1}>
-          <h2 className="mt-6 max-w-3xl font-display text-3xl sm:text-5xl font-semibold leading-[1.05] sm:text-6xl">
+          <h2 className="mt-4 sm:mt-5 max-w-3xl font-display text-2xl sm:text-4xl md:text-5xl font-semibold leading-[1.1] sm:leading-[1.05]">
             We measure success in <span className="text-gradient-accent">business outcomes</span>.
           </h2>
         </FadeUp>
-        <div className="mt-10 sm:mt-16" style={{ height: isMobile ? 320 : 400 }}>
+        <div className="mt-6 sm:mt-8 md:mt-12" style={{ minHeight: isMobile ? "auto" : 330 }}>
           <CoverflowCarousel
             images={OUTCOMES.map(o => ({ alt: o.title }))}
-            activeWidth={isMobile ? 280 : 500}
-            activeHeight={isMobile ? 260 : 340}
-            restWidth={isMobile ? 50 : 110}
-            restHeight={isMobile ? 90 : 170}
-            gap={isMobile ? 8 : 18}
+            activeWidth={460}
+            activeHeight={280}
+            restWidth={110}
+            restHeight={170}
+            gap={20}
             radius={8}
-            showArrows={!isMobile}
+            showArrows
             arrowColor="#F5C76A"
             arrowBackground="var(--btn-secondary-bg)"
             arrowSize={44}
@@ -1024,13 +1037,13 @@ export function WhyUs() {
               const o = OUTCOMES[i];
               if (!o) return null;
               return (
-                <div className="flex h-full flex-col justify-between p-5 sm:p-7">
-                  <div className="carousel-card-icon h-10 w-10 sm:h-11 sm:w-11 border-[#F5C76A]/25 bg-[#F5C76A]/[0.06]">
-                    <o.icon className="h-4 w-4 sm:h-5 sm:w-5 text-[#F5C76A]" />
+                <div className="flex h-full flex-col justify-start gap-4 p-5 md:p-7">
+                  <div className="carousel-card-icon h-10 w-10 md:h-11 md:w-11 shrink-0 border-[#F5C76A]/25 bg-[#F5C76A]/[0.06]">
+                    <o.icon className="h-5 w-5 text-[#F5C76A]" />
                   </div>
-                  <div>
-                    <div className="carousel-card-title text-base sm:text-xl leading-tight">{o.title}</div>
-                    <div className="mt-2 text-xs sm:text-sm leading-relaxed carousel-card-desc">{o.desc}</div>
+                  <div className="flex flex-col gap-1.5 min-h-0 overflow-hidden">
+                    <div className="carousel-card-title text-base md:text-xl font-semibold leading-tight">{o.title}</div>
+                    <div className="text-xs md:text-sm leading-relaxed carousel-card-desc">{o.desc}</div>
                   </div>
                 </div>
               );
@@ -1049,24 +1062,24 @@ export function WhyUs() {
 export function TechStack() {
   const isMobile = useIsMobile();
   return (
-    <section className="relative py-20 sm:py-32">
+    <section className="relative py-12 sm:py-16 md:py-24">
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
         <FadeUp><SectionLabel>Technology Stack</SectionLabel></FadeUp>
         <FadeUp delay={0.1}>
-          <h2 className="mt-6 max-w-3xl font-display text-3xl sm:text-5xl font-semibold leading-[1.05] sm:text-6xl">
+          <h2 className="mt-4 sm:mt-5 max-w-3xl font-display text-2xl sm:text-4xl md:text-5xl font-semibold leading-[1.1] sm:leading-[1.05]">
             A modern, <span className="text-gradient-accent">production-ready</span> toolchain.
           </h2>
         </FadeUp>
-        <div className="mt-10 sm:mt-16" style={{ height: isMobile ? 300 : 380 }}>
+        <div className="mt-6 sm:mt-8 md:mt-12" style={{ minHeight: isMobile ? "auto" : 260 }}>
           <CoverflowCarousel
             images={STACK.map(s => ({ alt: s.name }))}
-            activeWidth={isMobile ? 200 : 340}
-            activeHeight={isMobile ? 240 : 320}
-            restWidth={isMobile ? 50 : 90}
-            restHeight={isMobile ? 80 : 150}
-            gap={isMobile ? 6 : 14}
+            activeWidth={280}
+            activeHeight={200}
+            restWidth={90}
+            restHeight={150}
+            gap={18}
             radius={8}
-            showArrows={!isMobile}
+            showArrows
             arrowColor="#F5C76A"
             arrowBackground="var(--btn-secondary-bg)"
             arrowSize={44}
@@ -1078,9 +1091,11 @@ export function TechStack() {
               const s = STACK[i];
               if (!s) return null;
               return (
-                <div className="flex h-full flex-col items-center justify-center gap-3 p-4">
-                  <s.icon className="h-8 w-8 sm:h-10 sm:w-10 text-[#F5C76A]" />
-                  <div className="text-sm sm:text-lg font-medium carousel-card-title">{s.name}</div>
+                <div className="flex h-full flex-col items-center justify-center gap-3 p-4 min-h-0 overflow-hidden text-center">
+                  <div className="carousel-card-icon h-12 w-12 shrink-0">
+                    <s.icon className="h-6 w-6 text-[#F5C76A]" />
+                  </div>
+                  <div className="text-base md:text-lg font-semibold carousel-card-title whitespace-nowrap">{s.name}</div>
                 </div>
               );
             }}
@@ -1098,24 +1113,24 @@ export function TechStack() {
 export function Industries() {
   const isMobile = useIsMobile();
   return (
-    <section id="industries" className="relative py-20 sm:py-32">
+    <section id="industries" className="relative py-12 sm:py-16 md:py-24">
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
         <FadeUp><SectionLabel>Industries</SectionLabel></FadeUp>
         <FadeUp delay={0.1}>
-          <h2 className="mt-6 max-w-3xl font-display text-3xl sm:text-5xl font-semibold leading-[1.05] sm:text-6xl">
+          <h2 className="mt-4 sm:mt-5 max-w-3xl font-display text-2xl sm:text-4xl md:text-5xl font-semibold leading-[1.1] sm:leading-[1.05]">
             We speak the language of <span className="text-gradient-accent">your industry</span>.
           </h2>
         </FadeUp>
-        <div className="mt-10 sm:mt-16" style={{ height: isMobile ? 280 : 360 }}>
+        <div className="mt-6 sm:mt-8 md:mt-12" style={{ minHeight: isMobile ? "auto" : 240 }}>
           <CoverflowCarousel
             images={INDUSTRIES.map(it => ({ alt: it.name }))}
-            activeWidth={isMobile ? 200 : 320}
-            activeHeight={isMobile ? 220 : 300}
-            restWidth={isMobile ? 45 : 80}
-            restHeight={isMobile ? 75 : 140}
-            gap={isMobile ? 6 : 12}
+            activeWidth={260}
+            activeHeight={180}
+            restWidth={80}
+            restHeight={140}
+            gap={16}
             radius={8}
-            showArrows={!isMobile}
+            showArrows
             arrowColor="#F5C76A"
             arrowBackground="var(--btn-secondary-bg)"
             arrowSize={44}
@@ -1127,9 +1142,11 @@ export function Industries() {
               const it = INDUSTRIES[i];
               if (!it) return null;
               return (
-                <div className="flex h-full flex-col items-center justify-center gap-3 p-4">
-                  <it.icon className="h-7 w-7 sm:h-9 sm:w-9 text-[#F5C76A]" />
-                  <div className="text-sm sm:text-base font-medium carousel-card-title">{it.name}</div>
+                <div className="flex h-full flex-col items-center justify-center gap-3 p-4 min-h-0 overflow-hidden text-center">
+                  <div className="carousel-card-icon h-11 w-11 shrink-0">
+                    <it.icon className="h-5 w-5 text-[#F5C76A]" />
+                  </div>
+                  <div className="text-sm md:text-base font-semibold carousel-card-title whitespace-nowrap">{it.name}</div>
                 </div>
               );
             }}
@@ -1152,23 +1169,23 @@ export function Testimonials() {
   }, []);
   const cur = TESTIMONIALS[i];
   return (
-    <section className="relative py-20 sm:py-32">
+    <section className="relative py-12 sm:py-20 md:py-28">
       <div className="mx-auto max-w-4xl px-5 sm:px-6 text-center">
         <FadeUp><div className="inline-block"><SectionLabel>Testimonials</SectionLabel></div></FadeUp>
         <FadeUp delay={0.15}>
-          <div className="glass-card relative mt-8 rounded-2xl sm:rounded-3xl p-6 sm:p-10 md:p-14">
-            <Quote className="mx-auto h-8 w-8 sm:h-10 sm:w-10 text-[#F5C76A]/50" />
+          <div className="glass-card relative mt-6 sm:mt-8 rounded-xl sm:rounded-2xl md:rounded-3xl p-5 sm:p-8 md:p-14">
+            <Quote className="mx-auto h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-[#F5C76A]/50" />
             <motion.blockquote
               key={i}
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7 }}
-              className="mt-5 sm:mt-6 font-display text-lg sm:text-2xl leading-relaxed sm:text-3xl testimonial-quote"
+              className="mt-4 sm:mt-6 font-display text-base sm:text-xl md:text-3xl leading-relaxed testimonial-quote"
             >
               "{cur.q}"
             </motion.blockquote>
-            <div className="mt-6 sm:mt-8 text-xs sm:text-sm testimonial-author">— {cur.a}</div>
-            <div className="mt-6 sm:mt-8 flex justify-center gap-1.5">
+            <div className="mt-4 sm:mt-6 md:mt-8 text-xs sm:text-sm testimonial-author">— {cur.a}</div>
+            <div className="mt-4 sm:mt-6 md:mt-8 flex justify-center gap-1.5">
               {TESTIMONIALS.map((_, idx) => (
                 <button
                   key={idx}
@@ -1193,32 +1210,32 @@ export function Testimonials() {
 export function FaqSection() {
   const [open, setOpen] = useState<number | null>(0);
   return (
-    <section id="faq" className="relative py-20 sm:py-32">
+    <section id="faq" className="relative py-12 sm:py-20 md:py-28">
       <div className="mx-auto max-w-4xl px-5 sm:px-6">
         <FadeUp><SectionLabel>FAQ</SectionLabel></FadeUp>
         <FadeUp delay={0.1}>
-          <h2 className="mt-6 font-display text-3xl sm:text-5xl font-semibold leading-[1.05] sm:text-6xl">
+          <h2 className="mt-4 sm:mt-6 font-display text-2xl sm:text-4xl md:text-5xl font-semibold leading-[1.1] sm:leading-[1.05]">
             Answers before <span className="text-gradient-accent">you ask</span>.
           </h2>
         </FadeUp>
 
-        <div className="mt-10 sm:mt-14 space-y-3" role="list">
+        <div className="mt-6 sm:mt-10 md:mt-14 space-y-2 sm:space-y-3" role="list">
           {FAQ.map((f, i) => {
             const isOpen = open === i;
             const panelId = `faq-panel-${i}`;
             const buttonId = `faq-button-${i}`;
             return (
               <FadeUp key={f.q} delay={i * 0.04}>
-                <div className="glass-card overflow-hidden rounded-xl sm:rounded-2xl" role="listitem">
+                <div className="glass-card overflow-hidden rounded-lg sm:rounded-xl md:rounded-2xl" role="listitem">
                   <button
                     id={buttonId}
                     onClick={() => setOpen(isOpen ? null : i)}
                     aria-expanded={isOpen}
                     aria-controls={panelId}
-                    className="flex w-full items-center justify-between gap-3 sm:gap-4 p-4 sm:p-6 text-left transition-colors hover:bg-[var(--secondary)]"
+                    className="flex w-full items-center justify-between gap-3 sm:gap-4 p-3.5 sm:p-5 md:p-6 text-left transition-colors hover:bg-[var(--secondary)]"
                   >
-                    <span className="font-display text-sm sm:text-base font-medium md:text-lg faq-question">{f.q}</span>
-                    <span className="faq-toggle h-7 w-7 sm:h-8 sm:w-8 shrink-0" aria-hidden="true">
+                    <span className="font-display text-xs sm:text-sm md:text-lg font-medium faq-question">{f.q}</span>
+                    <span className="faq-toggle h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 shrink-0" aria-hidden="true">
                       {isOpen ? <Minus className="h-3 w-3 sm:h-4 sm:w-4 text-[#F5C76A]" /> : <Plus className="h-3 w-3 sm:h-4 sm:w-4" style={{ color: "var(--text-muted)" }} />}
                     </span>
                   </button>
@@ -1234,7 +1251,7 @@ export function FaqSection() {
                         transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                         className="overflow-hidden"
                       >
-                        <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-xs sm:text-sm leading-relaxed faq-answer">{f.a}</div>
+                        <div className="px-3.5 sm:px-5 md:px-6 pb-3.5 sm:pb-5 md:pb-6 text-[11px] sm:text-xs md:text-sm leading-relaxed faq-answer">{f.a}</div>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -1254,9 +1271,9 @@ export function FaqSection() {
 
 export function FinalCta() {
   return (
-    <section id="contact" className="relative py-20 sm:py-32">
+    <section id="contact" className="relative py-12 sm:py-20 md:py-28">
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
-        <div className="glass-card relative overflow-hidden rounded-2xl sm:rounded-[2rem] p-8 sm:p-10 md:p-16">
+        <div className="glass-card relative overflow-hidden rounded-xl sm:rounded-2xl md:rounded-[2rem] p-6 sm:p-8 md:p-16">
           <div className="absolute -top-40 left-1/3 h-96 w-96 rounded-full bg-[#F5C76A]/20 blur-3xl" />
           <div className="absolute -bottom-40 right-0 h-96 w-96 rounded-full bg-[#F5C76A]/10 blur-3xl" />
           <div className="relative text-center">
@@ -1264,26 +1281,26 @@ export function FinalCta() {
               <div className="inline-block"><SectionLabel>Let's Build</SectionLabel></div>
             </FadeUp>
             <FadeUp delay={0.1}>
-              <h2 className="mx-auto mt-6 max-w-3xl font-display text-3xl sm:text-5xl font-semibold leading-[1.02] sm:text-6xl lg:text-7xl">
+              <h2 className="mx-auto mt-4 sm:mt-6 max-w-3xl font-display text-2xl sm:text-4xl md:text-5xl lg:text-7xl font-semibold leading-[1.05] sm:leading-[1.02]">
                 Let's Build Something <span className="text-gradient-accent">Extraordinary.</span>
               </h2>
             </FadeUp>
             <FadeUp delay={0.2}>
-              <p className="mx-auto mt-7 max-w-2xl text-base leading-relaxed sm:text-lg cta-description">
+              <p className="mx-auto mt-5 sm:mt-7 max-w-2xl text-sm sm:text-base md:text-lg leading-relaxed cta-description">
                 Whether you're launching a startup, modernizing your business, or
                 automating your operations, THERUINS is ready to build your next
                 competitive advantage.
               </p>
             </FadeUp>
             <FadeUp delay={0.3}>
-              <div className="mt-10 flex flex-wrap justify-center gap-3">
-                <MagneticButton href={`mailto:${CONTACT_EMAIL}`} primary>Book Discovery Call</MagneticButton>
-                <MagneticButton href={`mailto:${CONTACT_EMAIL}`}>Start Your Project</MagneticButton>
+              <div className="mt-6 sm:mt-10 flex flex-wrap justify-center gap-3">
+                <MagneticButton href="tel:+919003863723" primary>Book Discovery Call</MagneticButton>
+                <MagneticButton href="mailto:summapa605@gmail.com">Start Your Project</MagneticButton>
               </div>
             </FadeUp>
             <FadeUp delay={0.4}>
-              <div className="mt-10 inline-flex items-center gap-2 text-xs cta-email">
-                <Mail className="h-3.5 w-3.5" />
+              <div className="mt-6 sm:mt-10 inline-flex items-center gap-2 text-[11px] sm:text-xs cta-email">
+                <Mail className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                 {CONTACT_EMAIL}
               </div>
             </FadeUp>
@@ -1312,12 +1329,12 @@ export function Footer() {
               <div className="mt-3 max-w-md text-xs sm:text-sm footer-link">{TAGLINE}</div>
             </div>
             <div className="flex items-center gap-3">
-              <MagneticButton href={`mailto:${CONTACT_EMAIL}`} primary>Book a Strategy Call</MagneticButton>
+              <MagneticButton href="tel:+919003863723" primary>Book a Strategy Call</MagneticButton>
             </div>
           </div>
         </FadeUp>
 
-        <div className="mt-8 grid grid-cols-2 gap-6 sm:gap-8 sm:grid-cols-4">
+        <div className="footer-grid mt-8 grid grid-cols-2 gap-6 sm:gap-8 sm:grid-cols-4">
           <div>
             <div className="footer-section-label">Company</div>
             <ul className="mt-3 sm:mt-4 space-y-1.5 sm:space-y-2 text-xs sm:text-sm">
@@ -1458,9 +1475,7 @@ export function HomeStack() {
         <Hero />
         <div className="relative z-20">
           {sections.map((s) => (
-            <section key={s.key} className="relative w-full">
-              {s.node}
-            </section>
+            <Fragment key={s.key}>{s.node}</Fragment>
           ))}
         </div>
       </>
@@ -1490,9 +1505,7 @@ export function HomeStack() {
       </div>
       <div className="relative z-20">
         {sections.map((s) => (
-          <section key={s.key} className="relative w-full">
-            {s.node}
-          </section>
+          <Fragment key={s.key}>{s.node}</Fragment>
         ))}
       </div>
     </>
