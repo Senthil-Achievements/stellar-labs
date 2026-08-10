@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   animate,
   motion,
+  useAnimation,
   useMotionValue,
   useReducedMotion,
   useTransform,
@@ -116,6 +117,20 @@ function MobileAnimatedCarousel({
   const minX = leftPadding - (count - 1) * step;
   const maxX = leftPadding;
 
+  const controls = useAnimation();
+
+  useEffect(() => {
+    controls.start({
+      x: targetX,
+      transition: {
+        type: prefersReducedMotion ? "tween" : "spring",
+        stiffness: prefersReducedMotion ? 600 : 320,
+        damping: prefersReducedMotion ? 50 : 28,
+        mass: 0.8,
+      },
+    });
+  }, [activeIdx, targetX, prefersReducedMotion, controls]);
+
   const handleDragStart = () => {
     isDraggingRef.current = true;
   };
@@ -134,7 +149,14 @@ function MobileAnimatedCarousel({
       nextIdx = Math.max(activeIdx - 1, 0);
     }
 
-    onSelect(nextIdx);
+    if (nextIdx !== activeIdx) {
+      onSelect(nextIdx);
+    } else {
+      controls.start({
+        x: targetX,
+        transition: { type: "spring", stiffness: 320, damping: 28, mass: 0.8 },
+      });
+    }
   };
 
   const CARD_RADIUS = Math.min(16, radius * 2);
@@ -151,13 +173,7 @@ function MobileAnimatedCarousel({
           dragElastic={0.15}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
-          animate={{ x: targetX }}
-          transition={{
-            type: prefersReducedMotion ? "tween" : "spring",
-            stiffness: prefersReducedMotion ? 600 : 320,
-            damping: prefersReducedMotion ? 50 : 28,
-            mass: 0.8,
-          }}
+          animate={controls}
           style={{
             display: "flex",
             gap: `${gap}px`,
