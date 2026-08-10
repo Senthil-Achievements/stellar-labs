@@ -41,16 +41,16 @@ type Props = {
   renderItem?: (item: CoverflowImage, index: number) => React.ReactNode;
 };
 
-// OPAQUE GLASS GRADIENTS (Solid dark base prevents 3D coverflow overlay transparency bleed)
+// OPAQUE GLASS GRADIENTS
 const GRADIENTS = [
-  "linear-gradient(160deg, rgba(245,199,106,0.14), rgba(245,199,106,0.04)), #0c0b09",
-  "linear-gradient(160deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)), #0a0a0a",
-  "linear-gradient(160deg, rgba(245,199,106,0.12), rgba(212,169,74,0.03)), #0c0b09",
-  "linear-gradient(160deg, rgba(255,255,255,0.07), rgba(245,199,106,0.04)), #0a0a0a",
-  "linear-gradient(160deg, rgba(245,199,106,0.10), rgba(255,255,255,0.03)), #0c0b09",
-  "linear-gradient(160deg, rgba(212,169,74,0.12), rgba(245,199,106,0.03)), #0a0a0a",
-  "linear-gradient(160deg, rgba(255,255,255,0.07), rgba(245,199,106,0.05)), #0c0b09",
-  "linear-gradient(160deg, rgba(245,199,106,0.10), rgba(255,255,255,0.03)), #0a0a0a",
+  "linear-gradient(160deg, rgba(245,199,106,0.14), rgba(245,199,106,0.04))",
+  "linear-gradient(160deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))",
+  "linear-gradient(160deg, rgba(245,199,106,0.12), rgba(212,169,74,0.03))",
+  "linear-gradient(160deg, rgba(255,255,255,0.07), rgba(245,199,106,0.04))",
+  "linear-gradient(160deg, rgba(245,199,106,0.10), rgba(255,255,255,0.03))",
+  "linear-gradient(160deg, rgba(212,169,74,0.12), rgba(245,199,106,0.03))",
+  "linear-gradient(160deg, rgba(255,255,255,0.07), rgba(245,199,106,0.05))",
+  "linear-gradient(160deg, rgba(245,199,106,0.10), rgba(255,255,255,0.03))",
 ];
 
 const RENDER_RANGE = 6;
@@ -72,7 +72,7 @@ function relOf(index: number, pos: number, count: number): number {
 }
 
 /* ================================================================
-   MOBILE — Deterministic Center-Stack Carousel Engine
+   MOBILE — Single Motion Track Carousel Engine
    ================================================================ */
 function MobileAnimatedCarousel({
   images,
@@ -93,7 +93,6 @@ function MobileAnimatedCarousel({
   const prefersReducedMotion = useReducedMotion();
   const viewportRef = useRef<HTMLDivElement>(null);
   const [viewportWidth, setViewportWidth] = useState<number>(375);
-  const [dragOffset, setDragOffset] = useState<number>(0);
 
   useEffect(() => {
     if (!viewportRef.current) return;
@@ -111,7 +110,14 @@ function MobileAnimatedCarousel({
 
   const cardWidth = Math.min(viewportWidth - 48, 390);
   const gap = 16;
-  const pitch = cardWidth + gap;
+  const step = cardWidth + gap;
+
+  // Pure numeric X positioning for Framer Motion
+  const centerOffset = (viewportWidth - cardWidth) / 2;
+  const targetX = centerOffset - activeIdx * step;
+  const minX = centerOffset - (count - 1) * step;
+  const maxX = centerOffset;
+
   const CARD_RADIUS = Math.min(16, radius * 2);
 
   const handleDragStart = () => {
@@ -133,7 +139,6 @@ function MobileAnimatedCarousel({
       nextIdx = Math.max(activeIdx - 1, 0);
     }
 
-    setDragOffset(0);
     onSelect(nextIdx);
   };
 
@@ -142,48 +147,44 @@ function MobileAnimatedCarousel({
       className="hf-carousel-mobile py-2"
       style={{ position: "relative", width: "100%", touchAction: "pan-y" }}
     >
-      {/* DETERMINISTIC VIEWPORT */}
+      {/* MOBILE VIEWPORT CLIPPING BOUNDARY */}
       <div
         ref={viewportRef}
         className="relative w-full overflow-hidden py-1"
         style={{
           position: "relative",
           width: "100%",
-          height: "auto",
-          minHeight: 280,
           overflow: "hidden",
           touchAction: "pan-y",
         }}
       >
-        {/* DRAGGABLE CAROUSEL INTERACTION LAYER */}
+        {/* SINGLE AUTHORITATIVE FRAMER MOTION TRACK */}
         <motion.div
           drag="x"
-          dragConstraints={{ left: -pitch, right: pitch }}
-          dragElastic={0.12}
+          dragConstraints={{ left: minX, right: maxX }}
+          dragElastic={0.15}
           onDragStart={handleDragStart}
-          onDrag={(_, info) => setDragOffset(info.offset.x)}
           onDragEnd={handleDragEnd}
+          animate={{ x: targetX }}
+          transition={{
+            type: prefersReducedMotion ? "tween" : "spring",
+            stiffness: prefersReducedMotion ? 600 : 320,
+            damping: prefersReducedMotion ? 50 : 28,
+            mass: 0.8,
+          }}
           style={{
-            position: "relative",
-            width: "100%",
-            height: "100%",
-            minHeight: 280,
+            display: "flex",
+            gap: `${gap}px`,
+            width: "max-content",
             cursor: "grab",
             touchAction: "pan-y",
           }}
           whileTap={{ cursor: "grabbing" }}
         >
           {images.map((img, i) => {
-            const relativeIndex = i - activeIdx;
-            const isVisible = Math.abs(relativeIndex) <= 2;
-            if (!isVisible) return null;
-
             const src = resolveItemSrc(img);
-            const isActive = relativeIndex === 0;
-            const isNeighbor = Math.abs(relativeIndex) === 1;
-
-            // Deterministic position relative to viewport CENTER (left: 50%)
-            const basePositionX = relativeIndex * pitch;
+            const isActive = i === activeIdx;
+            const isNeighbor = Math.abs(i - activeIdx) === 1;
 
             return (
               <motion.div
@@ -191,65 +192,51 @@ function MobileAnimatedCarousel({
                 onClick={() => {
                   if (!isDraggingRef.current) onSelect(i);
                 }}
-                initial={false}
                 animate={{
-                  x: basePositionX + dragOffset,
                   scale: isActive ? 1 : isNeighbor ? 0.94 : 0.88,
-                  opacity: isActive ? 1 : isNeighbor ? 0.75 : 0.25,
+                  opacity: isActive ? 1 : isNeighbor ? 0.75 : 0.35,
                 }}
-                transition={{
-                  type: prefersReducedMotion ? "tween" : "spring",
-                  stiffness: prefersReducedMotion ? 600 : 320,
-                  damping: prefersReducedMotion ? 50 : 28,
-                  mass: 0.8,
-                }}
+                transition={{ type: "spring", stiffness: 350, damping: 30 }}
                 style={{
-                  position: "absolute",
-                  left: "50%",
-                  top: 0,
+                  flex: `0 0 ${cardWidth}px`,
                   width: `${cardWidth}px`,
+                  borderRadius: `${CARD_RADIUS}px`,
+                  backgroundColor: isActive
+                    ? "var(--surface-2, #0c0b09)"
+                    : "var(--surface, #0a0a0a)",
+                  backgroundImage: isActive
+                    ? "linear-gradient(160deg, rgba(245,199,106,0.14), rgba(245,199,106,0.04))"
+                    : "linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))",
+                  border: isActive
+                    ? "1px solid rgba(245,199,106,0.35)"
+                    : "1px solid rgba(255,255,255,0.10)",
+                  boxShadow: isActive
+                    ? "0 18px 45px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(245,199,106,0.2)"
+                    : "0 10px 25px rgba(0,0,0,0.4)",
                   zIndex: isActive ? 100 : isNeighbor ? 50 : 10,
-                  pointerEvents: isVisible ? "auto" : "none",
+                  display: "flex",
+                  flexDirection: "column",
+                  overflow: "hidden",
+                  transformOrigin: "center center",
                   WebkitTapHighlightColor: "transparent",
                   userSelect: "none",
                 }}
               >
-                <div
-                  style={{
-                    transform: "translateX(-50%)",
-                    width: "100%",
-                    borderRadius: `${CARD_RADIUS}px`,
-                    background: isActive
-                      ? "linear-gradient(160deg, rgba(245,199,106,0.14), rgba(245,199,106,0.04)), #0c0b09"
-                      : "linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)), #0a0a0a",
-                    border: isActive
-                      ? "1px solid rgba(245,199,106,0.35)"
-                      : "1px solid rgba(255,255,255,0.10)",
-                    boxShadow: isActive
-                      ? "0 18px 45px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(245,199,106,0.2)"
-                      : "0 10px 25px rgba(0,0,0,0.4)",
-                    display: "flex",
-                    flexDirection: "column",
-                    overflow: "hidden",
-                    transformOrigin: "center center",
-                  }}
-                >
-                  {renderItem && img ? (
-                    renderItem(img, i)
-                  ) : src ? (
-                    <img
-                      src={src}
-                      alt={img?.alt || ""}
-                      draggable={false}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        display: "block",
-                      }}
-                    />
-                  ) : null}
-                </div>
+                {renderItem && img ? (
+                  renderItem(img, i)
+                ) : src ? (
+                  <img
+                    src={src}
+                    alt={img?.alt || ""}
+                    draggable={false}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      display: "block",
+                    }}
+                  />
+                ) : null}
               </motion.div>
             );
           })}
@@ -399,7 +386,8 @@ function DesktopCard({
           height: baseHeight,
           borderRadius: CARD_RADIUS,
           overflow: "hidden",
-          background: gradient,
+          backgroundColor: "var(--surface-2, #0c0b09)",
+          backgroundImage: gradient,
           boxShadow,
           display: "flex",
           flexDirection: "column",
@@ -469,7 +457,7 @@ function DesktopArrow({
         background: "rgba(255,255,255,0.06)",
         color,
         display: "flex",
-        itemsCenter: "center",
+        alignItems: "center",
         justifyContent: "center",
         cursor: "pointer",
         padding: 0,
