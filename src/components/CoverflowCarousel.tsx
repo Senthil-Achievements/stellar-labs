@@ -96,10 +96,12 @@ function MobileAnimatedCarousel({
 
   useEffect(() => {
     const updateWidth = () => {
+      const winW = typeof window !== "undefined" ? window.innerWidth : 375;
       if (containerRef.current) {
-        setContainerWidth(containerRef.current.offsetWidth);
-      } else if (typeof window !== "undefined") {
-        setContainerWidth(window.innerWidth);
+        const rectW = containerRef.current.getBoundingClientRect().width;
+        setContainerWidth(rectW > 0 ? Math.min(winW, rectW) : winW);
+      } else {
+        setContainerWidth(winW);
       }
     };
     updateWidth();
@@ -538,44 +540,23 @@ export default function CoverflowCarousel(props: Props) {
     setMounted(true);
   }, []);
 
-  const tick = useCallback(
-    (t: number) => {
-      const last = lastTRef.current ?? t;
-      const dt = Math.min((t - last) / 1000, 1 / 30);
-      lastTRef.current = t;
-      const cur = pos.get();
-      const diff = targetRef.current - cur;
-      const dur = Math.max(0.08, moveDur);
-      const step = (1 / dur) * dt;
-      const arriving = prefersReducedMotion || Math.abs(diff) <= step;
-      if (arriving) {
-        pos.set(targetRef.current);
-        rafRef.current = null;
-        lastTRef.current = null;
-        return;
-      }
-      pos.set(cur + Math.sign(diff) * step);
-      rafRef.current = requestAnimationFrame(tick);
-    },
-    [pos, moveDur, prefersReducedMotion],
-  );
-
-  const ensureRunning = useCallback(() => {
-    if (rafRef.current == null) {
-      lastTRef.current = null;
-      rafRef.current = requestAnimationFrame(tick);
-    }
-  }, [tick]);
+  useEffect(() => {
+    const controls = animate(pos, activeIdx, {
+      type: prefersReducedMotion ? "tween" : "spring",
+      duration: prefersReducedMotion ? 0.01 : moveDur,
+      stiffness: 300,
+      damping: 30,
+    });
+    return () => controls.stop();
+  }, [activeIdx, moveDur, prefersReducedMotion, pos]);
 
   // Unified navigation pipeline for all triggers (buttons, dots, keyboard, swipe, autoplay)
   const goToIndex = useCallback(
     (idx: number) => {
       const target = ((idx % count) + count) % count;
       setActiveIdx(target);
-      targetRef.current = target;
-      ensureRunning();
     },
-    [count, ensureRunning],
+    [count],
   );
 
   const goNext = useCallback(() => {
@@ -600,16 +581,11 @@ export default function CoverflowCarousel(props: Props) {
 
     const timer = setInterval(() => {
       if (isHoveredRef.current || isDraggingRef.current) return;
-      setActiveIdx((prev) => {
-        const next = (((prev + step) % count) + count) % count;
-        targetRef.current = next;
-        ensureRunning();
-        return next;
-      });
+      setActiveIdx((prev) => (((prev + step) % count) + count) % count);
     }, intervalTime);
 
     return () => clearInterval(timer);
-  }, [autoplay, autoplayDirection, count, dwell, moveDur, ensureRunning]);
+  }, [autoplay, autoplayDirection, count, dwell, moveDur]);
 
   useEffect(() => {
     if (isMobile) return;
