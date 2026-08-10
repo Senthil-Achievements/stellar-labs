@@ -41,15 +41,16 @@ type Props = {
   renderItem?: (item: CoverflowImage, index: number) => React.ReactNode;
 };
 
+// OPAQUE GLASS GRADIENTS (Solid dark base prevents 3D coverflow overlay transparency bleed)
 const GRADIENTS = [
-  "linear-gradient(160deg, rgba(245,199,106,0.12), rgba(245,199,106,0.03))",
-  "linear-gradient(160deg, rgba(255,255,255,0.06), rgba(255,255,255,0.06))",
-  "linear-gradient(160deg, rgba(245,199,106,0.10), rgba(212,169,74,0.04))",
-  "linear-gradient(160deg, rgba(255,255,255,0.06), rgba(245,199,106,0.05))",
-  "linear-gradient(160deg, rgba(245,199,106,0.08), rgba(255,255,255,0.06))",
-  "linear-gradient(160deg, rgba(212,169,74,0.10), rgba(245,199,106,0.04))",
-  "linear-gradient(160deg, rgba(255,255,255,0.06), rgba(245,199,106,0.06))",
-  "linear-gradient(160deg, rgba(245,199,106,0.08), rgba(255,255,255,0.06))",
+  "linear-gradient(160deg, rgba(245,199,106,0.14), rgba(245,199,106,0.04)), #0c0b09",
+  "linear-gradient(160deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)), #0a0a0a",
+  "linear-gradient(160deg, rgba(245,199,106,0.12), rgba(212,169,74,0.03)), #0c0b09",
+  "linear-gradient(160deg, rgba(255,255,255,0.07), rgba(245,199,106,0.04)), #0a0a0a",
+  "linear-gradient(160deg, rgba(245,199,106,0.10), rgba(255,255,255,0.03)), #0c0b09",
+  "linear-gradient(160deg, rgba(212,169,74,0.12), rgba(245,199,106,0.03)), #0a0a0a",
+  "linear-gradient(160deg, rgba(255,255,255,0.07), rgba(245,199,106,0.05)), #0c0b09",
+  "linear-gradient(160deg, rgba(245,199,106,0.10), rgba(255,255,255,0.03)), #0a0a0a",
 ];
 
 const RENDER_RANGE = 6;
@@ -126,9 +127,9 @@ function MobileAnimatedCarousel({
     const velocity = info.velocity.x;
 
     let nextIdx = activeIdx;
-    if (offset < -50 || velocity < -400) {
+    if (offset < -40 || velocity < -350) {
       nextIdx = Math.min(activeIdx + 1, count - 1);
-    } else if (offset > 50 || velocity > 400) {
+    } else if (offset > 40 || velocity > 350) {
       nextIdx = Math.max(activeIdx - 1, 0);
     }
 
@@ -144,12 +145,12 @@ function MobileAnimatedCarousel({
       {/* DETERMINISTIC VIEWPORT */}
       <div
         ref={viewportRef}
-        className="relative w-full overflow-hidden"
+        className="relative w-full overflow-hidden py-1"
         style={{
           position: "relative",
           width: "100%",
           height: "auto",
-          minHeight: 260,
+          minHeight: 280,
           overflow: "hidden",
           touchAction: "pan-y",
         }}
@@ -166,6 +167,7 @@ function MobileAnimatedCarousel({
             position: "relative",
             width: "100%",
             height: "100%",
+            minHeight: 280,
             cursor: "grab",
             touchAction: "pan-y",
           }}
@@ -191,7 +193,7 @@ function MobileAnimatedCarousel({
                 }}
                 initial={false}
                 animate={{
-                  x: `calc(-50% + ${basePositionX + dragOffset}px)`,
+                  x: basePositionX + dragOffset,
                   scale: isActive ? 1 : isNeighbor ? 0.94 : 0.88,
                   opacity: isActive ? 1 : isNeighbor ? 0.75 : 0.25,
                 }}
@@ -206,36 +208,48 @@ function MobileAnimatedCarousel({
                   left: "50%",
                   top: 0,
                   width: `${cardWidth}px`,
-                  borderRadius: `${CARD_RADIUS}px`,
-                  background: isActive
-                    ? "linear-gradient(160deg, rgba(245,199,106,0.14), rgba(245,199,106,0.04)), #0e0d0a"
-                    : "linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)), #0c0c0c",
-                  border: isActive
-                    ? "1px solid rgba(245,199,106,0.35)"
-                    : "1px solid rgba(255,255,255,0.10)",
-                  boxShadow: isActive
-                    ? "0 18px 45px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(245,199,106,0.2)"
-                    : "0 10px 25px rgba(0,0,0,0.4)",
                   zIndex: isActive ? 100 : isNeighbor ? 50 : 10,
-                  display: "flex",
-                  flexDirection: "column",
-                  overflow: "hidden",
+                  pointerEvents: isVisible ? "auto" : "none",
                   WebkitTapHighlightColor: "transparent",
                   userSelect: "none",
-                  transformOrigin: "center center",
-                  pointerEvents: isVisible ? "auto" : "none",
                 }}
               >
-                {renderItem && img ? (
-                  renderItem(img, i)
-                ) : src ? (
-                  <img
-                    src={src}
-                    alt={img?.alt || ""}
-                    draggable={false}
-                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                  />
-                ) : null}
+                <div
+                  style={{
+                    transform: "translateX(-50%)",
+                    width: "100%",
+                    borderRadius: `${CARD_RADIUS}px`,
+                    background: isActive
+                      ? "linear-gradient(160deg, rgba(245,199,106,0.14), rgba(245,199,106,0.04)), #0c0b09"
+                      : "linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)), #0a0a0a",
+                    border: isActive
+                      ? "1px solid rgba(245,199,106,0.35)"
+                      : "1px solid rgba(255,255,255,0.10)",
+                    boxShadow: isActive
+                      ? "0 18px 45px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(245,199,106,0.2)"
+                      : "0 10px 25px rgba(0,0,0,0.4)",
+                    display: "flex",
+                    flexDirection: "column",
+                    overflow: "hidden",
+                    transformOrigin: "center center",
+                  }}
+                >
+                  {renderItem && img ? (
+                    renderItem(img, i)
+                  ) : src ? (
+                    <img
+                      src={src}
+                      alt={img?.alt || ""}
+                      draggable={false}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        display: "block",
+                      }}
+                    />
+                  ) : null}
+                </div>
               </motion.div>
             );
           })}
@@ -455,7 +469,7 @@ function DesktopArrow({
         background: "rgba(255,255,255,0.06)",
         color,
         display: "flex",
-        alignItems: "center",
+        itemsCenter: "center",
         justifyContent: "center",
         cursor: "pointer",
         padding: 0,
