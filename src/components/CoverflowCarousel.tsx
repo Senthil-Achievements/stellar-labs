@@ -285,6 +285,17 @@ function MobileAnimatedCarousel({
 
 /* ================================================================
    DESKTOP CARD — Cinematic 3D Coverflow
+   ================================================================
+   COMPOSITING ARCHITECTURE:
+   - Outer wrapper: position, transform (x, scale, rotateY), zIndex ONLY.
+     opacity is ALWAYS 1 on this layer so the card is a fully opaque
+     compositing surface that physically occludes cards behind it.
+   - Inner card surface: opaque backgroundColor + translucent gradient.
+     This layer has overflow:hidden, borderRadius, and backfaceVisibility
+     to guarantee it behaves as a solid visual plane.
+   - Content overlay: a separate motion.div inside the card that applies
+     visual opacity fading for inactive cards. This fades text/icons
+     WITHOUT making the card background translucent.
    ================================================================ */
 function DesktopCard({
   item,
@@ -335,12 +346,22 @@ function DesktopCard({
     return Math.max(0.45, 0.6 - 0.1 * (ar - 2));
   });
 
-  const opacity = useTransform(pos, (p: number) => {
+  // Content opacity — applied to a content wrapper INSIDE the card,
+  // NOT to the outer positioning wrapper. This ensures the card
+  // background remains fully opaque while text/icons fade for inactive cards.
+  const contentOpacity = useTransform(pos, (p: number) => {
     const ar = Math.abs(relOf(index, p, count));
     if (ar <= 0.5) return 1;
     if (ar <= 1.5) return 0.95 - 0.25 * (ar - 0.5);
     if (ar <= R + 0.5) return Math.max(0.15, 0.7 - 0.35 * (ar - 1.5));
     return 0;
+  });
+
+  // Visibility — used to hide cards that are too far away (fully transparent)
+  // by setting display:none or pointerEvents:none, preventing ghost layers.
+  const visibility = useTransform(pos, (p: number) => {
+    const ar = Math.abs(relOf(index, p, count));
+    return ar > R + 0.5 ? "hidden" : "visible";
   });
 
   const rotateY = useTransform(pos, (p: number) => {
@@ -362,6 +383,11 @@ function DesktopCard({
       : "0 12px 35px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.08)",
   );
 
+  // Border color — gold for active, subtle white for side cards
+  const borderColor = useTransform(pos, (p: number) =>
+    Math.abs(relOf(index, p, count)) < 0.5 ? "rgba(245,199,106,0.35)" : "rgba(255,255,255,0.08)",
+  );
+
   return (
     <motion.div
       onClick={onSelect ? () => onSelect(index) : undefined}
@@ -371,13 +397,16 @@ function DesktopCard({
         top: "50%",
         x,
         zIndex,
-        opacity,
         scale,
         rotateY,
+        visibility,
         transformPerspective: 1000,
+        willChange: "transform",
+        backfaceVisibility: "hidden",
         cursor: onSelect ? "pointer" : "default",
       }}
     >
+      {/* INNER CARD SURFACE — always fully opaque background */}
       <motion.div
         style={{
           x: "-50%",
@@ -389,27 +418,45 @@ function DesktopCard({
           backgroundColor: "var(--surface-2, #0c0b09)",
           backgroundImage: gradient,
           boxShadow,
+          borderWidth: 1,
+          borderStyle: "solid",
+          borderColor,
           display: "flex",
           flexDirection: "column",
+          isolation: "isolate",
+          transformStyle: "flat",
+          backfaceVisibility: "hidden",
         }}
       >
-        {renderItem && item ? (
-          renderItem(item, index)
-        ) : src ? (
-          <img
-            src={src}
-            alt={item?.alt || ""}
-            draggable={false}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              display: "block",
-              pointerEvents: "none",
-              userSelect: "none",
-            }}
-          />
-        ) : null}
+        {/* CONTENT LAYER — opacity fades text/icons for side cards
+            while the card background remains fully opaque */}
+        <motion.div
+          style={{
+            opacity: contentOpacity,
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          {renderItem && item ? (
+            renderItem(item, index)
+          ) : src ? (
+            <img
+              src={src}
+              alt={item?.alt || ""}
+              draggable={false}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                display: "block",
+                pointerEvents: "none",
+                userSelect: "none",
+              }}
+            />
+          ) : null}
+        </motion.div>
       </motion.div>
     </motion.div>
   );
