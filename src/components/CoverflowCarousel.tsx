@@ -99,7 +99,7 @@ function MobileAnimatedCarousel({
       const winW = typeof window !== "undefined" ? window.innerWidth : 375;
       if (containerRef.current) {
         const rectW = containerRef.current.getBoundingClientRect().width;
-        setContainerWidth(rectW > 0 ? Math.min(winW, rectW) : winW);
+        setContainerWidth(rectW > 0 ? rectW : winW);
       } else {
         setContainerWidth(winW);
       }
@@ -163,8 +163,8 @@ function MobileAnimatedCarousel({
 
   return (
     <div
-      className="hf-carousel-mobile overflow-hidden py-2"
-      style={{ position: "relative", width: "100%", touchAction: "pan-y" }}
+      className="hf-carousel-mobile -mx-5 sm:-mx-6 overflow-hidden py-2"
+      style={{ position: "relative", touchAction: "pan-y" }}
     >
       <div ref={containerRef} className="relative w-full overflow-hidden">
         <motion.div
