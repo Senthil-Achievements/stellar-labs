@@ -3,7 +3,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   animate,
   motion,
-  useAnimation,
   useMotionValue,
   useReducedMotion,
   useTransform,
@@ -72,7 +71,7 @@ function relOf(index: number, pos: number, count: number): number {
 }
 
 /* ================================================================
-   MOBILE — Dedicated Framer Motion Touch Track Engine
+   MOBILE — Deterministic Center-Stack Carousel Engine
    ================================================================ */
 function MobileAnimatedCarousel({
   images,
@@ -91,44 +90,28 @@ function MobileAnimatedCarousel({
 }) {
   const count = images.length;
   const prefersReducedMotion = useReducedMotion();
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [containerWidth, setContainerWidth] = useState<number>(375);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const [viewportWidth, setViewportWidth] = useState<number>(375);
+  const [dragOffset, setDragOffset] = useState<number>(0);
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!viewportRef.current) return;
     const updateWidth = () => {
-      if (containerRef.current) {
-        const w = containerRef.current.getBoundingClientRect().width;
-        if (w > 0) setContainerWidth(w);
+      if (viewportRef.current) {
+        const w = viewportRef.current.getBoundingClientRect().width;
+        if (w > 0) setViewportWidth(w);
       }
     };
     updateWidth();
     const ro = new ResizeObserver(() => updateWidth());
-    ro.observe(containerRef.current);
+    ro.observe(viewportRef.current);
     return () => ro.disconnect();
   }, []);
 
-  const cardWidth = Math.min(containerWidth - 48, 390);
+  const cardWidth = Math.min(viewportWidth - 48, 390);
   const gap = 16;
-  const step = cardWidth + gap;
-  const centerOffset = (containerWidth - cardWidth) / 2;
-  const targetX = centerOffset - activeIdx * step;
-  const minX = centerOffset - (count - 1) * step;
-  const maxX = centerOffset;
-
-  const controls = useAnimation();
-
-  useEffect(() => {
-    controls.start({
-      x: targetX,
-      transition: {
-        type: prefersReducedMotion ? "tween" : "spring",
-        stiffness: prefersReducedMotion ? 600 : 320,
-        damping: prefersReducedMotion ? 50 : 28,
-        mass: 0.8,
-      },
-    });
-  }, [activeIdx, targetX, prefersReducedMotion, controls]);
+  const pitch = cardWidth + gap;
+  const CARD_RADIUS = Math.min(16, radius * 2);
 
   const handleDragStart = () => {
     isDraggingRef.current = true;
@@ -138,54 +121,67 @@ function MobileAnimatedCarousel({
     setTimeout(() => {
       isDraggingRef.current = false;
     }, 50);
+
     const offset = info.offset.x;
     const velocity = info.velocity.x;
 
     let nextIdx = activeIdx;
-    if (offset < -40 || velocity < -350) {
+    if (offset < -50 || velocity < -400) {
       nextIdx = Math.min(activeIdx + 1, count - 1);
-    } else if (offset > 40 || velocity > 350) {
+    } else if (offset > 50 || velocity > 400) {
       nextIdx = Math.max(activeIdx - 1, 0);
     }
 
-    if (nextIdx !== activeIdx) {
-      onSelect(nextIdx);
-    } else {
-      controls.start({
-        x: targetX,
-        transition: { type: "spring", stiffness: 320, damping: 28, mass: 0.8 },
-      });
-    }
+    setDragOffset(0);
+    onSelect(nextIdx);
   };
-
-  const CARD_RADIUS = Math.min(16, radius * 2);
 
   return (
     <div
-      className="hf-carousel-mobile overflow-hidden py-2"
+      className="hf-carousel-mobile py-2"
       style={{ position: "relative", width: "100%", touchAction: "pan-y" }}
     >
-      <div ref={containerRef} className="relative w-full overflow-hidden">
+      {/* DETERMINISTIC VIEWPORT */}
+      <div
+        ref={viewportRef}
+        className="relative w-full overflow-hidden"
+        style={{
+          position: "relative",
+          width: "100%",
+          height: "auto",
+          minHeight: 260,
+          overflow: "hidden",
+          touchAction: "pan-y",
+        }}
+      >
+        {/* DRAGGABLE CAROUSEL INTERACTION LAYER */}
         <motion.div
           drag="x"
-          dragConstraints={{ left: minX, right: maxX }}
-          dragElastic={0.15}
+          dragConstraints={{ left: -pitch, right: pitch }}
+          dragElastic={0.12}
           onDragStart={handleDragStart}
+          onDrag={(_, info) => setDragOffset(info.offset.x)}
           onDragEnd={handleDragEnd}
-          animate={controls}
           style={{
-            display: "flex",
-            gap: `${gap}px`,
+            position: "relative",
+            width: "100%",
+            height: "100%",
             cursor: "grab",
-            willChange: "transform",
             touchAction: "pan-y",
           }}
           whileTap={{ cursor: "grabbing" }}
         >
           {images.map((img, i) => {
+            const relativeIndex = i - activeIdx;
+            const isVisible = Math.abs(relativeIndex) <= 2;
+            if (!isVisible) return null;
+
             const src = resolveItemSrc(img);
-            const isActive = i === activeIdx;
-            const isNeighbor = Math.abs(i - activeIdx) === 1;
+            const isActive = relativeIndex === 0;
+            const isNeighbor = Math.abs(relativeIndex) === 1;
+
+            // Deterministic position relative to viewport CENTER (left: 50%)
+            const basePositionX = relativeIndex * pitch;
 
             return (
               <motion.div
@@ -193,13 +189,22 @@ function MobileAnimatedCarousel({
                 onClick={() => {
                   if (!isDraggingRef.current) onSelect(i);
                 }}
+                initial={false}
                 animate={{
+                  x: `calc(-50% + ${basePositionX + dragOffset}px)`,
                   scale: isActive ? 1 : isNeighbor ? 0.94 : 0.88,
-                  opacity: isActive ? 1 : isNeighbor ? 0.7 : 0.35,
+                  opacity: isActive ? 1 : isNeighbor ? 0.75 : 0.25,
                 }}
-                transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                transition={{
+                  type: prefersReducedMotion ? "tween" : "spring",
+                  stiffness: prefersReducedMotion ? 600 : 320,
+                  damping: prefersReducedMotion ? 50 : 28,
+                  mass: 0.8,
+                }}
                 style={{
-                  flex: `0 0 ${cardWidth}px`,
+                  position: "absolute",
+                  left: "50%",
+                  top: 0,
                   width: `${cardWidth}px`,
                   borderRadius: `${CARD_RADIUS}px`,
                   background: isActive
@@ -211,13 +216,14 @@ function MobileAnimatedCarousel({
                   boxShadow: isActive
                     ? "0 18px 45px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(245,199,106,0.2)"
                     : "0 10px 25px rgba(0,0,0,0.4)",
-                  zIndex: isActive ? 20 : isNeighbor ? 10 : 1,
+                  zIndex: isActive ? 100 : isNeighbor ? 50 : 10,
                   display: "flex",
                   flexDirection: "column",
                   overflow: "hidden",
                   WebkitTapHighlightColor: "transparent",
                   userSelect: "none",
                   transformOrigin: "center center",
+                  pointerEvents: isVisible ? "auto" : "none",
                 }}
               >
                 {renderItem && img ? (
