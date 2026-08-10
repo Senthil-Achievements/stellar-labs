@@ -92,7 +92,6 @@ function MobileAnimatedCarousel({
   const prefersReducedMotion = useReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState<number>(375);
-  const x = useMotionValue(0);
 
   useEffect(() => {
     const updateWidth = () => {
@@ -113,17 +112,9 @@ function MobileAnimatedCarousel({
   const gap = 14;
   const step = cardWidth + gap;
   const leftPadding = Math.max(0, (containerWidth - cardWidth) / 2);
-
-  useEffect(() => {
-    const targetX = leftPadding - activeIdx * step;
-    const controls = animate(x, targetX, {
-      type: "spring",
-      stiffness: prefersReducedMotion ? 600 : 320,
-      damping: prefersReducedMotion ? 50 : 28,
-      mass: 0.8,
-    });
-    return () => controls.stop();
-  }, [activeIdx, leftPadding, step, prefersReducedMotion, x]);
+  const targetX = leftPadding - activeIdx * step;
+  const minX = leftPadding - (count - 1) * step;
+  const maxX = leftPadding;
 
   const handleDragStart = () => {
     isDraggingRef.current = true;
@@ -143,17 +134,10 @@ function MobileAnimatedCarousel({
       nextIdx = Math.max(activeIdx - 1, 0);
     }
 
-    if (nextIdx !== activeIdx) {
-      onSelect(nextIdx);
-    } else {
-      const targetX = leftPadding - activeIdx * step;
-      animate(x, targetX, { type: "spring", stiffness: 320, damping: 28 });
-    }
+    onSelect(nextIdx);
   };
 
   const CARD_RADIUS = Math.min(16, radius * 2);
-  const minX = leftPadding - (count - 1) * step;
-  const maxX = leftPadding;
 
   return (
     <div
@@ -167,12 +151,19 @@ function MobileAnimatedCarousel({
           dragElastic={0.15}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
+          animate={{ x: targetX }}
+          transition={{
+            type: prefersReducedMotion ? "tween" : "spring",
+            stiffness: prefersReducedMotion ? 600 : 320,
+            damping: prefersReducedMotion ? 50 : 28,
+            mass: 0.8,
+          }}
           style={{
-            x,
             display: "flex",
             gap: `${gap}px`,
             cursor: "grab",
             willChange: "transform",
+            touchAction: "pan-y",
           }}
           whileTap={{ cursor: "grabbing" }}
         >
@@ -530,9 +521,6 @@ export default function CoverflowCarousel(props: Props) {
   );
   const R = Math.max(1, Math.min(RENDER_RANGE, Math.floor(count / 2) - 1));
   const pos = useMotionValue(0);
-  const targetRef = useRef(0);
-  const rafRef = useRef<number | null>(null);
-  const lastTRef = useRef<number | null>(null);
   const isHoveredRef = useRef(false);
   const isDraggingRef = useRef(false);
 
@@ -565,13 +553,6 @@ export default function CoverflowCarousel(props: Props) {
   const goPrev = useCallback(() => {
     goToIndex(activeIdx - 1);
   }, [activeIdx, goToIndex]);
-
-  useEffect(() => {
-    return () => {
-      if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
-      rafRef.current = null;
-    };
-  }, []);
 
   // Unified Autoplay pipeline (runs on both Desktop and Mobile)
   useEffect(() => {
