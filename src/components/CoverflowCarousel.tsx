@@ -95,27 +95,26 @@ function MobileAnimatedCarousel({
   const [containerWidth, setContainerWidth] = useState<number>(375);
 
   useEffect(() => {
+    if (!containerRef.current) return;
     const updateWidth = () => {
-      const winW = typeof window !== "undefined" ? window.innerWidth : 375;
       if (containerRef.current) {
-        const rectW = containerRef.current.getBoundingClientRect().width;
-        setContainerWidth(rectW > 0 ? rectW : winW);
-      } else {
-        setContainerWidth(winW);
+        const w = containerRef.current.getBoundingClientRect().width;
+        if (w > 0) setContainerWidth(w);
       }
     };
     updateWidth();
-    window.addEventListener("resize", updateWidth);
-    return () => window.removeEventListener("resize", updateWidth);
+    const ro = new ResizeObserver(() => updateWidth());
+    ro.observe(containerRef.current);
+    return () => ro.disconnect();
   }, []);
 
   const cardWidth = Math.min(containerWidth - 48, 390);
-  const gap = 14;
+  const gap = 16;
   const step = cardWidth + gap;
-  const leftPadding = Math.max(0, (containerWidth - cardWidth) / 2);
-  const targetX = leftPadding - activeIdx * step;
-  const minX = leftPadding - (count - 1) * step;
-  const maxX = leftPadding;
+  const centerOffset = (containerWidth - cardWidth) / 2;
+  const targetX = centerOffset - activeIdx * step;
+  const minX = centerOffset - (count - 1) * step;
+  const maxX = centerOffset;
 
   const controls = useAnimation();
 
@@ -163,8 +162,8 @@ function MobileAnimatedCarousel({
 
   return (
     <div
-      className="hf-carousel-mobile -mx-5 sm:-mx-6 overflow-hidden py-2"
-      style={{ position: "relative", touchAction: "pan-y" }}
+      className="hf-carousel-mobile overflow-hidden py-2"
+      style={{ position: "relative", width: "100%", touchAction: "pan-y" }}
     >
       <div ref={containerRef} className="relative w-full overflow-hidden">
         <motion.div
