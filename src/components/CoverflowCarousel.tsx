@@ -194,13 +194,16 @@ function MobileAnimatedCarousel({
                   flex: `0 0 ${cardWidth}px`,
                   width: `${cardWidth}px`,
                   borderRadius: `${CARD_RADIUS}px`,
-                  background: GRADIENTS[i % GRADIENTS.length],
+                  background: isActive
+                    ? "linear-gradient(160deg, rgba(245,199,106,0.14), rgba(245,199,106,0.04)), #0e0d0a"
+                    : "linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)), #0c0c0c",
                   border: isActive
                     ? "1px solid rgba(245,199,106,0.35)"
                     : "1px solid rgba(255,255,255,0.10)",
                   boxShadow: isActive
-                    ? "0 18px 45px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(245,199,106,0.2)"
-                    : "0 10px 25px rgba(0,0,0,0.3)",
+                    ? "0 18px 45px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(245,199,106,0.2)"
+                    : "0 10px 25px rgba(0,0,0,0.4)",
+                  zIndex: isActive ? 20 : isNeighbor ? 10 : 1,
                   display: "flex",
                   flexDirection: "column",
                   overflow: "hidden",
