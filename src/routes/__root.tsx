@@ -83,7 +83,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "THERUINS builds AI websites, mobile apps, intelligent automations, and AI agents — complete digital infrastructure for businesses that want to scale globally.",
       },
-      { name: "keywords", content: "AI startup studio, software engineering, AI automation, AI agents, Flutter, React, SaaS development, custom web apps, growth infrastructure" },
+      {
+        name: "keywords",
+        content:
+          "AI startup studio, software engineering, AI automation, AI agents, Flutter, React, SaaS development, custom web apps, growth infrastructure",
+      },
       { name: "author", content: "THERUINS" },
       { property: "og:title", content: "THERUINS — The Birthplace of Tomorrow" },
       {
@@ -94,7 +98,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "THERUINS — The Birthplace of Tomorrow" },
-      { name: "twitter:description", content: "AI startup studio building the digital infrastructure of tomorrow." },
+      {
+        name: "twitter:description",
+        content: "AI startup studio building the digital infrastructure of tomorrow.",
+      },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
