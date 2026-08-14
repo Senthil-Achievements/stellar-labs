@@ -1201,49 +1201,89 @@ export function Work() {
   const n = PROJECTS.length;
   const x = useTransform(scrollYProgress, [0, 1], ["2vw", `-${(n - 1) * (100 / n) + 2}%`]);
 
+  if (isMobile) {
+    return (
+      <section id="work" className="relative py-12 sm:py-20">
+        <div className="mx-auto max-w-6xl px-5 sm:px-6">
+          <FadeUp>
+            <SectionLabel>Featured Work</SectionLabel>
+          </FadeUp>
+          <FadeUp delay={0.1}>
+            <h2 className="mt-4 sm:mt-6 max-w-3xl font-display text-2xl sm:text-4xl font-semibold leading-[1.1]">
+              Products we're <span className="text-gradient-accent">proud</span> to have built.
+            </h2>
+          </FadeUp>
+          <FadeUp delay={0.15}>
+            <p className="mt-3 max-w-md text-sm" style={{ color: "var(--text-muted)" }}>
+              A selection of platforms, mobile apps, and AI systems shipped for founders and teams
+              across industries. Swipe to explore.
+            </p>
+          </FadeUp>
+        </div>
+        <div
+          className="mt-6 sm:mt-8 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 -mx-5 px-5 sm:-mx-6 sm:px-6"
+          style={{ WebkitOverflowScrolling: "touch" }}
+        >
+          <div className="flex gap-4 sm:gap-6" style={{ width: "max-content" }}>
+            {PROJECTS.map((p, i) => (
+              <div key={p.id} className="shrink-0 w-[85vw] max-w-[360px] snap-center">
+                <ProjectCard p={p} index={i} />
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="mx-auto mt-4 flex justify-center gap-1.5 px-5 sm:px-6">
+          {PROJECTS.map((_, idx) => (
+            <span
+              key={idx}
+              className="h-1.5 w-1.5 rounded-full"
+              style={{ background: "var(--border)" }}
+            />
+          ))}
+        </div>
+      </section>
+    );
+  }
+
   return (
-    <section id="work" className="relative">
+    <section id="work" className="relative py-16 sm:py-24 md:py-32">
+      <div className="mx-auto max-w-6xl px-5 sm:px-6">
+        <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+          <div>
+            <FadeUp>
+              <SectionLabel>Featured Work</SectionLabel>
+            </FadeUp>
+            <FadeUp delay={0.1}>
+              <h2 className="mt-6 max-w-3xl font-display text-3xl sm:text-4xl font-semibold leading-[1.05] sm:text-5xl md:text-6xl">
+                Products we're <span className="text-gradient-accent">proud</span> to have built.
+              </h2>
+            </FadeUp>
+          </div>
+          <FadeUp delay={0.2}>
+            <p className="max-w-md text-sm sm:text-base" style={{ color: "var(--text-muted)" }}>
+              A selection of platforms, mobile apps, and AI systems shipped for founders and teams
+              across industries. Scroll to explore.
+            </p>
+          </FadeUp>
+        </div>
+      </div>
+
       <div
         ref={targetRef}
-        className="relative"
-        style={{ height: `${Math.max(3, n) * (isMobile ? 55 : 80)}vh` }}
+        className="relative mt-10 sm:mt-16"
+        style={{ height: `${Math.max(3, n) * 80}vh` }}
       >
-        <div className="sticky top-0 flex h-[100dvh] h-[100svh] flex-col overflow-hidden">
-          {/* Section heading — stays pinned with the cards */}
-          <div className="mx-auto max-w-6xl w-full shrink-0 px-5 sm:px-6 pt-16 sm:pt-20 md:pt-24 pb-4 sm:pb-6">
-            <div className="flex flex-col justify-between gap-4 sm:gap-6 md:flex-row md:items-end">
-              <div>
-                <FadeUp>
-                  <SectionLabel>Featured Work</SectionLabel>
-                </FadeUp>
-                <FadeUp delay={0.1}>
-                  <h2 className="mt-4 sm:mt-6 max-w-3xl font-display text-2xl sm:text-4xl font-semibold leading-[1.05] md:text-5xl lg:text-6xl">
-                    Products we're <span className="text-gradient-accent">proud</span> to have built.
-                  </h2>
-                </FadeUp>
+        <div className="sticky top-0 flex h-[100dvh] h-[100svh] items-center overflow-hidden">
+          <motion.div
+            style={{ x }}
+            className="flex gap-4 sm:gap-6 md:gap-8 pr-[4vw] will-change-transform"
+          >
+            {PROJECTS.map((p, i) => (
+              <div key={p.id} className="shrink-0 w-[min(900px,88vw)] sm:w-[min(1100px,92vw)]">
+                <ProjectCard p={p} index={i} />
               </div>
-              <FadeUp delay={0.2}>
-                <p className="mt-2 sm:mt-0 max-w-md text-sm sm:text-base" style={{ color: "var(--text-muted)" }}>
-                  A selection of platforms, mobile apps, and AI systems shipped for founders and teams
-                  across industries. Scroll to explore.
-                </p>
-              </FadeUp>
-            </div>
-          </div>
-
-          {/* Horizontal scrolling cards */}
-          <div className="flex flex-1 items-start pt-2 sm:items-center overflow-hidden">
-            <motion.div
-              style={{ x }}
-              className="flex gap-4 sm:gap-6 md:gap-8 pr-[4vw] will-change-transform"
-            >
-              {PROJECTS.map((p, i) => (
-                <div key={p.id} className="shrink-0 w-[min(900px,88vw)] sm:w-[min(1100px,92vw)]">
-                  <ProjectCard p={p} index={i} />
-                </div>
-              ))}
-            </motion.div>
-          </div>
+            ))}
+          </motion.div>
 
           <div className="pointer-events-none absolute bottom-6 sm:bottom-8 left-1/2 h-[3px] w-40 sm:w-56 -translate-x-1/2 overflow-hidden rounded-full scroll-progress-bg">
             <motion.div
