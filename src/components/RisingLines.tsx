@@ -55,7 +55,11 @@ export default function RisingLines(userProps: Props) {
     const s = input.trim();
     if (s.startsWith("#")) {
       let hex = s.slice(1);
-      if (hex.length === 3) hex = hex.split("").map((c) => c + c).join("");
+      if (hex.length === 3)
+        hex = hex
+          .split("")
+          .map((c) => c + c)
+          .join("");
       const num = parseInt(hex, 16);
       return [(num >> 16) & 255, (num >> 8) & 255, num & 255];
     }
@@ -169,7 +173,8 @@ export default function RisingLines(userProps: Props) {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const cr = entry?.contentRect;
       const rectW = cr?.width || container.clientWidth || container.getBoundingClientRect().width;
-      const rectH = cr?.height || container.clientHeight || container.getBoundingClientRect().height;
+      const rectH =
+        cr?.height || container.clientHeight || container.getBoundingClientRect().height;
       const w = Math.max(1, Math.floor(rectW) || 800);
       const h = Math.max(1, Math.floor(rectH) || 400);
       sizeRef.current = { w, h, dpr };
@@ -202,7 +207,6 @@ export default function RisingLines(userProps: Props) {
 
       ctx.globalCompositeOperation = isLight ? "source-over" : "lighter";
 
-
       const horizonAlpha = Math.max(0, Math.min(1, horizonOpacity));
       if (showHorizon && horizonAlpha > 0.001) {
         const rx = w * 0.5;
@@ -212,8 +216,14 @@ export default function RisingLines(userProps: Props) {
         ctx.scale(rx / ry, 1);
         const hGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, ry);
         hGrad.addColorStop(0, `rgba(${cHorizon[0]},${cHorizon[1]},${cHorizon[2]},${horizonAlpha})`);
-        hGrad.addColorStop(0.35, `rgba(${cHorizon[0]},${cHorizon[1]},${cHorizon[2]},${horizonAlpha * 0.65})`);
-        hGrad.addColorStop(0.7, `rgba(${cHorizon[0]},${cHorizon[1]},${cHorizon[2]},${horizonAlpha * 0.2})`);
+        hGrad.addColorStop(
+          0.35,
+          `rgba(${cHorizon[0]},${cHorizon[1]},${cHorizon[2]},${horizonAlpha * 0.65})`,
+        );
+        hGrad.addColorStop(
+          0.7,
+          `rgba(${cHorizon[0]},${cHorizon[1]},${cHorizon[2]},${horizonAlpha * 0.2})`,
+        );
         hGrad.addColorStop(1, `rgba(${cHorizon[0]},${cHorizon[1]},${cHorizon[2]},0)`);
         ctx.fillStyle = hGrad;
         ctx.fillRect(-ry - 2, -ry - 2, (ry + 2) * 2, (ry + 2) * 2);
@@ -242,7 +252,10 @@ export default function RisingLines(userProps: Props) {
         const bGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
         const aClamped = Math.min(1, a);
         bGrad.addColorStop(0, `rgba(${cParticle[0]},${cParticle[1]},${cParticle[2]},${aClamped})`);
-        bGrad.addColorStop(0.4, `rgba(${cParticle[0]},${cParticle[1]},${cParticle[2]},${aClamped * 0.45})`);
+        bGrad.addColorStop(
+          0.4,
+          `rgba(${cParticle[0]},${cParticle[1]},${cParticle[2]},${aClamped * 0.45})`,
+        );
         bGrad.addColorStop(1, `rgba(${cParticle[0]},${cParticle[1]},${cParticle[2]},0)`);
         ctx.fillStyle = bGrad;
         ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
@@ -271,7 +284,10 @@ export default function RisingLines(userProps: Props) {
         const aClamped = Math.min(1, a);
         const sGrad = ctx.createLinearGradient(0, py, 0, py + lineHeight);
         sGrad.addColorStop(0, `rgba(${cParticle[0]},${cParticle[1]},${cParticle[2]},0)`);
-        sGrad.addColorStop(0.7, `rgba(${cParticle[0]},${cParticle[1]},${cParticle[2]},${aClamped})`);
+        sGrad.addColorStop(
+          0.7,
+          `rgba(${cParticle[0]},${cParticle[1]},${cParticle[2]},${aClamped})`,
+        );
         sGrad.addColorStop(1, `rgba(${cParticle[0]},${cParticle[1]},${cParticle[2]},${aClamped})`);
         ctx.fillStyle = sGrad;
         ctx.fillRect(px, py, 1, lineHeight);
@@ -282,22 +298,31 @@ export default function RisingLines(userProps: Props) {
     const TARGET_FPS = isMobile ? 30 : 60;
     const FRAME_MS = 1000 / TARGET_FPS;
 
+    // Pause expensive draw when container is scrolled off-screen
+    let visible = true;
+    const io = new IntersectionObserver(
+      ([entry]) => { visible = entry.isIntersecting; },
+      { threshold: 0 },
+    );
+    io.observe(container);
+
     let lastT = performance.now();
     const loop = (t: number) => {
       const delta = t - lastT;
-      if (delta >= FRAME_MS) {
+      if (delta >= FRAME_MS && visible) {
         lastT = t - (delta % FRAME_MS);
         drawFrame(delta / 1000);
+      } else if (delta >= FRAME_MS) {
+        lastT = t; // Keep timer synced while paused
       }
       rafRef.current = requestAnimationFrame(loop);
     };
     rafRef.current = requestAnimationFrame(loop);
 
-
-
     return () => {
       if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
       ro.disconnect();
+      io.disconnect();
     };
   }, [particles, color, showHorizon, horizonColor, riseSpeed, opacity, horizonOpacity, scale]);
 
