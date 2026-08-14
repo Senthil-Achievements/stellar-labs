@@ -16,9 +16,7 @@ export default function WelcomeLoader() {
     document.documentElement.style.overflow = "hidden";
     const t = setTimeout(() => {
       setShow(false);
-      try {
-        sessionStorage.setItem(SEEN_KEY, "1");
-      } catch {}
+      try { sessionStorage.setItem(SEEN_KEY, "1"); } catch {}
       document.documentElement.style.overflow = "";
     }, 2400);
     return () => {

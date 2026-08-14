@@ -69,13 +69,13 @@
   /* Text hierarchy */
   --text-primary: #ffffff;
   --text-secondary: rgba(255, 255, 255, 0.75);
-  --text-muted: rgba(255, 255, 255, 0.5);
-  --text-faint: rgba(255, 255, 255, 0.3);
+  --text-muted: rgba(255, 255, 255, 0.50);
+  --text-faint: rgba(255, 255, 255, 0.30);
 
   /* Primary / Secondary */
   --primary: #ffffff;
   --primary-foreground: #050505;
-  --secondary: rgba(255, 255, 255, 0.1);
+  --secondary: rgba(255, 255, 255, 0.10);
   --secondary-foreground: #ffffff;
   --muted: rgba(255, 255, 255, 0.06);
   --muted-foreground: #a5a5a5;
@@ -86,7 +86,7 @@
   --accent-violet: #f5c76a;
   --accent-blue: #d4a94a;
   --accent-cyan: #f5c76a;
-  --accent-solid: #f5c76a;
+  --accent-solid: #F5C76A;
   --accent-solid-hover: #e6b855;
 
   /* Status */
@@ -118,10 +118,10 @@
   --shadow-lg: 0 25px 70px rgba(0, 0, 0, 0.45);
 
   /* Nav */
-  --nav-bg: rgba(0, 0, 0, 0.6);
-  --nav-bg-scroll: rgba(0, 0, 0, 0.7);
+  --nav-bg: rgba(0, 0, 0, 0.60);
+  --nav-bg-scroll: rgba(0, 0, 0, 0.70);
   --nav-border: rgba(255, 255, 255, 0.06);
-  --nav-text: rgba(255, 255, 255, 0.6);
+  --nav-text: rgba(255, 255, 255, 0.60);
   --nav-text-hover: #ffffff;
   --nav-link-active-bg: rgba(255, 255, 255, 0.06);
 
@@ -131,19 +131,19 @@
   --btn-primary-hover-shadow: rgba(245, 199, 106, 0.4);
   --btn-secondary-bg: rgba(255, 255, 255, 0.03);
   --btn-secondary-border: rgba(255, 255, 255, 0.15);
-  --btn-secondary-text: rgba(255, 255, 255, 0.9);
+  --btn-secondary-text: rgba(255, 255, 255, 0.90);
   --btn-secondary-hover-bg: rgba(255, 255, 255, 0.08);
   --btn-secondary-hover-border: rgba(255, 255, 255, 0.25);
 
   /* Mobile menu */
-  --mobile-menu-bg: rgba(0, 0, 0, 0.7);
-  --mobile-menu-border: rgba(255, 255, 255, 0.1);
-  --mobile-menu-text: rgba(255, 255, 255, 0.8);
+  --mobile-menu-bg: rgba(0, 0, 0, 0.70);
+  --mobile-menu-border: rgba(255, 255, 255, 0.10);
+  --mobile-menu-text: rgba(255, 255, 255, 0.80);
   --mobile-menu-hover: rgba(255, 255, 255, 0.05);
 
   /* Scrollbar */
   --scrollbar-track: rgba(255, 255, 255, 0.02);
-  --scrollbar-thumb: rgba(255, 255, 255, 0.1);
+  --scrollbar-thumb: rgba(255, 255, 255, 0.10);
 }
 
 .dark {
@@ -168,7 +168,7 @@
   /* Text hierarchy — warm charcoals, NOT pure black */
   --text-primary: #111111;
   --text-secondary: #454545;
-  --text-muted: #6b6b6b;
+  --text-muted: #6B6B6B;
   --text-faint: #999999;
 
   /* Primary / Secondary */
@@ -177,7 +177,7 @@
   --secondary: rgba(0, 0, 0, 0.04);
   --secondary-foreground: #111111;
   --muted: rgba(0, 0, 0, 0.03);
-  --muted-foreground: #6b6b6b;
+  --muted-foreground: #6B6B6B;
 
   /* Accent — warm gold preserved */
   --accent: rgba(180, 130, 40, 0.12);
@@ -193,11 +193,11 @@
   --border: rgba(0, 0, 0, 0.08);
   --border-subtle: rgba(0, 0, 0, 0.05);
   --border-strong: rgba(0, 0, 0, 0.14);
-  --input: rgba(0, 0, 0, 0.1);
+  --input: rgba(0, 0, 0, 0.10);
   --ring: rgba(180, 130, 40, 0.5);
 
   /* Glass — translucent white with depth */
-  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-bg: rgba(255, 255, 255, 0.60);
   --glass-border: rgba(0, 0, 0, 0.08);
   --glass-shadow: 0 20px 60px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
   --glass-inset: 0 1px 0 rgba(255, 255, 255, 0.7) inset;
@@ -210,11 +210,11 @@
   /* Shadows — soft, warm */
   --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 12px 35px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 25px 70px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 25px 70px rgba(0, 0, 0, 0.10);
 
   /* Nav */
-  --nav-bg: rgba(246, 244, 239, 0.8);
-  --nav-bg-scroll: rgba(246, 244, 239, 0.9);
+  --nav-bg: rgba(246, 244, 239, 0.80);
+  --nav-bg-scroll: rgba(246, 244, 239, 0.90);
   --nav-border: rgba(0, 0, 0, 0.06);
   --nav-text: rgba(0, 0, 0, 0.55);
   --nav-text-hover: #111111;
@@ -224,7 +224,7 @@
   --btn-primary-bg: #111111;
   --btn-primary-text: #ffffff;
   --btn-primary-hover-shadow: rgba(180, 130, 40, 0.3);
-  --btn-secondary-bg: rgba(255, 255, 255, 0.6);
+  --btn-secondary-bg: rgba(255, 255, 255, 0.60);
   --btn-secondary-border: rgba(0, 0, 0, 0.12);
   --btn-secondary-text: #111111;
   --btn-secondary-hover-bg: rgba(255, 255, 255, 0.85);
@@ -284,11 +284,7 @@
     color: #fff;
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5 {
+  h1, h2, h3, h4, h5 {
     font-family: var(--font-display);
     letter-spacing: -0.02em;
     color: var(--text-primary);
@@ -314,7 +310,7 @@ html.light body {
 }
 
 html.light ::selection {
-  background: rgba(180, 130, 40, 0.3);
+  background: rgba(180, 130, 40, 0.30);
   color: #111111;
 }
 
@@ -335,9 +331,7 @@ html.light h5 {
   border: 1px solid rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(20px) saturate(140%);
   -webkit-backdrop-filter: blur(20px) saturate(140%);
-  box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.5),
-    var(--glass-inset);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), var(--glass-inset);
 }
 
 @utility glow-gold {
@@ -367,12 +361,17 @@ html.light h5 {
 }
 
 @utility hairline {
-  background: linear-gradient(90deg, transparent, var(--border-strong), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--border-strong),
+    transparent
+  );
 }
 
 /* Text gradient accent — warm gold */
 @utility text-gradient-accent {
-  background: linear-gradient(135deg, #f5c76a, #d4a94a, #b8862b);
+  background: linear-gradient(135deg, #F5C76A, #d4a94a, #b8862b);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -463,9 +462,7 @@ html.light .glass-card {
   font-weight: 500;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  transition:
-    background-color 0.3s ease,
-    border-color 0.3s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
   min-height: 44px;
 }
 
@@ -582,9 +579,7 @@ html.light .glass-card {
   border: 1px solid rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(20px) saturate(140%);
   -webkit-backdrop-filter: blur(20px) saturate(140%);
-  box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.5),
-    var(--glass-inset);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), var(--glass-inset);
 }
 
 .case-label {
@@ -689,9 +684,7 @@ html.light .glass-card {
   padding: 0.5rem 1rem;
   font-size: 0.75rem;
   font-weight: 500;
-  transition:
-    border-color 0.2s ease,
-    color 0.2s ease;
+  transition: border-color 0.2s ease, color 0.2s ease;
 }
 
 .btn-card-secondary:hover {
@@ -804,16 +797,9 @@ html.light .glass-card {
   display: grid;
   place-items: center;
   border-radius: 0.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.20);
   background: rgba(255, 255, 255, 0.12);
-  transition:
-    border-color 0.3s ease,
-    background-color 0.3s ease;
-}
-
-html.light .carousel-card-icon {
-  border: 1px solid var(--border-strong);
-  background: var(--btn-secondary-bg);
+  transition: border-color 0.3s ease;
 }
 
 .carousel-card-title {
@@ -822,10 +808,6 @@ html.light .carousel-card-icon {
   color: #ffffff;
   overflow: visible;
   word-break: break-word;
-}
-
-html.light .carousel-card-title {
-  color: var(--text-primary);
 }
 
 @media (min-width: 768px) {
@@ -839,13 +821,9 @@ html.light .carousel-card-title {
 }
 
 .carousel-card-desc {
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.80);
   overflow: visible;
   word-break: break-word;
-}
-
-html.light .carousel-card-desc {
-  color: var(--text-secondary);
 }
 
 @media (min-width: 768px) {
@@ -864,10 +842,6 @@ html.light .carousel-card-desc {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-faint);
-}
-
-html.light .carousel-card-number {
-  color: var(--accent-solid);
 }
 
 /* ============================================================
@@ -994,47 +968,24 @@ html.light .carousel-card-number {
    ============================================================ */
 
 @keyframes float-slow {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
-  50% {
-    transform: translate3d(0, -18px, 0);
-  }
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -18px, 0); }
 }
 @keyframes pulse-glow {
-  0%,
-  100% {
-    opacity: 0.35;
-  }
-  50% {
-    opacity: 0.7;
-  }
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.7; }
 }
 @keyframes shimmer {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 @keyframes marquee {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 @keyframes ticker {
-  0%,
-  100% {
-    opacity: 0.4;
-  }
-  50% {
-    opacity: 1;
-  }
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
 }
 
 /* ============================================================
@@ -1043,14 +994,14 @@ html.light .carousel-card-number {
 
 @media (max-width: 767px) {
   .glass-card {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.10);
     border: 1px solid rgba(255, 255, 255, 0.18);
     backdrop-filter: blur(12px) saturate(120%);
     -webkit-backdrop-filter: blur(12px) saturate(120%);
   }
 
   .case-card {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.10);
     border: 1px solid rgba(255, 255, 255, 0.18);
   }
 
@@ -1075,9 +1026,7 @@ html.light .carousel-card-number {
   }
 
   /* Prevent iOS zoom on form inputs */
-  input,
-  textarea,
-  select {
+  input, textarea, select {
     font-size: 16px !important;
   }
 
@@ -1094,9 +1043,7 @@ html.light .carousel-card-number {
 
 /* Touch-friendly tap targets */
 @media (pointer: coarse) {
-  button,
-  a,
-  [role="button"] {
+  button, a, [role="button"] {
     min-height: 44px;
     min-width: 44px;
   }
@@ -1104,9 +1051,7 @@ html.light .carousel-card-number {
 
 /* Reduce motion for users who prefer it */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -1157,8 +1102,7 @@ body.menu-open {
 
 @media (max-width: 767px) {
   /* ---- Prevent any horizontal overflow ---- */
-  html,
-  body {
+  html, body {
     overflow-x: clip;
     max-width: 100vw;
   }
@@ -1337,32 +1281,23 @@ body.menu-open {
   }
 
   /* ---- CAROUSEL MOBILE STYLING ---- */
-  .hf-carousel-mobile,
-  .mobile-carousel-container {
+  .hf-carousel-mobile {
     display: block;
     width: 100%;
-    position: relative;
-  }
-
-  .mobile-carousel-track::-webkit-scrollbar {
-    display: none;
   }
 
   .carousel-card-title {
     font-size: 1rem;
     line-height: 1.35;
-    word-break: normal;
-    overflow-wrap: normal;
-    white-space: normal;
-    hyphens: none;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: manual;
   }
 
   .carousel-card-desc {
     font-size: 0.8125rem;
     line-height: 1.5;
-    word-break: normal;
-    overflow-wrap: normal;
-    white-space: normal;
-    hyphens: none;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 }

@@ -5,11 +5,7 @@ function parseColor(input: string): [number, number, number, number] {
   const s = input.trim();
   if (s.startsWith("#")) {
     let hex = s.slice(1);
-    if (hex.length === 3)
-      hex = hex
-        .split("")
-        .map((c) => c + c)
-        .join("");
+    if (hex.length === 3) hex = hex.split("").map((c) => c + c).join("");
     const num = parseInt(hex, 16);
     return [(num >> 16) & 255, (num >> 8) & 255, num & 255, 1];
   }
@@ -79,18 +75,9 @@ export default function GlitterWrap(userProps: Props) {
   const getCachedColors = () => {
     const p = propsRef.current;
     const c = colorCacheRef.current;
-    if (p.color1 !== c.color1) {
-      c.color1 = p.color1;
-      c.parsed1 = parseColor(p.color1);
-    }
-    if (p.color2 !== c.color2) {
-      c.color2 = p.color2;
-      c.parsed2 = parseColor(p.color2);
-    }
-    if (p.color3 !== c.color3) {
-      c.color3 = p.color3;
-      c.parsed3 = parseColor(p.color3);
-    }
+    if (p.color1 !== c.color1) { c.color1 = p.color1; c.parsed1 = parseColor(p.color1); }
+    if (p.color2 !== c.color2) { c.color2 = p.color2; c.parsed2 = parseColor(p.color2); }
+    if (p.color3 !== c.color3) { c.color3 = p.color3; c.parsed3 = parseColor(p.color3); }
     return c;
   };
 
@@ -102,16 +89,10 @@ export default function GlitterWrap(userProps: Props) {
     if (!ctx) return;
 
     type Star = {
-      x: number;
-      y: number;
-      z: number;
-      px: number;
-      py: number;
-      seed: number;
-      vmul: number;
-      colorIdx: number;
-      flashUntil: number;
-      nextFlash: number;
+      x: number; y: number; z: number;
+      px: number; py: number;
+      seed: number; vmul: number; colorIdx: number;
+      flashUntil: number; nextFlash: number;
     };
 
     const stars: Star[] = [];
@@ -144,8 +125,7 @@ export default function GlitterWrap(userProps: Props) {
       } else {
         s.z = initial ? Math.random() : 1.0;
       }
-      s.px = NaN;
-      s.py = NaN;
+      s.px = NaN; s.py = NaN;
       s.seed = Math.random() * 1000;
       s.vmul = 0.6 + Math.random() * 0.8;
       s.colorIdx = Math.floor(Math.random() * 3);
@@ -154,36 +134,26 @@ export default function GlitterWrap(userProps: Props) {
     };
 
     const makeStar = (): Star => ({
-      x: 0,
-      y: 0,
-      z: 0,
-      px: NaN,
-      py: NaN,
-      seed: 0,
-      vmul: 1,
-      colorIdx: 0,
-      flashUntil: 0,
-      nextFlash: 0,
+      x: 0, y: 0, z: 0, px: NaN, py: NaN,
+      seed: 0, vmul: 1, colorIdx: 0, flashUntil: 0, nextFlash: 0,
     });
 
     const syncCount = () => {
       const count = Math.max(1, Math.floor(propsRef.current.particleCount));
       if (stars.length === count) return;
       if (stars.length > count) stars.length = count;
-      else
-        while (stars.length < count) {
-          const s = makeStar();
-          resetStar(s, true);
-          stars.push(s);
-        }
+      else while (stars.length < count) {
+        const s = makeStar();
+        resetStar(s, true);
+        stars.push(s);
+      }
     };
 
     const resize = (entry?: ResizeObserverEntry) => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const cr = entry?.contentRect;
       const rectW = cr?.width || container.clientWidth || container.getBoundingClientRect().width;
-      const rectH =
-        cr?.height || container.clientHeight || container.getBoundingClientRect().height;
+      const rectH = cr?.height || container.clientHeight || container.getBoundingClientRect().height;
       const w = Math.max(1, Math.floor(rectW) || 600);
       const h = Math.max(1, Math.floor(rectH) || 400);
       const prev = sizeRef.current;
@@ -207,8 +177,7 @@ export default function GlitterWrap(userProps: Props) {
     const FRAME_MS = 1000 / TARGET_FPS;
 
     const drawFrame = (deltaSec: number) => {
-      const { reverse, stepZ, focalDepth, starScale, turbulence, glitter, brightness, trail } =
-        cfg();
+      const { reverse, stepZ, focalDepth, starScale, turbulence, glitter, brightness, trail } = cfg();
       syncCount();
       const isLight = document.documentElement.classList.contains("light");
       const colors = getCachedColors();
@@ -237,21 +206,16 @@ export default function GlitterWrap(userProps: Props) {
       ctx.fillRect(0, 0, w, h);
       ctx.globalCompositeOperation = isLight ? "source-over" : "lighter";
 
+
       for (let i = 0; i < stars.length; i++) {
         const s = stars[i];
         const vz = stepZ * s.vmul * dt;
         if (reverse) {
           s.z += vz;
-          if (s.z >= 1.0) {
-            resetStar(s);
-            continue;
-          }
+          if (s.z >= 1.0) { resetStar(s); continue; }
         } else {
           s.z -= vz;
-          if (s.z <= focalDepth) {
-            resetStar(s);
-            continue;
-          }
+          if (s.z <= focalDepth) { resetStar(s); continue; }
         }
 
         let tx = s.x;
@@ -287,12 +251,12 @@ export default function GlitterWrap(userProps: Props) {
         const r = Math.min(baseR * flashMult, maxR);
 
         const lifeT = reverse ? s.z : 1 - s.z;
-        const fadeIn = reverse ? Math.min(1, (s.z - focalDepth) / (1 - focalDepth) / 0.12) : 1;
+        const fadeIn = reverse
+          ? Math.min(1, (s.z - focalDepth) / (1 - focalDepth) / 0.12)
+          : 1;
         const a =
           Math.min(1, reverse ? 0.85 - lifeT * 0.6 : lifeT * 0.9 + 0.05) *
-          fadeIn *
-          brightness *
-          (flashMult > 1 ? 1 : 0.85);
+          fadeIn * brightness * (flashMult > 1 ? 1 : 0.85);
 
         const colStr = rgbStrs[s.colorIdx];
 
@@ -334,6 +298,8 @@ export default function GlitterWrap(userProps: Props) {
       rafRef.current = requestAnimationFrame(loop);
     };
     rafRef.current = requestAnimationFrame(loop);
+
+
 
     return () => {
       if (rafRef.current != null) cancelAnimationFrame(rafRef.current);

@@ -5,16 +5,9 @@ export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
       { title: "Contact — THERUINS" },
-      {
-        name: "description",
-        content:
-          "Book a strategy call with THERUINS. Remote, worldwide, currently open for select engagements.",
-      },
+      { name: "description", content: "Book a strategy call with THERUINS. Remote, worldwide, currently open for select engagements." },
       { property: "og:title", content: "Contact — THERUINS" },
-      {
-        property: "og:description",
-        content: "Let's talk about what you're building. Book a strategy call with THERUINS.",
-      },
+      { property: "og:description", content: "Let's talk about what you're building. Book a strategy call with THERUINS." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

@@ -24,11 +24,11 @@ type Props = {
   restHeight: number;
   gap: number;
   radius: number;
-  showArrows?: boolean;
-  arrowColor?: string;
-  arrowBackground?: string;
-  arrowSize?: number;
-  arrowPosition?: number;
+  showArrows: boolean;
+  arrowColor: string;
+  arrowBackground: string;
+  arrowSize: number;
+  arrowPosition: number;
   autoplay: boolean;
   autoplayDirection: "leftToRight" | "rightToLeft";
   transition: {
@@ -72,119 +72,8 @@ function relOf(index: number, pos: number, count: number): number {
 }
 
 /* ================================================================
-   MOBILE — Framer Motion 3D Drag & Real-Time Spring Coverflow Engine
+   MOBILE — Single Motion Track Carousel Engine
    ================================================================ */
-function MobileCard({
-  img,
-  index,
-  activeIdx,
-  cardWidth,
-  step,
-  centerOffset,
-  xTrack,
-  CARD_RADIUS,
-  onSelect,
-  isDraggingRef,
-  renderItem,
-}: {
-  img: CoverflowImage;
-  index: number;
-  activeIdx: number;
-  cardWidth: number;
-  step: number;
-  centerOffset: number;
-  xTrack: MotionValue<number>;
-  CARD_RADIUS: number;
-  onSelect: (index: number) => void;
-  isDraggingRef: React.MutableRefObject<boolean>;
-  renderItem?: (item: CoverflowImage, index: number) => React.ReactNode;
-}) {
-  const src = resolveItemSrc(img);
-
-  // Dynamic relative slide distance driven directly by real-time drag track position
-  const rel = useTransform(xTrack, (currentX: number) => {
-    const targetCardX = centerOffset - index * step;
-    return (currentX - targetCardX) / step;
-  });
-
-  const scale = useTransform(rel, (r: number) => {
-    const ar = Math.abs(r);
-    if (ar <= 0.001) return 1.0;
-    if (ar <= 1) return 1.0 - 0.06 * ar;
-    return Math.max(0.85, 0.94 - 0.06 * (ar - 1));
-  });
-
-  const rotateY = useTransform(rel, (r: number) => {
-    if (Math.abs(r) < 0.001) return 0;
-    const sign = r < 0 ? 6 : -6;
-    return sign * Math.min(1, Math.abs(r));
-  });
-
-  const opacity = useTransform(rel, (r: number) => {
-    const ar = Math.abs(r);
-    if (ar <= 0.2) return 1.0;
-    if (ar <= 1.0) return 1.0 - 0.25 * (ar - 0.2);
-    return Math.max(0.35, 0.75 - 0.35 * (ar - 1.0));
-  });
-
-  const zIndex = useTransform(rel, (r: number) => Math.round(100 - Math.abs(r) * 20));
-
-  const isActive = index === activeIdx;
-
-  return (
-    <motion.div
-      onClick={() => {
-        if (!isDraggingRef.current) onSelect(index);
-      }}
-      style={{
-        scale,
-        rotateY,
-        opacity,
-        zIndex,
-        flex: `0 0 ${cardWidth}px`,
-        width: `${cardWidth}px`,
-        minHeight: "220px",
-        borderRadius: `${CARD_RADIUS}px`,
-        backgroundColor: "var(--surface-2, #141414)",
-        backgroundImage: isActive
-          ? "linear-gradient(160deg, rgba(245,199,106,0.16), rgba(245,199,106,0.05))"
-          : "linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01))",
-        border: isActive
-          ? "1px solid rgba(245,199,106,0.4)"
-          : "1px solid var(--border-strong, rgba(255,255,255,0.12))",
-        boxShadow: isActive
-          ? "0 14px 35px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(245,199,106,0.2)"
-          : "0 8px 20px rgba(0,0,0,0.3)",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        overflow: "hidden",
-        transformStyle: "preserve-3d",
-        transformOrigin: "center center",
-        WebkitTapHighlightColor: "transparent",
-        userSelect: "none",
-        cursor: "pointer",
-      }}
-    >
-      {renderItem && img ? (
-        renderItem(img, index)
-      ) : src ? (
-        <img
-          src={src}
-          alt={img?.alt || ""}
-          draggable={false}
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            display: "block",
-          }}
-        />
-      ) : null}
-    </motion.div>
-  );
-}
-
 function MobileAnimatedCarousel({
   images,
   radius,
@@ -219,29 +108,15 @@ function MobileAnimatedCarousel({
     return () => ro.disconnect();
   }, []);
 
-  const cardWidth = Math.min(viewportWidth - 48, 340);
+  const cardWidth = Math.min(viewportWidth - 48, 390);
   const gap = 16;
   const step = cardWidth + gap;
 
+  // Pure numeric X positioning for Framer Motion
   const centerOffset = (viewportWidth - cardWidth) / 2;
   const targetX = centerOffset - activeIdx * step;
   const minX = centerOffset - (count - 1) * step;
   const maxX = centerOffset;
-
-  const xTrack = useMotionValue(targetX);
-
-  useEffect(() => {
-    // Skip programmatic animation when drag is in progress —
-    // onDragEnd already handles the snap animation
-    if (isDraggingRef.current) return;
-    const controls = animate(xTrack, targetX, {
-      type: prefersReducedMotion ? "tween" : "spring",
-      stiffness: 320,
-      damping: 28,
-      mass: 0.8,
-    });
-    return () => controls.stop();
-  }, [targetX, prefersReducedMotion, xTrack]);
 
   const CARD_RADIUS = Math.min(16, radius * 2);
 
@@ -250,85 +125,125 @@ function MobileAnimatedCarousel({
   };
 
   const handleDragEnd = (_: unknown, info: { offset: { x: number }; velocity: { x: number } }) => {
+    setTimeout(() => {
+      isDraggingRef.current = false;
+    }, 50);
+
     const offset = info.offset.x;
     const velocity = info.velocity.x;
 
     let nextIdx = activeIdx;
-    if (offset < -50 || velocity < -400) {
+    if (offset < -40 || velocity < -350) {
       nextIdx = Math.min(activeIdx + 1, count - 1);
-    } else if (offset > 50 || velocity > 400) {
+    } else if (offset > 40 || velocity > 350) {
       nextIdx = Math.max(activeIdx - 1, 0);
     }
 
-    const nextTargetX = centerOffset - nextIdx * step;
-    animate(xTrack, nextTargetX, {
-      type: prefersReducedMotion ? "tween" : "spring",
-      stiffness: 320,
-      damping: 28,
-      mass: 0.8,
-    });
-
     onSelect(nextIdx);
-
-    setTimeout(() => {
-      isDraggingRef.current = false;
-    }, 150);
   };
 
   return (
     <div
-      className="mobile-carousel-container py-2"
+      className="hf-carousel-mobile py-2"
       style={{ position: "relative", width: "100%", touchAction: "pan-y" }}
     >
+      {/* MOBILE VIEWPORT CLIPPING BOUNDARY */}
       <div
         ref={viewportRef}
+        className="relative w-full overflow-hidden py-1"
         style={{
           position: "relative",
           width: "100%",
           overflow: "hidden",
           touchAction: "pan-y",
-          perspective: 1000,
-          transformStyle: "preserve-3d",
         }}
       >
+        {/* SINGLE AUTHORITATIVE FRAMER MOTION TRACK */}
         <motion.div
           drag="x"
           dragConstraints={{ left: minX, right: maxX }}
           dragElastic={0.15}
-          dragMomentum={false}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
+          animate={{ x: targetX }}
+          transition={{
+            type: prefersReducedMotion ? "tween" : "spring",
+            stiffness: prefersReducedMotion ? 600 : 320,
+            damping: prefersReducedMotion ? 50 : 28,
+            mass: 0.8,
+          }}
           style={{
-            x: xTrack,
             display: "flex",
             gap: `${gap}px`,
             width: "max-content",
             cursor: "grab",
             touchAction: "pan-y",
-            transformStyle: "preserve-3d",
           }}
           whileTap={{ cursor: "grabbing" }}
         >
-          {images.map((img, i) => (
-            <MobileCard
-              key={i}
-              img={img}
-              index={i}
-              activeIdx={activeIdx}
-              cardWidth={cardWidth}
-              step={step}
-              centerOffset={centerOffset}
-              xTrack={xTrack}
-              CARD_RADIUS={CARD_RADIUS}
-              onSelect={onSelect}
-              isDraggingRef={isDraggingRef}
-              renderItem={renderItem}
-            />
-          ))}
+          {images.map((img, i) => {
+            const src = resolveItemSrc(img);
+            const isActive = i === activeIdx;
+            const isNeighbor = Math.abs(i - activeIdx) === 1;
+
+            return (
+              <motion.div
+                key={i}
+                onClick={() => {
+                  if (!isDraggingRef.current) onSelect(i);
+                }}
+                animate={{
+                  scale: isActive ? 1 : isNeighbor ? 0.94 : 0.88,
+                  opacity: isActive ? 1 : isNeighbor ? 0.75 : 0.35,
+                }}
+                transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                style={{
+                  flex: `0 0 ${cardWidth}px`,
+                  width: `${cardWidth}px`,
+                  borderRadius: `${CARD_RADIUS}px`,
+                  backgroundColor: isActive
+                    ? "var(--surface-2, #0c0b09)"
+                    : "var(--surface, #0a0a0a)",
+                  backgroundImage: isActive
+                    ? "linear-gradient(160deg, rgba(245,199,106,0.14), rgba(245,199,106,0.04))"
+                    : "linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))",
+                  border: isActive
+                    ? "1px solid rgba(245,199,106,0.35)"
+                    : "1px solid rgba(255,255,255,0.10)",
+                  boxShadow: isActive
+                    ? "0 18px 45px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(245,199,106,0.2)"
+                    : "0 10px 25px rgba(0,0,0,0.4)",
+                  zIndex: isActive ? 100 : isNeighbor ? 50 : 10,
+                  display: "flex",
+                  flexDirection: "column",
+                  overflow: "hidden",
+                  transformOrigin: "center center",
+                  WebkitTapHighlightColor: "transparent",
+                  userSelect: "none",
+                }}
+              >
+                {renderItem && img ? (
+                  renderItem(img, i)
+                ) : src ? (
+                  <img
+                    src={src}
+                    alt={img?.alt || ""}
+                    draggable={false}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      display: "block",
+                    }}
+                  />
+                ) : null}
+              </motion.div>
+            );
+          })}
         </motion.div>
       </div>
 
-      {/* ANIMATED PILL PAGINATION */}
+      {/* Animated Pill Pagination */}
       {count > 1 && (
         <div
           style={{
@@ -337,44 +252,30 @@ function MobileAnimatedCarousel({
             alignItems: "center",
             gap: 6,
             paddingTop: 16,
-            paddingBottom: 6,
+            paddingBottom: 4,
           }}
         >
           {images.map((_, i) => (
-            <button
+            <motion.button
               key={i}
               type="button"
               onClick={() => onSelect(i)}
               aria-label={`Go to slide ${i + 1}`}
-              style={{
-                background: "transparent",
-                border: "none",
-                padding: "10px 4px",
-                margin: 0,
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                minWidth: 32,
-                minHeight: 44,
-                touchAction: "manipulation",
+              animate={{
+                width: i === activeIdx ? 24 : 6,
+                opacity: i === activeIdx ? 1 : 0.35,
+                backgroundColor: i === activeIdx ? "#F5C76A" : "rgba(255,255,255,0.5)",
               }}
-            >
-              <motion.span
-                animate={{
-                  width: i === activeIdx ? 24 : 6,
-                  opacity: i === activeIdx ? 1 : 0.35,
-                  backgroundColor: i === activeIdx ? "#F5C76A" : "rgba(255,255,255,0.45)",
-                }}
-                transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                style={{
-                  height: 5,
-                  borderRadius: 3,
-                  display: "block",
-                  boxShadow: i === activeIdx ? "0 0 10px rgba(245,199,106,0.6)" : "none",
-                }}
-              />
-            </button>
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+              style={{
+                height: 5,
+                borderRadius: 3,
+                border: "none",
+                padding: 0,
+                cursor: "pointer",
+                boxShadow: i === activeIdx ? "0 0 10px rgba(245,199,106,0.6)" : "none",
+              }}
+            />
           ))}
         </div>
       )}
@@ -384,12 +285,22 @@ function MobileAnimatedCarousel({
 
 /* ================================================================
    DESKTOP CARD — Cinematic 3D Coverflow
+   ================================================================
+   COMPOSITING ARCHITECTURE:
+   - Outer wrapper: position, transform (x, scale, rotateY), zIndex ONLY.
+     opacity is ALWAYS 1 on this layer so the card is a fully opaque
+     compositing surface that physically occludes cards behind it.
+   - Inner card surface: opaque backgroundColor + translucent gradient.
+     This layer has overflow:hidden, borderRadius, and backfaceVisibility
+     to guarantee it behaves as a solid visual plane.
+   - Content overlay: a separate motion.div inside the card that applies
+     visual opacity fading for inactive cards. This fades text/icons
+     WITHOUT making the card background translucent.
    ================================================================ */
 function DesktopCard({
   item,
   index,
   pos,
-  activeIdx,
   count,
   R,
   sizing,
@@ -402,7 +313,6 @@ function DesktopCard({
   item: CoverflowImage | undefined;
   index: number;
   pos: MotionValue<number>;
-  activeIdx: number;
   count: number;
   R: number;
   sizing: Sizing;
@@ -416,71 +326,53 @@ function DesktopCard({
   const baseWidth = sizing.activeWidth;
   const baseHeight = sizing.activeHeight;
 
-  const restScale = useMemo(() => {
-    if (sizing.restWidth > 0 && sizing.activeWidth > 0) {
-      return sizing.restWidth / sizing.activeWidth;
-    }
-    return 0.85;
-  }, [sizing.restWidth, sizing.activeWidth]);
-
   const x = useTransform(pos, (p: number) => {
     const rel = relOf(index, p, count);
     const sign = rel < 0 ? -1 : 1;
     const ar = Math.abs(rel);
     if (ar < 0.001) return 0;
-    const activeVisualWidth = sizing.activeWidth;
-    const sideVisualWidth = sizing.restWidth;
-    const controlledOverlap = Math.min(activeVisualWidth, sideVisualWidth) * 0.12;
-    const firstStep = activeVisualWidth / 2 + sideVisualWidth / 2 - controlledOverlap + gap;
-    const pitch = sideVisualWidth + gap - controlledOverlap;
-    const mag = ar <= 1 ? ar * firstStep : firstStep + (ar - 1) * pitch;
+    const neighborScale = 0.76;
+    const activeOverlap = baseWidth / 2 + (baseWidth * neighborScale) / 2 + gap;
+    const pitch = baseWidth * neighborScale + gap;
+    const mag = ar <= 1 ? ar * activeOverlap : activeOverlap + (ar - 1) * pitch;
     return sign * mag;
-  });
-
-  const z = useTransform(pos, (p: number) => {
-    const ar = Math.abs(relOf(index, p, count));
-    if (ar <= 0.001) return 0;
-    if (ar <= 1) return -120 * ar;
-    return -120 - 80 * (ar - 1);
   });
 
   const scale = useTransform(pos, (p: number) => {
     const ar = Math.abs(relOf(index, p, count));
-    if (ar <= 0.001) return 1.0;
-    if (ar <= 1) return 1.0 - (1.0 - restScale) * ar;
-    if (ar <= 2) return restScale - 0.08 * (ar - 1);
-    return Math.max(0.6, restScale - 0.08 - 0.04 * (ar - 2));
+    if (ar <= 0.001) return 1;
+    if (ar <= 1) return 1 - 0.24 * ar;
+    if (ar <= 2) return 0.76 - 0.16 * (ar - 1);
+    return Math.max(0.45, 0.6 - 0.1 * (ar - 2));
   });
 
+  // Content opacity — applied to a content wrapper INSIDE the card,
+  // NOT to the outer positioning wrapper. This ensures the card
+  // background remains fully opaque while text/icons fade for inactive cards.
   const contentOpacity = useTransform(pos, (p: number) => {
     const ar = Math.abs(relOf(index, p, count));
-    if (ar <= 0.3) return 1;
-    if (ar <= 1.2) return 1 - 0.35 * (ar - 0.3);
-    if (ar <= R + 0.5) return Math.max(0.15, 0.685 - 0.35 * (ar - 1.2));
+    if (ar <= 0.5) return 1;
+    if (ar <= 1.5) return 0.95 - 0.25 * (ar - 0.5);
+    if (ar <= R + 0.5) return Math.max(0.15, 0.7 - 0.35 * (ar - 1.5));
     return 0;
   });
 
+  // Visibility — used to hide cards that are too far away (fully transparent)
+  // by setting display:none or pointerEvents:none, preventing ghost layers.
   const visibility = useTransform(pos, (p: number) => {
     const ar = Math.abs(relOf(index, p, count));
     return ar > R + 0.5 ? "hidden" : "visible";
   });
 
-  // Classic 3D Coverflow rotation: side cards angle inward toward active center card
   const rotateY = useTransform(pos, (p: number) => {
     const rel = relOf(index, p, count);
-    if (Math.abs(rel) < 0.05) return 0;
-    const sign = rel < 0 ? -1 : 1;
-    const ar = Math.min(2, Math.abs(rel));
-    return sign * (14 * Math.min(1, ar));
+    if (Math.abs(rel) < 0.1) return 0;
+    return rel < 0 ? 8 : -8;
   });
 
-  const zIndex = useTransform(pos, (p: number) => {
-    const rel = relOf(index, p, count);
-    const relTarget = relOf(index, activeIdx, count);
-    const baseZ = 1000 - Math.abs(rel) * 100;
-    const targetBias = Math.max(0, 1 - Math.abs(relTarget)) * 50;
-    return Math.round(baseZ + targetBias);
-  });
+  const zIndex = useTransform(pos, (p: number) =>
+    Math.round(1000 - Math.abs(relOf(index, p, count)) * 100),
+  );
 
   const CARD_RADIUS =
     (Math.max(0, Math.min(20, radius)) / 20) * (Math.min(baseWidth, baseHeight) / 2);
@@ -491,13 +383,10 @@ function DesktopCard({
       : "0 12px 35px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.08)",
   );
 
+  // Border color — gold for active, subtle white for side cards
   const borderColor = useTransform(pos, (p: number) =>
-    Math.abs(relOf(index, p, count)) < 0.5
-      ? "rgba(245,199,106,0.35)"
-      : "var(--border, rgba(255,255,255,0.08))",
+    Math.abs(relOf(index, p, count)) < 0.5 ? "rgba(245,199,106,0.35)" : "rgba(255,255,255,0.08)",
   );
-
-  const xPosition = useTransform(x, (v: number) => `calc(-50% + ${v}px)`);
 
   return (
     <motion.div
@@ -506,29 +395,27 @@ function DesktopCard({
         position: "absolute",
         left: "50%",
         top: "50%",
-        width: baseWidth,
-        height: baseHeight,
-        x: xPosition,
-        y: "-50%",
-        z,
+        x,
         zIndex,
         scale,
         rotateY,
         visibility,
-        transformStyle: "preserve-3d",
-        transformOrigin: "center center",
+        transformPerspective: 1000,
         willChange: "transform",
         backfaceVisibility: "hidden",
         cursor: onSelect ? "pointer" : "default",
       }}
     >
+      {/* INNER CARD SURFACE — always fully opaque background */}
       <motion.div
         style={{
-          width: "100%",
-          height: "100%",
+          x: "-50%",
+          y: "-50%",
+          width: baseWidth,
+          height: baseHeight,
           borderRadius: CARD_RADIUS,
           overflow: "hidden",
-          backgroundColor: "var(--surface-2, #141414)",
+          backgroundColor: "var(--surface-2, #0c0b09)",
           backgroundImage: gradient,
           boxShadow,
           borderWidth: 1,
@@ -537,9 +424,12 @@ function DesktopCard({
           display: "flex",
           flexDirection: "column",
           isolation: "isolate",
+          transformStyle: "flat",
           backfaceVisibility: "hidden",
         }}
       >
+        {/* CONTENT LAYER — opacity fades text/icons for side cards
+            while the card background remains fully opaque */}
         <motion.div
           style={{
             opacity: contentOpacity,
@@ -573,6 +463,74 @@ function DesktopCard({
 }
 
 /* ================================================================
+   DESKTOP ARROW
+   ================================================================ */
+function DesktopArrow({
+  side,
+  onClick,
+  color,
+  size,
+  position,
+}: {
+  side: "left" | "right";
+  onClick: () => void;
+  color: string;
+  size: number;
+  position: number;
+}) {
+  const isLeft = side === "left";
+  const p = Math.max(0, Math.min(100, position));
+  const inset = `calc((50% - ${size}px) * ${(100 - p) / 100})`;
+  return (
+    <button
+      type="button"
+      aria-label={isLeft ? "Previous" : "Next"}
+      onPointerDown={(e) => e.stopPropagation()}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
+      style={{
+        position: "absolute",
+        top: "50%",
+        [isLeft ? "left" : "right"]: inset,
+        transform: "translateY(-50%)",
+        width: size,
+        height: size,
+        minWidth: 44,
+        minHeight: 44,
+        borderRadius: "50%",
+        border: "1px solid rgba(255,255,255,0.15)",
+        background: "rgba(255,255,255,0.06)",
+        color,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        cursor: "pointer",
+        padding: 0,
+        zIndex: 2000,
+        boxShadow: "0 4px 16px rgba(0,0,0,0.25)",
+        WebkitTapHighlightColor: "transparent",
+      }}
+    >
+      <svg
+        width={size * 0.4}
+        height={size * 0.4}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2.2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        style={{ pointerEvents: "none" }}
+      >
+        {isLeft ? <polyline points="15 18 9 12 15 6" /> : <polyline points="9 18 15 12 9 6" />}
+      </svg>
+    </button>
+  );
+}
+
+/* ================================================================
    MAIN EXPORT — Single unified activeIndex & navigation pipeline
    ================================================================ */
 const DEFAULTS = {
@@ -582,7 +540,7 @@ const DEFAULTS = {
   restHeight: 270,
   gap: 30,
   radius: 2,
-  showArrows: false,
+  showArrows: true,
   arrowColor: "#000000",
   arrowBackground: "#FFFFFF",
   arrowSize: 56,
@@ -602,6 +560,11 @@ export default function CoverflowCarousel(props: Props) {
     restHeight,
     gap,
     radius,
+    showArrows,
+    arrowColor,
+    arrowBackground,
+    arrowSize,
+    arrowPosition,
     autoplay,
     autoplayDirection,
     transition: transitionProp,
@@ -639,13 +602,13 @@ export default function CoverflowCarousel(props: Props) {
     const controls = animate(pos, activeIdx, {
       type: prefersReducedMotion ? "tween" : "spring",
       duration: prefersReducedMotion ? 0.01 : moveDur,
-      stiffness: 260,
-      damping: 26,
-      mass: 0.8,
+      stiffness: 300,
+      damping: 30,
     });
     return () => controls.stop();
   }, [activeIdx, moveDur, prefersReducedMotion, pos]);
 
+  // Unified navigation pipeline for all triggers (buttons, dots, keyboard, swipe, autoplay)
   const goToIndex = useCallback(
     (idx: number) => {
       const target = ((idx % count) + count) % count;
@@ -661,6 +624,7 @@ export default function CoverflowCarousel(props: Props) {
     goToIndex(activeIdx - 1);
   }, [activeIdx, goToIndex]);
 
+  // Unified Autoplay pipeline (runs on both Desktop and Mobile)
   useEffect(() => {
     if (!autoplay || count <= 1) return;
     const step = autoplayDirection === "leftToRight" ? -1 : 1;
@@ -733,9 +697,9 @@ export default function CoverflowCarousel(props: Props) {
         ...style,
         position: "relative",
         width: "100%",
-        height: sizing.activeHeight + 60,
-        minHeight: sizing.activeHeight + 60,
-        overflow: "visible",
+        height: "100%",
+        minHeight: 240,
+        overflow: "hidden",
         userSelect: "none",
         touchAction: "pan-y",
         outline: "none",
@@ -746,8 +710,7 @@ export default function CoverflowCarousel(props: Props) {
         style={{
           position: "absolute",
           inset: 0,
-          perspective: 1200,
-          transformStyle: "preserve-3d",
+          overflow: "hidden",
           isolation: "isolate",
           zIndex: 0,
         }}
@@ -758,7 +721,6 @@ export default function CoverflowCarousel(props: Props) {
             item={img}
             index={i}
             pos={pos}
-            activeIdx={activeIdx}
             count={count}
             R={R}
             sizing={sizing}
@@ -770,6 +732,24 @@ export default function CoverflowCarousel(props: Props) {
           />
         ))}
       </div>
+      {showArrows && count > 1 && (
+        <>
+          <DesktopArrow
+            side="left"
+            onClick={goPrev}
+            color={arrowColor}
+            size={arrowSize}
+            position={arrowPosition}
+          />
+          <DesktopArrow
+            side="right"
+            onClick={goNext}
+            color={arrowColor}
+            size={arrowSize}
+            position={arrowPosition}
+          />
+        </>
+      )}
     </div>
   );
 }
