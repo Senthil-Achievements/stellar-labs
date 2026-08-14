@@ -1859,7 +1859,16 @@ export function HomeStack() {
   if (isMobile) {
     return (
       <>
-        <Hero />
+        <div ref={pinRef} className="relative h-[130vh]">
+          <div className="sticky top-0 h-[100dvh] h-[100svh] w-full overflow-hidden">
+            <motion.div
+              style={{ scale: heroScale, opacity: heroOpacity, borderRadius: heroRadius }}
+              className="absolute inset-0 origin-center overflow-hidden will-change-transform"
+            >
+              <Hero />
+            </motion.div>
+          </div>
+        </div>
         <div className="relative z-20">
           {sections.map((s) => (
             <Fragment key={s.key}>{s.node}</Fragment>
