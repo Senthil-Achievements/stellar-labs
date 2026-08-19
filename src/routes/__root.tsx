@@ -145,7 +145,7 @@ function RootShell({ children }: { children: ReactNode }) {
         "name": "THERUINS",
         "legalName": "THERUINS AI Startup Studio",
         "url": "https://theruins.in/",
-        "logo": "https://stellar-labs.vercel.app/favicon.ico",
+        "logo": "https://theruins.in/favicon.ico",
         "email": "hello@theruins.in",
         "sameAs": ["https://github.com/Senthil-Achievements"],
         "description":

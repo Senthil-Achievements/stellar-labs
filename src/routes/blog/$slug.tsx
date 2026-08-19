@@ -75,7 +75,7 @@ function BlogPostDetailPage() {
       "name": "THERUINS",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://stellar-labs.vercel.app/favicon.ico",
+        "url": "https://theruins.in/favicon.ico",
       },
     },
     "datePublished": post.date,
