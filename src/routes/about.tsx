@@ -4,20 +4,26 @@ import { SiteChrome, WhyUs, Testimonials, Industries } from "@/components/Portfo
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About — THERUINS" },
+      { title: "About Us — THERUINS · AI Startup Studio & Engineering Philosophy" },
       {
         name: "description",
         content:
-          "THERUINS is an AI startup studio building AI websites, mobile apps, automations, and agents for founders worldwide.",
+          "Learn how THERUINS combines software engineering, artificial intelligence, and agile execution to build high-impact digital products for founders worldwide.",
       },
-      { property: "og:title", content: "About — THERUINS" },
+      {
+        name: "keywords",
+        content: "about THERUINS, AI startup studio team, software engineering studio, AI development philosophy",
+      },
+      { property: "og:title", content: "About Us — THERUINS" },
       {
         property: "og:description",
-        content: "The team, the philosophy, and the way we build products at THERUINS.",
+        content: "The team, philosophy, and engineering standard behind THERUINS.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://theruins.in/about" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "https://theruins.in/about" }],
   }),
   component: AboutPage,
 });

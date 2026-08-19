@@ -75,7 +75,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 const BRAND = "THERUINS";
 const TAGLINE = "The Birthplace of Tomorrow.";
-const CONTACT_EMAIL = "summapa605@gmail.com";
+const CONTACT_EMAIL = "hello@theruins.in";
 const GITHUB_URL = "https://github.com/Senthil-Achievements";
 
 /* ============================================================
@@ -1622,7 +1622,7 @@ export function FinalCta() {
                 <MagneticButton href="tel:+919003863723" primary>
                   Book Discovery Call
                 </MagneticButton>
-                <MagneticButton href="mailto:summapa605@gmail.com">
+                <MagneticButton href={`mailto:${CONTACT_EMAIL}`}>
                   Start Your Project
                 </MagneticButton>
               </div>

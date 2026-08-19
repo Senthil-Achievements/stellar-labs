@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://theruins.in/sitemap.xml
+Sitemap: https://stellar-labs.vercel.app/sitemap.xml

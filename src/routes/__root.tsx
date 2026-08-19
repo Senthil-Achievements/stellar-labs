@@ -77,26 +77,34 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "THERUINS — AI Startup Studio · Software Engineering · Automation" },
+      { title: "THERUINS — AI Startup Studio · Software Engineering · Automations & Agents" },
       {
         name: "description",
         content:
-          "THERUINS builds AI websites, mobile apps, intelligent automations, and AI agents — complete digital infrastructure for businesses that want to scale globally.",
+          "THERUINS builds AI websites, mobile apps, intelligent automations, and autonomous AI agents — complete digital infrastructure for businesses scaling globally.",
       },
       {
         name: "keywords",
         content:
-          "AI startup studio, software engineering, AI automation, AI agents, Flutter, React, SaaS development, custom web apps, growth infrastructure",
+          "AI startup studio, software engineering, AI automation, AI agents, Flutter mobile apps, React, Next.js, custom web apps, growth infrastructure, THERUINS",
       },
       { name: "author", content: "THERUINS" },
+      { name: "publisher", content: "THERUINS" },
+      { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" },
+      { name: "theme-color", content: "#0B0D12" },
+      { property: "og:site_name", content: "THERUINS" },
+      { property: "og:locale", content: "en_US" },
       { property: "og:title", content: "THERUINS — The Birthplace of Tomorrow" },
       {
         property: "og:description",
         content:
-          "AI websites, mobile apps, intelligent automations, and AI agents — built for businesses that scale.",
+          "AI websites, mobile apps, intelligent automations, and AI agents — built for businesses that scale globally.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://theruins.in/" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:site", content: "@theruins" },
+      { name: "twitter:creator", content: "@theruins" },
       { name: "twitter:title", content: "THERUINS — The Birthplace of Tomorrow" },
       {
         name: "twitter:description",
@@ -106,6 +114,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "manifest", href: "/site.webmanifest" },
+      { rel: "canonical", href: "https://theruins.in/" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       {
         rel: "preconnect",
@@ -126,10 +136,50 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://theruins.in/#organization",
+        "name": "THERUINS",
+        "legalName": "THERUINS AI Startup Studio",
+        "url": "https://theruins.in/",
+        "logo": "https://stellar-labs.vercel.app/favicon.ico",
+        "email": "hello@theruins.in",
+        "sameAs": ["https://github.com/Senthil-Achievements"],
+        "description":
+          "THERUINS is an AI startup studio building AI websites, custom web apps, Flutter mobile apps, intelligent automations, and autonomous AI agents.",
+      },
+      {
+        "@type": "ProfessionalService",
+        "@id": "https://theruins.in/#service",
+        "name": "THERUINS — Software Engineering & AI Studio",
+        "url": "https://theruins.in/",
+        "priceRange": "$$",
+        "email": "hello@theruins.in",
+        "areaServed": "Worldwide",
+        "knowsAbout": [
+          "AI Startup Studio",
+          "Software Engineering",
+          "AI Automations",
+          "AI Agents",
+          "Flutter Mobile Apps",
+          "Custom Web Development",
+          "Growth Infrastructure",
+        ],
+      },
+    ],
+  };
+
   return (
     <html lang="en">
       <head>
         <HeadContent />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </head>
       <body>
         <a
