@@ -92,6 +92,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "publisher", content: "THERUINS" },
       { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" },
       { name: "theme-color", content: "#0B0D12" },
+      { name: "google-site-verification", content: "eVlySESIDtP8QQjRBde9c_IMWFbBI7BP-b61db" },
       { property: "og:site_name", content: "THERUINS" },
       { property: "og:locale", content: "en_US" },
       { property: "og:title", content: "THERUINS — The Birthplace of Tomorrow" },
