@@ -423,7 +423,7 @@ const FAQ = [
    PRIMITIVES
    ============================================================ */
 
-function FadeUp({
+export function FadeUp({
   children,
   delay = 0,
   y = 24,
@@ -448,7 +448,7 @@ function FadeUp({
   );
 }
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
+export function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
     <div className="section-label" aria-hidden="true">
       <span className="label-dot" />
@@ -457,7 +457,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
-function MagneticButton({
+export function MagneticButton({
   children,
   href,
   primary,
@@ -625,6 +625,7 @@ export function Nav() {
     ["Services", "/services"],
     ["Work", "/work"],
     ["Process", "/process"],
+    ["Insights", "/blog"],
     ["Contact", "/contact"],
   ];
 
@@ -1677,24 +1678,24 @@ export function Footer() {
             <div className="footer-section-label">Company</div>
             <ul className="mt-3 sm:mt-4 space-y-1.5 sm:space-y-2 text-xs sm:text-sm">
               <li>
-                <a href="#services" className="footer-link">
+                <RouterLink to="/services" className="footer-link">
                   Services
-                </a>
+                </RouterLink>
               </li>
               <li>
-                <a href="#work" className="footer-link">
+                <RouterLink to="/work" className="footer-link">
                   Work
-                </a>
+                </RouterLink>
               </li>
               <li>
-                <a href="#process" className="footer-link">
+                <RouterLink to="/process" className="footer-link">
                   Process
-                </a>
+                </RouterLink>
               </li>
               <li>
-                <a href="#industries" className="footer-link">
-                  Industries
-                </a>
+                <RouterLink to="/blog" className="footer-link">
+                  Insights / Blog
+                </RouterLink>
               </li>
             </ul>
           </div>

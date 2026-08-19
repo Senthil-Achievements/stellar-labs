@@ -19,6 +19,42 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://theruins.in/blog</loc>
+    <lastmod>2026-08-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://theruins.in/blog/can-ai-automate-hiring-2026</loc>
+    <lastmod>2026-08-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://theruins.in/blog/ats-software-vs-custom-ai-screening</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://theruins.in/blog/how-to-build-custom-ai-agents</loc>
+    <lastmod>2026-08-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://theruins.in/blog/job-application-bots-vs-ethical-automation</loc>
+    <lastmod>2026-08-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://theruins.in/blog/small-business-hiring-automation-guide</loc>
+    <lastmod>2026-08-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://theruins.in/about</loc>
     <lastmod>2026-08-19</lastmod>
     <changefreq>monthly</changefreq>
